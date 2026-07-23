@@ -10,7 +10,7 @@ def test_settings_read_from_env(monkeypatch):
 
 
 def test_env_example_lists_required_keys():
-    # pytest runs with cwd = backend/
-    text = open(".env.example").read()
+    # Single env example lives at the repo root; pytest runs with cwd = backend/
+    text = open("../.env.example").read()
     for key in ["DATABASE_URL", "SUPABASE_URL", "SUPABASE_JWT_SECRET", "ANTHROPIC_API_KEY"]:
         assert key in text
