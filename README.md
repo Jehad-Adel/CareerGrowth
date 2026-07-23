@@ -2,7 +2,23 @@
 
 AI career-growth platform. Your professional profile is the single source of truth; every feature (CV analysis, job matching, interview prep, roadmap, chat) reads from and writes back to it, and progress is visualized as a living "farm."
 
-Architecture and design decisions live in [docs/superpowers/specs](docs/superpowers/specs) and [docs/superpowers/plans](docs/superpowers/plans).
+## Documentation
+
+Full engineering docs are in [docs/](docs/README.md):
+
+- [Architecture](docs/architecture.md) — system overview, the integration "spine", data model, build status
+- [Backend](docs/backend.md) — FastAPI module map, endpoints, setup, tests
+- [Frontend](docs/frontend.md) — Next.js structure, module map, setup
+- [Decisions](docs/decisions.md) — key technical choices and trade-offs
+
+## Repo layout
+
+```
+backend/    FastAPI service (uv, SQLAlchemy, Alembic)
+frontend/   Next.js app (App Router, Tailwind, shadcn/ui)
+docs/       Living documentation + design records
+.env        Single env file for both apps (gitignored; copy from .env.example)
+```
 
 ## Stack
 
