@@ -2,6 +2,11 @@
 
 AI career-growth platform. Your professional profile is the single source of truth; every feature (CV analysis, job matching, interview prep, roadmap, chat) reads from and writes back to it, and progress is visualized as a living "farm."
 
+## Start here
+
+- **New teammate?** [GET-STARTED.md](GET-STARTED.md) — running locally in ~5 minutes.
+- **Building UI?** [HOW-TO-GUIDE.md](HOW-TO-GUIDE.md) — add a page, connect to the API, theming.
+
 ## Documentation
 
 Full engineering docs are in [docs/](docs/README.md):
