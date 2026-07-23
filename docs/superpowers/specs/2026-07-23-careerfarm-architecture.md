@@ -100,6 +100,6 @@ Each service has one purpose, a defined interface, and is independently testable
 
 ## 7. Open questions (revisit per sub-project)
 
-- Hosting/deploy target (Vercel for frontend + ? for FastAPI) — decide before/at Foundation.
+- Hosting/deploy target — deferred. Leaning Vercel (frontend) + Railway (FastAPI). Decide before first deploy.
 - Whether to enforce authorization via Postgres RLS in addition to FastAPI checks.
 - File storage for uploaded CVs (Supabase Storage vs. parse-and-discard).
