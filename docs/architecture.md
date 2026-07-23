@@ -75,16 +75,18 @@ Original plan sequenced the frontend at step 4; it was **brought forward** to a 
 | # | Sub-project | Status |
 |---|-------------|--------|
 | 1 | Foundation (backend bootstrap) | ✅ Done |
-| — | Frontend scaffold (app shell) | ✅ Done (brought forward) |
-| 2 | Career Profile + Farm spine | ⬜ Not started |
-| 3 | CV Studio (first AI feature) | ⬜ Not started |
-| 4 | Dashboard + Farm viz (real data) | ⬜ Stub UI only |
-| 5 | Roadmap | ⬜ Stub UI only |
-| 6 | Job Match | ⬜ Stub UI only |
-| 7 | Interview Coach | ⬜ Stub UI only |
-| 8 | Career Chat | ⬜ Stub UI only |
+| — | Frontend: full static UI (all 7 features + auth, mock data, design system) | ✅ Done (brought forward) |
+| 2 | Career Profile + Farm spine (backend) | ⬜ Not started |
+| 3 | CV Studio (AI + wiring frontend to API) | ⬜ Static UI only |
+| 4 | Dashboard + Farm viz (real data) | ⬜ Static UI only |
+| 5 | Roadmap | ⬜ Static UI only |
+| 6 | Job Match | ⬜ Static UI only |
+| 7 | Interview Coach | ⬜ Static UI only |
+| 8 | Career Chat | ⬜ Static UI only |
 
-**Deferred:** LLM module (arrives with CV Studio), deployment (leaning Vercel + Railway), live `alembic upgrade head` (needs a provisioned Supabase DB).
+The frontend renders every feature from a mock data layer (`src/lib/services.ts`) shaped to swap to the real API without UI changes. "Not started" now means **backend + wiring**, not the UI.
+
+**Deferred:** LLM module (arrives with CV Studio), backend feature services, deployment (leaning Vercel + Railway), live `alembic upgrade head` (needs a provisioned Supabase DB).
 
 ## Stack
 
