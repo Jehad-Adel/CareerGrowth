@@ -158,3 +158,58 @@
     @apply font-heading;
   }
 }
+
+/* Ambient motion — GPU-safe (transform only), used on the landing page. */
+@keyframes cf-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+@keyframes cf-sway {
+  0%,
+  100% {
+    transform: rotate(-2.5deg);
+  }
+  50% {
+    transform: rotate(2.5deg);
+  }
+}
+@keyframes cf-blob {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(24px, -18px) scale(1.06);
+  }
+  66% {
+    transform: translate(-18px, 12px) scale(0.96);
+  }
+}
+.cf-float {
+  animation: cf-float 7s ease-in-out infinite;
+}
+.cf-sway {
+  animation: cf-sway 6s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+.cf-blob {
+  animation: cf-blob 20s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
