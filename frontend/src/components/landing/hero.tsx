@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRef } from "react";
 import {
-  motion,
+  m,
   useReducedMotion,
   useScroll,
   useTransform,
@@ -46,7 +46,7 @@ export function Hero() {
   return (
     <section ref={ref} className="relative overflow-hidden px-6 pt-40 pb-24">
       {/* Depth 0–1 — ambient atmosphere */}
-      <motion.div
+      <m.div
         aria-hidden
         style={{ y: reduce ? 0 : blobA }}
         className="pointer-events-none absolute -top-24 left-1/2 -z-10 h-[520px] w-[520px] -translate-x-1/2"
@@ -58,8 +58,8 @@ export function Hero() {
               "radial-gradient(circle, color-mix(in oklch, var(--sprout) 45%, transparent), transparent 68%)",
           }}
         />
-      </motion.div>
-      <motion.div
+      </m.div>
+      <m.div
         aria-hidden
         style={{ y: reduce ? 0 : blobB }}
         className="pointer-events-none absolute right-[6%] top-40 -z-10 h-72 w-72"
@@ -71,22 +71,22 @@ export function Hero() {
               "radial-gradient(circle, color-mix(in oklch, var(--harvest) 42%, transparent), transparent 70%)",
           }}
         />
-      </motion.div>
+      </m.div>
 
-      <motion.div
+      <m.div
         style={reduce ? undefined : { y: contentY, opacity: contentOpacity }}
         className="mx-auto max-w-4xl text-center"
       >
-        <motion.p
+        <m.p
           initial={reduce ? false : { opacity: 0, y: 10 }}
           animate={reduce ? undefined : { opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="font-mono text-xs uppercase tracking-[0.35em] text-muted-foreground"
         >
           AI career growth
-        </motion.p>
+        </m.p>
 
-        <motion.h1
+        <m.h1
           variants={container}
           initial={reduce ? false : "hidden"}
           animate={reduce ? undefined : "show"}
@@ -99,19 +99,19 @@ export function Hero() {
               aria-hidden
               className="inline-block overflow-hidden pb-1 align-bottom"
             >
-              <motion.span
+              <m.span
                 variants={word}
                 className={
                   i >= 3 ? "mr-[0.22em] inline-block text-primary" : "mr-[0.22em] inline-block"
                 }
               >
                 {w}
-              </motion.span>
+              </m.span>
             </span>
           ))}
-        </motion.h1>
+        </m.h1>
 
-        <motion.p
+        <m.p
           initial={reduce ? false : { opacity: 0, y: 12 }}
           animate={reduce ? undefined : { opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.7 }}
@@ -120,9 +120,9 @@ export function Hero() {
           Understand where you stand, find your skill gaps, and take real steps
           to grow — in one connected space that makes progress something you can
           actually see.
-        </motion.p>
+        </m.p>
 
-        <motion.div
+        <m.div
           initial={reduce ? false : { opacity: 0, y: 12 }}
           animate={reduce ? undefined : { opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.85 }}
@@ -137,15 +137,15 @@ export function Hero() {
           >
             See the live demo
           </Link>
-        </motion.div>
-      </motion.div>
+        </m.div>
+      </m.div>
 
       {/* Signature — the growth strip */}
       <div className="mx-auto mt-16 max-w-3xl">
         <div className="rounded-3xl border bg-card/70 px-6 py-10 backdrop-blur-sm sm:px-12">
           <div className="flex items-end justify-between gap-2 sm:gap-8">
             {STAGES.map((stage, i) => (
-              <motion.div
+              <m.div
                 key={stage}
                 initial={reduce ? false : { opacity: 0, scale: 0.6, y: 20 }}
                 whileInView={reduce ? undefined : { opacity: 1, scale: 1, y: 0 }}
@@ -163,7 +163,7 @@ export function Hero() {
                 <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                   {stageLabel[stage]}
                 </span>
-              </motion.div>
+              </m.div>
             ))}
           </div>
           <p className="mt-8 text-center text-sm text-muted-foreground">

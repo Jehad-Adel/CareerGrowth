@@ -25,7 +25,7 @@ const STEPS = [
 
 export function Steps() {
   return (
-    <section id="how" className="mx-auto max-w-6xl px-6 py-24">
+    <section id="how" className="cv-section mx-auto max-w-6xl px-6 py-24">
       <Reveal className="mx-auto mb-14 max-w-2xl text-center">
         <p className="mb-3 font-mono text-xs uppercase tracking-widest text-muted-foreground">
           How it works

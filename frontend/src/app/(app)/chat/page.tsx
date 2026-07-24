@@ -1,5 +1,6 @@
 import { SendHorizontal } from "lucide-react";
 
+import { LogoMark } from "@/components/brand/logo";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -33,8 +34,8 @@ export default async function ChatPage() {
               )}
             >
               {m.role === "assistant" && (
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary/12 text-sm">
-                  🌱
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary/12">
+                  <LogoMark className="h-4 w-4 text-primary" />
                 </span>
               )}
               <div

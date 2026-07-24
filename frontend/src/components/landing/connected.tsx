@@ -1,21 +1,32 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import {
+  FileText,
+  Map,
+  MessageCircle,
+  Mic,
+  Sprout,
+  Target,
+  type LucideIcon,
+} from "lucide-react";
+import { m, useReducedMotion } from "motion/react";
 
-const NODES = [
-  { label: "CV Studio", emoji: "📄", x: 50, y: 11 },
-  { label: "Roadmap", emoji: "🗺️", x: 84, y: 31 },
-  { label: "Job Match", emoji: "🎯", x: 84, y: 69 },
-  { label: "Interview", emoji: "🎤", x: 50, y: 89 },
-  { label: "Career Chat", emoji: "💬", x: 16, y: 69 },
-  { label: "Career Farm", emoji: "🌱", x: 16, y: 31 },
+import { LogoMark } from "@/components/brand/logo";
+
+const NODES: { label: string; icon: LucideIcon; x: number; y: number }[] = [
+  { label: "CV Studio", icon: FileText, x: 50, y: 11 },
+  { label: "Roadmap", icon: Map, x: 84, y: 31 },
+  { label: "Job Match", icon: Target, x: 84, y: 69 },
+  { label: "Interview", icon: Mic, x: 50, y: 89 },
+  { label: "Career Chat", icon: MessageCircle, x: 16, y: 69 },
+  { label: "Career Farm", icon: Sprout, x: 16, y: 31 },
 ];
 
 export function Connected() {
   const reduce = useReducedMotion();
 
   return (
-    <section id="connected" className="mx-auto max-w-6xl px-6 py-24">
+    <section id="connected" className="cv-section mx-auto max-w-6xl px-6 py-24">
       <div className="mx-auto max-w-2xl text-center">
         <p className="mb-3 font-mono text-xs uppercase tracking-widest text-muted-foreground">
           Connected
@@ -35,7 +46,7 @@ export function Connected() {
           aria-hidden
         >
           {NODES.map((n, i) => (
-            <motion.line
+            <m.line
               key={n.label}
               x1="50"
               y1="50"
@@ -53,7 +64,7 @@ export function Connected() {
         </svg>
 
         {/* Center node */}
-        <motion.div
+        <m.div
           initial={reduce ? false : { scale: 0.7, opacity: 0 }}
           whileInView={reduce ? undefined : { scale: 1, opacity: 1 }}
           viewport={{ once: true }}
@@ -61,18 +72,18 @@ export function Connected() {
           className="absolute left-1/2 top-1/2 grid h-28 w-28 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-primary/30 bg-primary text-center text-primary-foreground shadow-lg"
         >
           <span>
-            <span className="block text-xl">🌱</span>
-            <span className="mt-0.5 block text-xs font-medium leading-tight">
+            <LogoMark className="mx-auto h-6 w-6" />
+            <span className="mt-1 block text-xs font-medium leading-tight">
               Your
               <br />
               profile
             </span>
           </span>
-        </motion.div>
+        </m.div>
 
         {/* Feature chips */}
         {NODES.map((n, i) => (
-          <motion.div
+          <m.div
             key={n.label}
             style={{ left: `${n.x}%`, top: `${n.y}%` }}
             initial={reduce ? false : { scale: 0.6, opacity: 0 }}
@@ -82,10 +93,10 @@ export function Connected() {
             className="absolute -translate-x-1/2 -translate-y-1/2"
           >
             <div className="flex items-center gap-1.5 whitespace-nowrap rounded-full border bg-card px-3 py-1.5 text-xs font-medium shadow-sm">
-              <span aria-hidden>{n.emoji}</span>
+              <n.icon className="h-3.5 w-3.5 text-primary" />
               {n.label}
             </div>
-          </motion.div>
+          </m.div>
         ))}
       </div>
     </section>

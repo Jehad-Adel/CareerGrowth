@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { Flame, Search } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
@@ -29,10 +29,11 @@ export function Topbar({ profile }: { profile: Profile }) {
 
       <div className="ml-auto flex items-center gap-5">
         <span
-          className="font-mono text-sm text-muted-foreground"
+          className="flex items-center gap-1.5 font-mono text-sm text-muted-foreground"
           title={`${profile.streakDays}-day streak`}
         >
-          🔥 {profile.streakDays}d
+          <Flame className="h-4 w-4 text-[var(--harvest)]" />
+          {profile.streakDays}d
         </span>
 
         <div className="hidden w-44 sm:block">
