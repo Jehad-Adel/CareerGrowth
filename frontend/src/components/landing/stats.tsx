@@ -10,7 +10,7 @@ const STATS = [
 
 export function Stats() {
   return (
-    <section className="border-y bg-card/40 py-16">
+    <section className="cv-section border-y bg-card/40 py-16">
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 text-center md:grid-cols-4">
         {STATS.map((s, i) => (
           <Reveal key={s.label} delay={i * 0.08}>

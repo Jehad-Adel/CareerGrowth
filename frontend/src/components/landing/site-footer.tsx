@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { Logo } from "@/components/brand/logo";
+
 const COLS = [
   {
     title: "Product",
@@ -33,9 +35,7 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <span className="flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary/12 text-xl">
-              🌱
-            </span>
+            <Logo />
             <span className="font-heading text-lg font-semibold">CareerFarm</span>
           </span>
           <p className="mt-3 max-w-xs text-sm text-muted-foreground">

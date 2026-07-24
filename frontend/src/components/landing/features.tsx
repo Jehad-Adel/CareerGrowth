@@ -9,8 +9,9 @@ import {
   Target,
   type LucideIcon,
 } from "lucide-react";
-import { motion, useReducedMotion, type Variants } from "motion/react";
+import { m, useReducedMotion, type Variants } from "motion/react";
 
+import { LogoMark } from "@/components/brand/logo";
 import { Plant } from "@/components/farm/plant";
 import type { GrowthStage } from "@/types";
 
@@ -38,7 +39,7 @@ export function Features() {
   const reduce = useReducedMotion();
 
   return (
-    <section id="features" className="mx-auto max-w-6xl px-6 py-24">
+    <section id="features" className="cv-section mx-auto max-w-6xl px-6 py-24">
       <div className="mx-auto mb-14 max-w-2xl text-center">
         <p className="mb-3 font-mono text-xs uppercase tracking-widest text-muted-foreground">
           The platform
@@ -47,7 +48,7 @@ export function Features() {
       </div>
 
       {/* Signature feature — the farm */}
-      <motion.div
+      <m.div
         initial={reduce ? false : { opacity: 0, y: 24 }}
         whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
@@ -55,7 +56,7 @@ export function Features() {
         className="grid items-center gap-8 overflow-hidden rounded-3xl border bg-card p-8 sm:p-10 lg:grid-cols-2"
       >
         <div>
-          <span className="text-2xl">🌱</span>
+          <LogoMark className="h-8 w-8 text-primary" />
           <h3 className="mt-3 text-2xl">The Career Farm</h3>
           <p className="mt-2 max-w-md text-muted-foreground">
             Your signature view. Skills are plants that grow from seed to tree as
@@ -74,10 +75,10 @@ export function Features() {
             </div>
           ))}
         </div>
-      </motion.div>
+      </m.div>
 
       {/* The rest */}
-      <motion.div
+      <m.div
         variants={grid}
         initial={reduce ? false : "hidden"}
         whileInView={reduce ? undefined : "show"}
@@ -85,7 +86,7 @@ export function Features() {
         className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
       >
         {OTHER.map((f) => (
-          <motion.div
+          <m.div
             key={f.title}
             variants={item}
             whileHover={reduce ? undefined : { y: -4 }}
@@ -97,9 +98,9 @@ export function Features() {
             </span>
             <h3 className="mt-4 text-lg">{f.title}</h3>
             <p className="mt-1 text-sm text-muted-foreground">{f.text}</p>
-          </motion.div>
+          </m.div>
         ))}
-      </motion.div>
+      </m.div>
     </section>
   );
 }

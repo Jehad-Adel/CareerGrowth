@@ -1,3 +1,5 @@
+import { Sprout, Wheat } from "lucide-react";
+
 import { FarmPlot } from "@/components/farm/farm-plot";
 import { Plant } from "@/components/farm/plant";
 import { PageHeader } from "@/components/layout/page-header";
@@ -68,9 +70,11 @@ export default async function FarmPage() {
             <div key={g.id} className="rounded-2xl border bg-card p-5">
               <div className="mb-2 flex items-center justify-between gap-3">
                 <span className="text-sm font-medium">{g.title}</span>
-                <span className="text-lg" aria-hidden>
-                  {g.status === "done" ? "🌾" : "🌱"}
-                </span>
+                {g.status === "done" ? (
+                  <Wheat className="h-5 w-5 shrink-0 text-[var(--harvest)]" />
+                ) : (
+                  <Sprout className="h-5 w-5 shrink-0 text-primary" />
+                )}
               </div>
               <Progress value={g.progress} className="h-1.5" />
               <p className="mt-2 font-mono text-[11px] text-muted-foreground">

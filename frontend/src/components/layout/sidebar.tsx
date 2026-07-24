@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { Logo } from "@/components/brand/logo";
 import { navItems } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 
@@ -12,9 +13,7 @@ export function Sidebar() {
   return (
     <aside className="flex w-60 shrink-0 flex-col border-r border-sidebar-border bg-sidebar">
       <Link href="/dashboard" className="flex items-center gap-2.5 px-5 py-5">
-        <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary/12 text-xl">
-          🌱
-        </span>
+        <Logo />
         <span className="leading-none">
           <span className="block font-heading text-lg font-semibold text-sidebar-foreground">
             CareerFarm
