@@ -157,6 +157,15 @@
   h3 {
     @apply font-heading;
   }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+  a:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
 }
 
 /* Ambient motion — GPU-safe (transform only), used on the landing page. */
