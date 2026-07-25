@@ -1,52 +1,34 @@
-"""
-==========================================================
-CareerFarm AI
-Configuration
-----------------------------------------------------------
-Centralized configuration for the entire AI module.
-==========================================================
+"""Centralized configuration for the CareerFarm AI package.
+
+This is the single source of truth for anything environment-specific
+or tunable (credentials, model selection, generation parameters).
+No other module should read from `os.environ` or hardcode these values.
 """
 
-from dataclasses import dataclass
-import os
+from functools import lru_cache
 
-from dotenv import load_dotenv
-
-load_dotenv()
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-# ==========================================================
-# API Configuration
-# ==========================================================
+class Settings(BaseSettings):
+    """Application-wide settings, loaded from environment variables / .env."""
 
-@dataclass(frozen=True)
-class APIConfig:
-    GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
+    google_api_key: str
 
-# ==========================================================
-# LLM Configuration
-# ==========================================================
+    gemini_model: str = "gemini-flash-lite-latest"
+    temperature: float = 0.2
+    max_output_tokens: int = 2048
 
-@dataclass(frozen=True)
-class ModelConfig:
-    MODEL_NAME = "gemini-flash-latest"
+    debug: bool = False
 
 
-# ==========================================================
-# Generation Configuration
-# ==========================================================
+@lru_cache
+def get_settings() -> Settings:
+    """Return a cached, process-wide Settings instance.
 
-@dataclass(frozen=True)
-class GenerationConfig:
-    TEMPERATURE = 0.2
-    MAX_OUTPUT_TOKENS = 1024
-
-
-# ==========================================================
-# Application Configuration
-# ==========================================================
-
-@dataclass(frozen=True)
-class AppConfig:
-    DEBUG = True
+    Cached so the .env file is parsed once and every module shares the
+    same configuration object instead of re-instantiating Settings.
+    """
+    return Settings()

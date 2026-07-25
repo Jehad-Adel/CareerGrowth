@@ -1,0 +1,16 @@
+langchain
+langchain-community
+langchain-huggingface
+transformers
+torch
+accelerate
+sentence-transformers
+faiss-cpu
+huggingface-hub
+python-dotenv
+
+langchain-core
+langchain-google-genai
+pydantic>=2
+pydantic-settings
+pypdf

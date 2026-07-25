@@ -1,94 +1,30 @@
-"""
-==========================================================
-CareerFarm AI
-PDF Loader
-----------------------------------------------------------
-Extracts text from PDF files.
+"""Loader for extracting raw text from PDF files.
 
-Strategy:
-1. PyPDF
-2. PyMuPDF
-3. pdfplumber
-==========================================================
+Kept isolated from the `ai.chains` layer so future formats (DOCX, TXT,
+OCR) can be added as sibling loaders without touching any chain.
 """
+
+from pathlib import Path
 
 from pypdf import PdfReader
-import fitz
-import pdfplumber
 
 
-def _extract_with_pypdf(pdf_path: str) -> str:
-    text = ""
+def load_pdf(file_path: str | Path) -> str:
+    """Extract and return the concatenated text content of a PDF file.
 
-    try:
-        reader = PdfReader(pdf_path)
-
-        for page in reader.pages:
-            page_text = page.extract_text()
-
-            if page_text:
-                text += page_text + "\n"
-
-    except Exception:
-        pass
-
-    return text.strip()
-
-
-def _extract_with_pymupdf(pdf_path: str) -> str:
-    text = ""
-
-    try:
-        document = fitz.open(pdf_path)
-
-        for page in document:
-            text += page.get_text()
-
-        document.close()
-
-    except Exception:
-        pass
-
-    return text.strip()
-
-
-def _extract_with_pdfplumber(pdf_path: str) -> str:
-    text = ""
-
-    try:
-        with pdfplumber.open(pdf_path) as pdf:
-            for page in pdf.pages:
-                page_text = page.extract_text()
-
-                if page_text:
-                    text += page_text + "\n"
-
-    except Exception:
-        pass
-
-    return text.strip()
-
-
-def load_pdf(pdf_path: str) -> str:
+    Raises:
+        FileNotFoundError: if `file_path` does not exist.
+        ValueError: if the PDF contains no extractable text.
     """
-    Extract text from PDF.
+    path = Path(file_path)
+    if not path.exists():
+        raise FileNotFoundError(f"PDF file not found: {path}")
 
-    Strategy:
-    1. PyPDF
-    2. PyMuPDF
-    3. pdfplumber
-    """
+    reader = PdfReader(path)
+    pages_text = [page.extract_text() or "" for page in reader.pages]
+    full_text = "\n".join(pages_text).strip()
 
-    text = _extract_with_pypdf(pdf_path)
+    if not full_text:
+        raise ValueError(f"No extractable text found in PDF: {path}")
 
-    if len(text) > 100:
-        return text
-
-    text = _extract_with_pymupdf(pdf_path)
-
-    if len(text) > 100:
-        return text
-
-    text = _extract_with_pdfplumber(pdf_path)
-
-    return text
+    return full_text

@@ -1,45 +1,22 @@
-"""
-==========================================================
-CareerFarm AI
-LLM Loader
-----------------------------------------------------------
-Loads Gemini only once using Google SDK.
-==========================================================
-"""
-
-import google.generativeai as genai
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 from ai.config import (
     APIConfig,
     ModelConfig,
+    GenerationConfig,
 )
 
-import logging
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-_model = None
+_llm = None
 
 
 def get_llm():
-    """
-    Returns Gemini model singleton.
-    """
+    global _llm
 
-    global _model
+    if _llm is None:
+        _llm = ChatGoogleGenerativeAI(
+            model=ModelConfig.MODEL_NAME,
+            google_api_key=APIConfig.GOOGLE_API_KEY,
+            temperature=GenerationConfig.TEMPERATURE,
+        )
 
-    if _model is not None:
-        return _model
-
-    logger.info("Loading Gemini...")
-
-    genai.configure(api_key=APIConfig.GOOGLE_API_KEY)
-
-    _model = genai.GenerativeModel(
-        ModelConfig.MODEL_NAME
-    )
-
-    logger.info("Gemini Loaded Successfully.")
-
-    return _model
+    return _llm
