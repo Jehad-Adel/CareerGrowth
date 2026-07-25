@@ -1,23 +1,83 @@
-# CareerFarm Documentation
+# 🚀 [Tips Hindawi](https://www.tipshindawi.com/) Challenge (June–July) 2026
 
-Living documentation for engineers working on CareerFarm. Kept in sync with the code — if you change behavior, update the relevant page here in the same PR.
+> 🏆 This repository is my official submission for the [ **Tips Hindawi** ](https://www.tipshindawi.com/) **Challenge (June–July) 2026**.
 
-## Contents
+## 👤 Participant
 
-| Doc | What's in it |
-|-----|--------------|
-| [architecture.md](architecture.md) | System overview, the integration "spine", data model, build status |
-| [backend.md](backend.md) | FastAPI backend: module map, endpoints, setup, tests |
-| [frontend.md](frontend.md) | Next.js frontend: structure, module map, setup |
-| [decisions.md](decisions.md) | Key technical decisions and trade-offs |
+| Field            | Value                                |
+| ---------------- | ------------------------------------ |
+| Full Name        |                                      |
+| Project Name     |                                      |
+| GitHub Username  |                                      |
+| Challenge Batch  | June–July 2026                       |
+| Training Program | Large Language Models (LLMs) Program |
+| Organization     | [**Edrak for Ai**](https://edrak4ai.com/en)                         |
 
-## Design records (point-in-time, provenance)
+---
 
-The `superpowers/` folder holds the original design specs and implementation plans. They are historical records of *how* decisions were made; the docs above are the authoritative, current view.
+# 📖 Project Overview
 
-- [specs/](superpowers/specs) — architecture + sub-project design specs
-- [plans/](superpowers/plans) — step-by-step implementation plans
+Briefly describe your project.
 
-## Quick start
+---
 
-See the [root README](../README.md) for setup. In short: one root `.env`, backend via `uv`, frontend via `npm`.
+# ✨ Features
+
+* Feature 1
+* Feature 2
+* Feature 3
+
+---
+
+# 🛠️ Technologies Used
+
+List the technologies, frameworks, and tools used in this project.
+
+---
+
+# ⚙️ Installation
+
+Explain how to install and run the project.
+
+---
+
+# 🚀 Usage
+
+Describe how to use the project.
+
+---
+
+# 📸 Demo
+
+Add screenshots, GIFs, or a demo video.
+
+---
+
+# 📈 Results
+
+Share your project's outcomes or achievements.
+
+---
+
+# 🔮 Future Improvements
+
+* Improvement 1
+* Improvement 2
+* Improvement 3
+
+---
+
+# 📚 About the Challenge
+
+This project was developed as part of the [**Tips Hindawi**](https://www.tipshindawi.com/) **Challenge (June–July) 2026**.
+
+[Tips Hindawi](https://www.tipshindawi.com/) is the internships department of [**Edrak for Ai**](https://edrak4ai.com/en), and the challenge encourages participants to build real-world projects, apply practical skills, and showcase their work through GitHub.
+
+For more information about the challenge, training programs, and upcoming batches, visit the official [Tips Hindawi](https://www.tipshindawi.com/) website.
+
+---
+
+# 📄 License
+
+This project is shared for educational and portfolio purposes.
+
