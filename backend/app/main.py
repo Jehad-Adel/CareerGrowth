@@ -71,6 +71,14 @@ def create_app() -> FastAPI:
         openapi_url=None if settings.is_production else "/openapi.json",
     )
 
+    # Middleware add order is reversed at request time: the last-added
+    # middleware ends up outermost. Rate limiting is installed first here so
+    # GlobalRateLimitMiddleware ends up innermost -- a 429 it returns still
+    # flows back out through RequestContextMiddleware, SecurityHeadersMiddleware,
+    # and CORSMiddleware, exactly like the 500 path already does. The relative
+    # order of those three is unchanged (Task 3 / test_errors.py depend on it).
+    install_rate_limiting(app)
+
     app.add_middleware(RequestContextMiddleware)
     app.add_middleware(
         SecurityHeadersMiddleware, production=settings.is_production
@@ -82,8 +90,6 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-    install_rate_limiting(app)
 
     app.include_router(health.router)
     app.include_router(me.router)
