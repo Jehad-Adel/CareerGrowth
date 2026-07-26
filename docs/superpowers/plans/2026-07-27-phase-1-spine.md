@@ -660,7 +660,7 @@ Change the `FastAPI(...)` construction and middleware block to:
 - [ ] **Step 6: Run tests to verify they pass**
 
 Run: `uv run pytest -q`
-Expected: `26 passed`
+Expected: `37 passed`
 
 - [ ] **Step 7: Commit**
 
@@ -1001,7 +1001,7 @@ __all__ = ["AiUsage", "CareerProfile", "Goal", "GrowthEvent", "Skill"]
 - [ ] **Step 6: Run tests to verify they pass**
 
 Run: `uv run pytest -q`
-Expected: `29 passed`
+Expected: `40 passed`
 
 - [ ] **Step 7: Commit**
 
@@ -1314,7 +1314,7 @@ Create an empty `backend/app/services/__init__.py`.
 - [ ] **Step 4: Run tests to verify they pass**
 
 Run: `uv run pytest -q`
-Expected: `37 passed`
+Expected: `48 passed`
 
 - [ ] **Step 5: Commit**
 
@@ -1508,7 +1508,7 @@ def usage_today(db: Session, profile_id: uuid.UUID) -> dict[str, int]:
 - [ ] **Step 4: Run tests to verify they pass**
 
 Run: `uv run pytest -q`
-Expected: `42 passed`
+Expected: `53 passed`
 
 - [ ] **Step 5: Commit**
 
@@ -1805,7 +1805,7 @@ def to_out(profile: CareerProfile) -> ProfileOut:
 - [ ] **Step 5: Run tests to verify they pass**
 
 Run: `uv run pytest -q`
-Expected: `46 passed`
+Expected: `57 passed`
 
 - [ ] **Step 6: Commit**
 
@@ -2016,7 +2016,7 @@ from app.api import health, me, profile
 - [ ] **Step 6: Run tests to verify they pass**
 
 Run: `uv run pytest -q`
-Expected: `51 passed`
+Expected: `62 passed`
 
 - [ ] **Step 7: Commit**
 
@@ -2129,7 +2129,7 @@ def client():
 - [ ] **Step 5: Run tests to verify they pass**
 
 Run: `uv run pytest -q`
-Expected: `52 passed`
+Expected: `63 passed`
 
 - [ ] **Step 6: Commit**
 
@@ -2172,7 +2172,7 @@ In `backend/app/main.py`, at the top of `create_app()` after `configure_logging(
 - [ ] **Step 2: Run the whole suite**
 
 Run: `uv run pytest -q`
-Expected: `52 passed`
+Expected: `63 passed`
 
 - [ ] **Step 3: Run against real Supabase**
 
@@ -2228,7 +2228,7 @@ git commit -m "feat(obs): optional Sentry init; close phase 1"
 
 Every one of these must hold before Phase 3 starts:
 
-- [ ] `uv run pytest -q` → `52 passed`
+- [ ] `uv run pytest -q` → `63 passed`
 - [ ] `uv run alembic upgrade head` succeeds against real Supabase, and `downgrade` back to `0001_baseline` also succeeds
 - [ ] All five tables report `relrowsecurity = true` with zero policies
 - [ ] `GET /health` returns `database: ok`; stopping the database turns it into a 503
