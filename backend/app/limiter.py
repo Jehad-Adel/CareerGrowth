@@ -75,9 +75,12 @@ def reset_rate_limit_state() -> None:
 class GlobalRateLimitMiddleware(BaseHTTPMiddleware):
     """120/minute backstop, keyed by client_key.
 
-    Kept as the outermost middleware layer (added last in create_app) so a
-    rejected request costs as little work as possible, the same position
-    SlowAPIMiddleware occupied.
+    Installed innermost (added first in create_app), so a 429 still travels
+    back out through RequestContextMiddleware, SecurityHeadersMiddleware, and
+    CORSMiddleware and picks up their headers. Outermost would be marginally
+    cheaper, but the rejection would then carry no Access-Control-Allow-Origin
+    and a browser could not read the body it is meant to act on. Rejection
+    still happens before the route handler and any database work.
     """
 
     async def dispatch(self, request: Request, call_next):
