@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     environment: str = "development"
     debug: bool = False
     sentry_dsn: str = ""
+    # Number of trusted reverse proxies sitting in front of this app (e.g.
+    # Railway's edge). Only this many hops of X-Forwarded-For are trusted;
+    # 0 (the default, correct for local dev) means the header is ignored
+    # entirely and the socket peer address is used instead.
+    trusted_proxy_count: int = 0
 
     @property
     def is_production(self) -> bool:
