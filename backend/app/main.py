@@ -7,12 +7,14 @@ from starlette.requests import Request
 from app.api import health, me
 from app.config import get_settings
 from app.errors import install_error_handlers
+from app.limiter import install_rate_limiting
 from app.logging import (
     configure_logging,
     get_logger,
     request_id_var,
     sanitize_request_id,
 )
+from app.middleware import SecurityHeadersMiddleware
 
 log = get_logger(__name__)
 
@@ -62,9 +64,17 @@ def create_app() -> FastAPI:
     settings = get_settings()
     configure_logging(settings.debug)
 
-    app = FastAPI(title="CareerFarm API")
+    app = FastAPI(
+        title="CareerFarm API",
+        docs_url=None if settings.is_production else "/docs",
+        redoc_url=None,
+        openapi_url=None if settings.is_production else "/openapi.json",
+    )
 
     app.add_middleware(RequestContextMiddleware)
+    app.add_middleware(
+        SecurityHeadersMiddleware, production=settings.is_production
+    )
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origin_list,
@@ -72,6 +82,8 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    install_rate_limiting(app)
 
     app.include_router(health.router)
     app.include_router(me.router)
