@@ -19,6 +19,13 @@ class Settings(BaseSettings):
     supabase_jwt_secret: str = ""
     google_api_key: str = ""
     cors_origins: str = "http://localhost:3000"
+    environment: str = "development"
+    debug: bool = False
+    sentry_dsn: str = ""
+
+    @property
+    def is_production(self) -> bool:
+        return self.environment.lower() == "production"
 
     @property
     def cors_origin_list(self) -> list[str]:

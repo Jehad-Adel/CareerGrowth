@@ -7,11 +7,15 @@ requires-python = ">=3.11"
 dependencies = [
     "alembic>=1.13",
     "fastapi>=0.115",
+    "pgvector>=0.3",
     "psycopg2-binary>=2.9",
     "pydantic>=2.7",
     "pydantic-settings>=2.3",
     "pyjwt>=2.8",
+    "sentry-sdk[fastapi]>=2.18",
+    "slowapi>=0.1.9",
     "sqlalchemy>=2.0",
+    "structlog>=24.4",
     "uvicorn[standard]>=0.30",
 ]
 
