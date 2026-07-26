@@ -1,26 +1,61 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 
 from app.api import health, me
 from app.config import get_settings
 from app.errors import install_error_handlers
-from app.logging import configure_logging, new_request_id, request_id_var
+from app.logging import (
+    configure_logging,
+    get_logger,
+    request_id_var,
+    sanitize_request_id,
+)
+
+log = get_logger(__name__)
 
 
 class RequestContextMiddleware(BaseHTTPMiddleware):
-    """Attach a correlation id to every request and echo it back."""
+    """Attach a correlation id to every request and echo it back.
+
+    Unhandled exceptions are also caught here rather than left to Starlette's
+    `@app.exception_handler(Exception)`. That handler is special-cased onto
+    ServerErrorMiddleware, the outermost layer -- outside this middleware. If
+    an exception reached it instead, this middleware's `finally` would have
+    already reset the request id ContextVar and never set the response
+    header, and CORSMiddleware's send-wrapper would never run either. Catching
+    here keeps the ContextVar live while the response is built and lets it
+    flow back out through CORSMiddleware normally. `install_error_handlers`
+    still registers an `Exception` handler as a last-resort net for anything
+    that escapes this middleware.
+    """
 
     async def dispatch(self, request: Request, call_next):
-        rid = request.headers.get("X-Request-ID") or new_request_id()
+        rid = sanitize_request_id(request.headers.get("X-Request-ID"))
         token = request_id_var.set(rid)
         try:
-            response = await call_next(request)
+            try:
+                response = await call_next(request)
+            except Exception:
+                log.exception(
+                    "unhandled_exception",
+                    path=request.url.path,
+                    method=request.method,
+                )
+                response = JSONResponse(
+                    status_code=500,
+                    content={
+                        "detail": "Internal server error",
+                        "code": "internal_error",
+                        "request_id": rid,
+                    },
+                )
+            response.headers["X-Request-ID"] = rid
+            return response
         finally:
             request_id_var.reset(token)
-        response.headers["X-Request-ID"] = rid
-        return response
 
 
 def create_app() -> FastAPI:
