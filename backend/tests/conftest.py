@@ -17,9 +17,15 @@ from app.main import create_app
 
 @pytest.fixture(autouse=True)
 def _clear_settings_cache():
+    from app.db import get_engine, get_sessionmaker
+
     get_settings.cache_clear()
+    get_engine.cache_clear()
+    get_sessionmaker.cache_clear()
     yield
     get_settings.cache_clear()
+    get_engine.cache_clear()
+    get_sessionmaker.cache_clear()
 
 
 @pytest.fixture
