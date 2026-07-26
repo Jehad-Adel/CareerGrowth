@@ -6,14 +6,19 @@ No other module should read from `os.environ` or hardcode these values.
 """
 
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Single env file at the repo root, shared with the backend and frontend.
+# ai/config.py -> ai/ -> repo root
+ROOT_ENV = Path(__file__).resolve().parents[1] / ".env"
 
 
 class Settings(BaseSettings):
     """Application-wide settings, loaded from environment variables / .env."""
 
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=ROOT_ENV, extra="ignore")
 
     google_api_key: str
 

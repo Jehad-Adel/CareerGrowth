@@ -29,7 +29,7 @@ docs/       Living documentation + design records
 
 - **Backend:** FastAPI (Python 3.11), SQLAlchemy + Alembic, managed with [uv]
 - **Data/Auth:** Supabase Postgres + pgvector, Supabase Auth (JWT verified in the API)
-- **AI:** Claude (Anthropic), behind the services layer
+- **AI:** Google Gemini via LangChain, behind the services layer
 - **Frontend:** Next.js + React + TypeScript + Tailwind (in `frontend/`)
 
 ## Environment
@@ -37,7 +37,7 @@ docs/       Living documentation + design records
 A **single** env file at the repo root serves both apps. Copy it once:
 
 ```bash
-cp .env.example .env   # fill in Supabase + Anthropic values
+cp .env.example .env   # fill in Supabase + Gemini values
 ```
 
 The backend reads `.env` directly; the frontend loads it via `dotenv-cli` in its npm scripts. Do not create per-app `.env` files.

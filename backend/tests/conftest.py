@@ -3,7 +3,7 @@ import os
 os.environ.setdefault("DATABASE_URL", "sqlite+pysqlite:///:memory:")
 os.environ.setdefault("SUPABASE_URL", "http://localhost")
 os.environ.setdefault("SUPABASE_JWT_SECRET", "test-secret")
-os.environ.setdefault("ANTHROPIC_API_KEY", "test")
+os.environ.setdefault("GOOGLE_API_KEY", "test")
 
 import time
 

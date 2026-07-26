@@ -9,7 +9,7 @@ Condensed record of the choices that shape the project and why. Newest context i
 | Frontend framework | Next.js 16 (App Router) | React + Vite SPA; Vue/Nuxt | SaaS standard; SSR + file routing; can host marketing + app. App Router is the current model. |
 | Persistence | Supabase Postgres + pgvector | Postgres + separate vector DB; SQLite + Chroma | One datastore for relational data *and* RAG embeddings. Managed infra, ACID, scales. |
 | Auth | Supabase Auth; API verifies JWT | Own JWT auth in FastAPI; Clerk/Auth0 | Managed signup/sessions/social login. Backend only verifies the token (HS256, local, no network call). Ties auth to Supabase — acceptable since the DB is already Supabase. |
-| LLM provider | Claude (Anthropic), behind one `llm` module | Other providers | Latest Opus/Sonnet; isolated so it's swappable. |
+| LLM provider | Google Gemini, behind one `llm` module | Claude (Anthropic); OpenAI | Generous free tier and low cost per call at this stage; strong structured-output support via LangChain's `with_structured_output`. Isolated behind `ai/llm/gemini.py` so it stays swappable. Supersedes the original Anthropic choice — all chains were written against Gemini. |
 | AI framework | LangChain, hidden behind `services/` | Direct SDK calls everywhere | Keeps RAG/chains structured; routes and frontend never import it, so internals can change (or drop LangChain) without touching callers. |
 | Python tooling | uv | Poetry; pip + requirements.txt | Fast, single tool for venv + deps + lockfile. Reproducible builds for CI/Railway. |
 | Styling | Tailwind + shadcn/ui | Tailwind only; MUI/Chakra | Own the component code (copy-in), easy to bend into the custom farm look, no heavy dependency. |

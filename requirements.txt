@@ -1,16 +1,12 @@
-langchain
-langchain-community
-langchain-huggingface
-transformers
-torch
-accelerate
-sentence-transformers
-faiss-cpu
-huggingface-hub
-python-dotenv
+# Dependencies of the `ai/` package (LangChain + Google Gemini).
+#
+# Temporary: `ai/` is being folded into `backend/app/` behind the services
+# layer, after which these move to backend/pyproject.toml and this file goes
+# away. Keep it in sync with actual imports — nothing unused belongs here.
 
-langchain-core
-langchain-google-genai
-pydantic>=2
-pydantic-settings
-pypdf
+langchain-core>=0.3
+langchain-google-genai>=2.0
+pydantic>=2.7
+pydantic-settings>=2.3
+python-dotenv>=1.0
+pypdf>=5.0

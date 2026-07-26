@@ -17,7 +17,7 @@ flowchart TD
     EVENTS["growth events<br/>(append-only)"]
     FARM["Farm projection<br/>(read model)"]
     AI["AI: chains + RAG<br/>(pgvector on profile)"]
-    CLAUDE["Claude (Anthropic)"]
+    GEMINI["Google Gemini"]
 
     FE -->|"HTTPS + JWT"| API
     API --> SVC
@@ -25,7 +25,7 @@ flowchart TD
     SVC -->|emit| EVENTS
     EVENTS --> FARM
     PROFILE -->|indexed| AI
-    AI --> CLAUDE
+    AI --> GEMINI
 ```
 
 - **Frontend** (`frontend/`) — Next.js App Router UI. Talks to the backend over HTTPS, attaching the Supabase JWT.
@@ -95,6 +95,6 @@ The frontend renders every feature from a mock data layer (`src/lib/services.ts`
 | Frontend | Next.js 16 · React 19 · TypeScript · Tailwind v4 · shadcn/ui |
 | API | FastAPI · Python 3.11 · managed with uv |
 | Data / Auth | Supabase Postgres + pgvector · Supabase Auth (JWT verified in the API) |
-| AI | Claude (Anthropic), behind the services layer |
+| AI | Google Gemini via LangChain, behind the services layer |
 
 See [decisions.md](decisions.md) for why each was chosen.

@@ -21,7 +21,7 @@ cd CareerGrowth
 cp .env.example .env
 ```
 
-There is **one** `.env` at the repo root, shared by both apps. Fill in your Supabase + Anthropic values (only required for the backend). See [.env.example](.env.example).
+There is **one** `.env` at the repo root, shared by both apps. Fill in your Supabase + Gemini values (only required for the backend). See [.env.example](.env.example).
 
 ## 2. Run the frontend (static, no backend needed)
 

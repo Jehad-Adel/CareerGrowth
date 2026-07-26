@@ -12,10 +12,27 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=ROOT_ENV, extra="ignore")
 
     database_url: str = ""
+    # Direct (non-pooled) connection, used by Alembic only. Falls back to
+    # database_url when unset.
+    direct_database_url: str = ""
     supabase_url: str = ""
     supabase_jwt_secret: str = ""
-    anthropic_api_key: str = ""
+    google_api_key: str = ""
     cors_origins: str = "http://localhost:3000"
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        """CORS origins as a clean list, ignoring blanks and trailing slashes."""
+        return [
+            origin.strip().rstrip("/")
+            for origin in self.cors_origins.split(",")
+            if origin.strip()
+        ]
+
+    @property
+    def migration_database_url(self) -> str:
+        """Connection string Alembic should use for DDL."""
+        return self.direct_database_url or self.database_url
 
 
 @lru_cache
