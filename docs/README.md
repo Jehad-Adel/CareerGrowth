@@ -1,83 +1,74 @@
-# 🚀 [Tips Hindawi](https://www.tipshindawi.com/) Challenge (June–July) 2026
+# CareerFarm
 
-> 🏆 This repository is my official submission for the [ **Tips Hindawi** ](https://www.tipshindawi.com/) **Challenge (June–July) 2026**.
+AI career-growth platform. Your professional profile is the single source of truth; every feature (CV analysis, job matching, interview prep, roadmap, chat) reads from and writes back to it, and progress is visualized as a living "farm."
 
-## 👤 Participant
+## Start here
 
-| Field            | Value                                |
-| ---------------- | ------------------------------------ |
-| Full Name        |                                      |
-| Project Name     |                                      |
-| GitHub Username  |                                      |
-| Challenge Batch  | June–July 2026                       |
-| Training Program | Large Language Models (LLMs) Program |
-| Organization     | [**Edrak for Ai**](https://edrak4ai.com/en)                         |
+- **New teammate?** [GET-STARTED.md](GET-STARTED.md) — running locally in ~5 minutes.
+- **Building UI?** [HOW-TO-GUIDE.md](HOW-TO-GUIDE.md) — add a page, connect to the API, theming.
 
----
+## Documentation
 
-# 📖 Project Overview
+Full engineering docs are in [docs/](docs/README.md):
 
-Briefly describe your project.
+- [Architecture](docs/architecture.md) — system overview, the integration "spine", data model, build status
+- [Backend](docs/backend.md) — FastAPI module map, endpoints, setup, tests
+- [Frontend](docs/frontend.md) — Next.js structure, module map, setup
+- [Decisions](docs/decisions.md) — key technical choices and trade-offs
 
----
+## Repo layout
 
-# ✨ Features
+```
+backend/    FastAPI service (uv, SQLAlchemy, Alembic)
+frontend/   Next.js app (App Router, Tailwind, shadcn/ui)
+docs/       Living documentation + design records
+.env        Single env file for both apps (gitignored; copy from .env.example)
+```
 
-* Feature 1
-* Feature 2
-* Feature 3
+## Stack
 
----
+- **Backend:** FastAPI (Python 3.11), SQLAlchemy + Alembic, managed with [uv]
+- **Data/Auth:** Supabase Postgres + pgvector, Supabase Auth (JWT verified in the API)
+- **AI:** Google Gemini via LangChain, behind the services layer
+- **Frontend:** Next.js + React + TypeScript + Tailwind (in `frontend/`)
 
-# 🛠️ Technologies Used
+## Environment
 
-List the technologies, frameworks, and tools used in this project.
+A **single** env file at the repo root serves both apps. Copy it once:
 
----
+```bash
+cp .env.example .env   # fill in Supabase + Gemini values
+```
 
-# ⚙️ Installation
+The backend reads `.env` directly; the frontend loads it via `dotenv-cli` in its npm scripts. Do not create per-app `.env` files.
 
-Explain how to install and run the project.
+## Backend setup
 
----
+Requirements: [uv](https://docs.astral.sh/uv/), a Supabase project.
 
-# 🚀 Usage
+```bash
+cd backend
+uv sync
+uv run alembic upgrade head  # enables pgvector
+uv run uvicorn app.main:app --reload --port 8000
+```
 
-Describe how to use the project.
+Health check: `curl http://localhost:8000/health` → `{"status":"ok"}`
+Authenticated check: `GET /me` with `Authorization: Bearer <supabase-jwt>` → the user; 401 without.
 
----
+## Frontend setup
 
-# 📸 Demo
+Requirements: Node 20+.
 
-Add screenshots, GIFs, or a demo video.
+```bash
+cd frontend
+npm install
+npm run dev            # http://localhost:3000
+```
 
----
+## Tests
 
-# 📈 Results
-
-Share your project's outcomes or achievements.
-
----
-
-# 🔮 Future Improvements
-
-* Improvement 1
-* Improvement 2
-* Improvement 3
-
----
-
-# 📚 About the Challenge
-
-This project was developed as part of the [**Tips Hindawi**](https://www.tipshindawi.com/) **Challenge (June–July) 2026**.
-
-[Tips Hindawi](https://www.tipshindawi.com/) is the internships department of [**Edrak for Ai**](https://edrak4ai.com/en), and the challenge encourages participants to build real-world projects, apply practical skills, and showcase their work through GitHub.
-
-For more information about the challenge, training programs, and upcoming batches, visit the official [Tips Hindawi](https://www.tipshindawi.com/) website.
-
----
-
-# 📄 License
-
-This project is shared for educational and portfolio purposes.
-
+```bash
+cd backend
+uv run pytest -v
+```
