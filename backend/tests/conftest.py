@@ -34,7 +34,30 @@ def _clear_settings_cache():
 
 @pytest.fixture
 def client():
-    return TestClient(create_app())
+    """App wired to a throwaway in-memory database.
+
+    StaticPool + check_same_thread=False because TestClient serves requests
+    on a worker thread, and a fresh connection to :memory: would otherwise
+    open an empty database with no schema.
+    """
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import Session
+    from sqlalchemy.pool import StaticPool
+
+    from app.db import Base, get_db
+
+    engine = create_engine(
+        "sqlite+pysqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    Base.metadata.create_all(engine)
+    db = Session(engine)
+
+    app = create_app()
+    app.dependency_overrides[get_db] = lambda: db
+    yield TestClient(app)
+    db.close()
 
 
 def make_token(secret="test-secret", sub=None, email="a@b.com",
