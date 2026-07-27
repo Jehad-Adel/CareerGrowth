@@ -82,7 +82,7 @@ Original plan sequenced the frontend at step 4; it was **brought forward** to a 
 |---|-------------|--------|
 | 1 | Foundation (backend bootstrap) | ✅ Done |
 | — | Frontend: full static UI (all 7 features + auth, mock data, design system) | ✅ Done (brought forward) |
-| 2 | Career Profile + Farm spine (backend) | 🟡 Models, services, `/profile` API, quota, logging, security headers, rate limiting done (85 tests). Alembic migration + live run pending a provisioned database. |
+| 2 | Career Profile + Farm spine (backend) | ✅ Done. Models, migrations (applied to Supabase), RLS, services, `/profile` API, quota, structured logging, security headers, rate limiting. 91 tests. |
 | 3 | CV Studio (AI + wiring frontend to API) | ⬜ Static UI only |
 | 4 | Dashboard + Farm viz (real data) | ⬜ Static UI only |
 | 5 | Roadmap | ⬜ Static UI only |

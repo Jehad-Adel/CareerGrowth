@@ -14,7 +14,7 @@ Condensed record of the choices that shape the project and why. Newest context i
 | Python tooling | uv | Poetry; pip + requirements.txt | Fast, single tool for venv + deps + lockfile. Reproducible builds for CI/Railway. |
 | Styling | Tailwind + shadcn/ui | Tailwind only; MUI/Chakra | Own the component code (copy-in), easy to bend into the custom farm look, no heavy dependency. |
 | SQLAlchemy mode | Sync | Async | Simpler now; Foundation endpoints don't need async throughput. Revisit if needed. |
-| JWT verification | HS256 shared-secret | JWKS/RS256 | Simplest; no key-fetch round-trip. JWKS noted as a later hardening option. |
+| JWT verification | JWKS, pinned to ES256 | HS256 shared secret | Not a preference — a requirement. The provisioned Supabase project signs access tokens with a rotating EC P-256 key and exposes no usable shared secret, so HS256 verification would have rejected every login. `PyJWKClient` caches by `kid`, so a signing-key rotation costs one fetch instead of an outage. Algorithms are pinned to a single entry: accepting a list is how JWT algorithm-confusion attacks get in. Upside — there is no JWT secret left to leak. |
 | Config | Single root `.env` for both apps | Per-app `.env` files | One source of truth. Backend reads it by absolute path; frontend loads it via `dotenv-cli`. |
 | Build order | Spine + one AI feature before real UI | Build all features in parallel | Frontend has real profile/farm data to render instead of empty screens. (Frontend *scaffold* was brought forward since it's owned separately.) |
 
@@ -23,4 +23,5 @@ Condensed record of the choices that shape the project and why. Newest context i
 - **Deployment** — leaning Vercel (frontend) + Railway (backend). Not set up.
 - **Authorization depth** — currently enforced in FastAPI; Postgres RLS as an additional layer is an open question.
 - **CV file storage** — Supabase Storage vs. parse-and-discard, decided when CV Studio is built.
-- **Live migration** — `alembic upgrade head` needs a provisioned Supabase DB; not yet run against a real instance.
+- **Authorization** — resolved. Every table has RLS enabled with **zero** policies, and `anon`/`authenticated` grants are revoked. The API connects as `postgres` (the table owner), which bypasses RLS, so per-`profile_id` filtering in the service layer is the real authorization boundary; deny-by-default exists so the browser's public key reads nothing. `FORCE ROW LEVEL SECURITY` is deliberately off — it would lock the owner out of its own tables.
+- **Alembic connection** — resolved. Supabase's direct host (`db.<ref>.supabase.co`) is IPv6-only and unreachable from an IPv4 network. `DIRECT_DATABASE_URL` therefore points at the **session pooler** (port 5432), which is IPv4 and supports the session-level statements DDL needs. The transaction pooler (6543) serves the running app and cannot run migrations. `migrations/env.py` passes the URL straight to `create_engine` rather than through `config.set_main_option`, because `alembic.ini` is parsed by ConfigParser and a percent-encoded character in the password raises `invalid interpolation syntax`.
