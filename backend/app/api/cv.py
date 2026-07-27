@@ -73,7 +73,7 @@ def cv_status(profile: CurrentProfile, db: DbSession) -> CvStatusOut:
     """What the CV page needs to render before anything is uploaded."""
     used = quota_service.usage_today(db, profile.id)
     return CvStatusOut(
-        has_cv=bool(profile.cv_text),
+        has_cv=profile.has_cv,
         analyses_today=used.get(cv_service.FEATURE, 0),
         daily_limit=quota_service.DAILY_LIMITS[cv_service.FEATURE],
     )

@@ -1,17 +1,19 @@
 import { Sprout } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import { analyzeGap, matchJob } from "@/app/(app)/jobs/actions";
 import { JobInput } from "@/components/jobs/job-input";
 import { PageHeader } from "@/components/layout/page-header";
+import { ResultsSkeleton } from "@/components/skeletons";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { ScoreRing } from "@/components/ui/score-ring";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  getCvStatus,
   getLatestJobMatch,
   getLatestSkillGap,
+  getProfile,
   type SkillGapItemResult,
 } from "@/lib/services";
 
@@ -46,12 +48,140 @@ function Empty({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** The form beside this renders immediately; only the result waits on I/O. */
+async function MatchResults() {
+  const match = await getLatestJobMatch();
+
+  if (!match) {
+    return (
+      <Empty>No match yet. Paste a job description to see where you stand.</Empty>
+    );
+  }
+
+  return (
+    <section className="space-y-6">
+      <div className="rounded-2xl border bg-card p-6">
+        <div className="flex items-center gap-6">
+          <ScoreRing value={match.result.match_score} label="Match" />
+          <div>
+            <h2 className="text-lg">{match.job_title ?? "Latest match"}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {match.result.summary}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-5 space-y-3">
+          <div>
+            <p className="mb-1.5 text-xs text-muted-foreground">You have</p>
+            <div className="flex flex-wrap gap-1.5">
+              {match.result.matched_skills.map((s) => (
+                <Badge key={s} variant="secondary">
+                  {s}
+                </Badge>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="mb-1.5 text-xs text-muted-foreground">
+              They want, you lack
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {match.result.missing_skills.map((s) => (
+                <Badge key={s} variant="outline">
+                  {s}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border bg-card p-6">
+        <h3 className="mb-3 text-base">What to do about it</h3>
+        <ol className="space-y-2.5">
+          {match.result.recommendations.map((r, i) => (
+            <li key={r} className="flex gap-3 text-sm">
+              <span className="font-mono text-xs text-muted-foreground">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              {r}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+async function GapResults() {
+  const gap = await getLatestSkillGap();
+
+  if (!gap) return <Empty>No gap analysis yet.</Empty>;
+
+  return (
+    <section className="space-y-6">
+      <div className="rounded-2xl border bg-card p-6">
+        <div className="flex items-center gap-6">
+          <ScoreRing value={gap.result.overall_gap_score} label="Gap" />
+          <div>
+            <p className="text-sm text-muted-foreground">
+              {gap.result.gap_summary}
+            </p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Strongest: {gap.result.strongest_area} · Weakest:{" "}
+              {gap.result.weakest_area}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        {gap.result.missing_skills.map((item) => (
+          <div key={item.skill} className="rounded-2xl border bg-card p-5">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="text-base">{item.skill}</h3>
+              <span
+                className={`rounded-full px-2 py-0.5 text-xs ${PRIORITY_STYLE[item.priority]}`}
+              >
+                {item.priority}
+              </span>
+            </div>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              {item.importance_reason}
+            </p>
+            <dl className="mt-3 grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <dt className="text-muted-foreground">You are at</dt>
+                <dd>{item.current_level}</dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground">Time to close</dt>
+                <dd>{item.estimated_learning_time}</dd>
+              </div>
+            </dl>
+            <p className="mt-3 text-xs">
+              <span className="text-muted-foreground">Build: </span>
+              {item.project_to_practice}
+            </p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {item.recommended_resources.map((r) => (
+                <Badge key={r} variant="secondary">
+                  {r}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default async function JobsPage() {
-  const [status, match, gap] = await Promise.all([
-    getCvStatus(),
-    getLatestJobMatch(),
-    getLatestSkillGap(),
-  ]);
+  // `has_cv` rides along on the profile the layout already fetched, so the
+  // gate costs nothing. A separate /cv/status call would be a second trip.
+  const { hasCv } = await getProfile();
 
   const header = (
     <PageHeader
@@ -61,7 +191,7 @@ export default async function JobsPage() {
     />
   );
 
-  if (!status.has_cv) {
+  if (!hasCv) {
     return (
       <>
         {header}
@@ -90,68 +220,11 @@ export default async function JobsPage() {
               />
             </section>
 
-            {match ? (
-              <section className="space-y-6">
-                <div className="rounded-2xl border bg-card p-6">
-                  <div className="flex items-center gap-6">
-                    <ScoreRing value={match.result.match_score} label="Match" />
-                    <div>
-                      <h2 className="text-lg">
-                        {match.job_title ?? "Latest match"}
-                      </h2>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        {match.result.summary}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-5 space-y-3">
-                    <div>
-                      <p className="mb-1.5 text-xs text-muted-foreground">
-                        You have
-                      </p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {match.result.matched_skills.map((s) => (
-                          <Badge key={s} variant="secondary">
-                            {s}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <p className="mb-1.5 text-xs text-muted-foreground">
-                        They want, you lack
-                      </p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {match.result.missing_skills.map((s) => (
-                          <Badge key={s} variant="outline">
-                            {s}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="rounded-2xl border bg-card p-6">
-                  <h3 className="mb-3 text-base">What to do about it</h3>
-                  <ol className="space-y-2.5">
-                    {match.result.recommendations.map((r, i) => (
-                      <li key={r} className="flex gap-3 text-sm">
-                        <span className="font-mono text-xs text-muted-foreground">
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                        {r}
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              </section>
-            ) : (
-              <Empty>
-                No match yet. Paste a job description to see where you stand.
-              </Empty>
-            )}
+            <Suspense
+              fallback={<ResultsSkeleton label="Loading your latest match" />}
+            >
+              <MatchResults />
+            </Suspense>
           </div>
         </TabsContent>
 
@@ -165,65 +238,11 @@ export default async function JobsPage() {
               />
             </section>
 
-            {gap ? (
-              <section className="space-y-6">
-                <div className="rounded-2xl border bg-card p-6">
-                  <div className="flex items-center gap-6">
-                    <ScoreRing value={gap.result.overall_gap_score} label="Gap" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">
-                        {gap.result.gap_summary}
-                      </p>
-                      <p className="mt-2 text-xs text-muted-foreground">
-                        Strongest: {gap.result.strongest_area} · Weakest:{" "}
-                        {gap.result.weakest_area}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  {gap.result.missing_skills.map((item) => (
-                    <div key={item.skill} className="rounded-2xl border bg-card p-5">
-                      <div className="flex items-center justify-between gap-3">
-                        <h3 className="text-base">{item.skill}</h3>
-                        <span
-                          className={`rounded-full px-2 py-0.5 text-xs ${PRIORITY_STYLE[item.priority]}`}
-                        >
-                          {item.priority}
-                        </span>
-                      </div>
-                      <p className="mt-1.5 text-sm text-muted-foreground">
-                        {item.importance_reason}
-                      </p>
-                      <dl className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                        <div>
-                          <dt className="text-muted-foreground">You are at</dt>
-                          <dd>{item.current_level}</dd>
-                        </div>
-                        <div>
-                          <dt className="text-muted-foreground">Time to close</dt>
-                          <dd>{item.estimated_learning_time}</dd>
-                        </div>
-                      </dl>
-                      <p className="mt-3 text-xs">
-                        <span className="text-muted-foreground">Build: </span>
-                        {item.project_to_practice}
-                      </p>
-                      <div className="mt-2 flex flex-wrap gap-1.5">
-                        {item.recommended_resources.map((r) => (
-                          <Badge key={r} variant="secondary">
-                            {r}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            ) : (
-              <Empty>No gap analysis yet.</Empty>
-            )}
+            <Suspense
+              fallback={<ResultsSkeleton label="Loading your latest gap analysis" />}
+            >
+              <GapResults />
+            </Suspense>
           </div>
         </TabsContent>
       </Tabs>

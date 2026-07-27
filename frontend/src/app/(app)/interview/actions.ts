@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { ApiError } from "@/lib/api/client";
+import { ApiError } from "@/lib/api/error";
 import { serverFetch } from "@/lib/api/server";
 
 export type InterviewActionState = {

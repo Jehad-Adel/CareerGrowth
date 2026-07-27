@@ -7,9 +7,8 @@ Read [docs/superpowers/plans/2026-07-27-ship-roadmap.md](docs/superpowers/plans/
 ## Layout
 
 ```
-backend/    FastAPI service (uv, SQLAlchemy 2 sync, Alembic)
+backend/    FastAPI service (uv, SQLAlchemy 2 sync, Alembic). LangChain chains live in app/ai/
 frontend/   Next.js 16 App Router  — see frontend/AGENTS.md, it has its own traps
-ai/         LangChain + Gemini chains. Phase 3 folds this into backend/app/ai/
 docs/       Living docs + plans. Update architecture.md and decisions.md as you go
 .env        Single env file for BOTH apps. Gitignored. Never commit.
 ```
@@ -34,7 +33,7 @@ cd frontend && npm run build && npm run lint && npx tsc --noEmit
 - **Never return `str(exception)` or a traceback to the client.** Log server-side with the request id.
 - **Sync SQLAlchemy only.** No `async def` on anything touching a DB session.
 - Every new table: `ENABLE ROW LEVEL SECURITY`, **no** permissive policy, and revoke `anon`/`authenticated`.
-- Frontend: pages never call `serverFetch`/`apiFetch` directly — everything goes through `src/lib/services.ts`.
+- Frontend: pages never call `serverFetch` directly — everything goes through `src/lib/services.ts`.
 
 ## Supabase — project-specific facts that cost real time to discover
 

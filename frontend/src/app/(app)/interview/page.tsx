@@ -1,16 +1,18 @@
 import { Sprout } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import {
   AnswerQuestion,
   StartInterview,
 } from "@/components/interview/interview-controls";
 import { PageHeader } from "@/components/layout/page-header";
+import { InterviewSkeleton } from "@/components/skeletons";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ScoreRing } from "@/components/ui/score-ring";
-import { getCvStatus, getLatestInterview } from "@/lib/services";
+import { getLatestInterview, getProfile } from "@/lib/services";
 
 const LEVEL_LABEL: Record<string, string> = {
   friendly_hr: "Friendly HR",
@@ -31,10 +33,8 @@ function Metric({ label, value }: { label: string; value: number }) {
 }
 
 export default async function InterviewPage() {
-  const [status, session] = await Promise.all([
-    getCvStatus(),
-    getLatestInterview(),
-  ]);
+  // Free: the layout already resolved the profile, and `has_cv` rides on it.
+  const profile = await getProfile();
 
   const header = (
     <PageHeader
@@ -44,7 +44,7 @@ export default async function InterviewPage() {
     />
   );
 
-  if (!status.has_cv) {
+  if (!profile.hasCv) {
     return (
       <>
         {header}
@@ -63,14 +63,26 @@ export default async function InterviewPage() {
     );
   }
 
+  return (
+    <>
+      {header}
+      <Suspense fallback={<InterviewSkeleton />}>
+        <InterviewBody />
+      </Suspense>
+    </>
+  );
+}
+
+/** The transcript. Streams behind the header instead of blocking it. */
+async function InterviewBody() {
+  const session = await getLatestInterview();
+
   const open = session?.turns.find((t) => t.answer === null) ?? null;
   const answered = session?.turns.filter((t) => t.answer !== null) ?? [];
   const evaluation = session?.final_evaluation ?? null;
 
   return (
     <>
-      {header}
-
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
           {session ? (

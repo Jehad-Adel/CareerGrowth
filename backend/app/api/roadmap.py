@@ -109,5 +109,5 @@ def read_dashboard(profile: CurrentProfile, db: DbSession) -> dict:
         "profile": profile_service.to_out(profile).model_dump(mode="json"),
         "farm": farm_service.project(db, profile.id, profile),
         "usage": quota_service.usage_today(db, profile.id),
-        "has_cv": bool(profile.cv_text),
+        "has_cv": profile.has_cv,
     }

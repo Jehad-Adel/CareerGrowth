@@ -3,7 +3,7 @@
 Repo-wide rules live in [../AGENTS.md](../AGENTS.md). What follows is backend-only.
 
 ```bash
-uv run pytest -q                 # 91 tests, SQLite in memory
+uv run pytest -q                 # SQLite in memory
 uv run alembic upgrade head
 uv run uvicorn app.main:app --port 8000
 ```
@@ -42,6 +42,8 @@ From Phase 3, `app/ai/` holds the LangChain chains and **only services import it
 - **`quota_service.consume()` runs before a chain invoke, never after.** A rejected call rolls back so repeated over-limit attempts cannot inflate the counter.
 - `profile_service.upsert_skills` matches case-insensitively and **only ever raises mastery** — a job-match pass must not demote what the CV established.
 - Growth events are append-only. Individual events are never updated or deleted; the whole log cascades away with its profile.
+- **`CareerProfile.cv_text` is deferred and `has_cv` is a `column_property`.** `get_current_profile` runs on every authenticated request; loading a multi-thousand-token column to answer a boolean was the cost. Read `profile.has_cv` for the flag — it comes back in the same SELECT. Touching `.cv_text` issues its own query, which is correct for the AI paths and wrong everywhere else.
+- **`skills` and `goals` are lazy, deliberately.** They were `selectin`, which added two queries to every authenticated request for collections that one endpoint reads. Query those tables directly (as `farm_service` does) rather than restoring eager loading.
 
 ## Migrations
 

@@ -1,9 +1,12 @@
 import { Sprout } from "lucide-react";
 import Link from "next/link";
 
+import { Suspense } from "react";
+
 import { FarmPlot } from "@/components/farm/farm-plot";
 import { PageHeader } from "@/components/layout/page-header";
 import { Stat } from "@/components/layout/stat";
+import { FarmSkeleton } from "@/components/skeletons";
 import { buttonVariants } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { getFarmData, type FarmFeedItem } from "@/lib/services";
@@ -33,18 +36,12 @@ function describe(event: FarmFeedItem): string {
   }
 }
 
-export default async function FarmPage() {
+async function FarmBody() {
   const farm = await getFarmData();
   const pct = Math.round((farm.xp / farm.xp_for_next) * 100);
 
   return (
     <>
-      <PageHeader
-        eyebrow="Your farm"
-        title="What you've grown"
-        subtitle="Every plant here came from something you actually did. Nothing is decorative."
-      />
-
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Level" value={`${farm.level} · ${farm.level_title}`} />
         <Stat label="Plants" value={String(farm.counts.total)} />
@@ -117,6 +114,22 @@ export default async function FarmPage() {
           )}
         </aside>
       </div>
+    </>
+  );
+}
+
+export default function FarmPage() {
+  return (
+    <>
+      <PageHeader
+        eyebrow="Your farm"
+        title="What you've grown"
+        subtitle="Every plant here came from something you actually did. Nothing is decorative."
+      />
+
+      <Suspense fallback={<FarmSkeleton />}>
+        <FarmBody />
+      </Suspense>
     </>
   );
 }

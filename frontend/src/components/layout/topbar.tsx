@@ -1,4 +1,4 @@
-import { Flame, LogOut, Search } from "lucide-react";
+import { Flame, LogOut } from "lucide-react";
 
 import { signOut } from "@/app/(auth)/actions";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -20,15 +20,6 @@ export function Topbar({ profile }: { profile: Profile }) {
 
   return (
     <header className="sticky top-0 z-10 flex items-center gap-4 border-b bg-background/80 px-6 py-3 backdrop-blur">
-      <div className="relative hidden max-w-xs flex-1 items-center md:flex">
-        <Search className="pointer-events-none absolute left-3 h-4 w-4 text-muted-foreground" />
-        <input
-          type="search"
-          placeholder="Search skills, jobs, questions…"
-          className="h-9 w-full rounded-lg border bg-card pl-9 pr-3 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30"
-        />
-      </div>
-
       <div className="ml-auto flex items-center gap-5">
         <span
           className="flex items-center gap-1.5 font-mono text-sm text-muted-foreground"

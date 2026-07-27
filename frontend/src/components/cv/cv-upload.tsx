@@ -1,18 +1,48 @@
 "use client";
 
-import { FileUp } from "lucide-react";
-import { useActionState, useRef, useState } from "react";
+import { FileUp, Loader2 } from "lucide-react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 
 import { analyzeCv, type CvUploadState } from "@/app/(app)/cv/actions";
-import { Button } from "@/components/ui/button";
+import { PendingFieldset, SubmitButton } from "@/components/ui/submit-button";
+import { cn } from "@/lib/utils";
 
-function SubmitButton({ disabled }: { disabled: boolean }) {
+/**
+ * The drop zone doubles as the progress indicator: a CV analysis is a slow LLM
+ * call, and a button spinner alone leaves the largest thing on screen looking
+ * idle while it runs.
+ */
+function DropZone({ filename }: { filename: string | null }) {
   const { pending } = useFormStatus();
+
   return (
-    <Button type="submit" className="mt-4 w-full" disabled={pending || disabled}>
-      {pending ? "Reading your CV…" : "Analyze CV"}
-    </Button>
+    <label
+      className={cn(
+        "flex flex-col items-center gap-3 rounded-xl border border-dashed border-border px-6 py-10 text-center transition-colors",
+        pending
+          ? "cursor-progress border-primary/40 bg-accent/30"
+          : "cursor-pointer hover:border-primary/50 hover:bg-accent/40",
+      )}
+    >
+      {pending ? (
+        <Loader2 className="h-7 w-7 animate-spin text-primary" />
+      ) : (
+        <FileUp className="h-7 w-7 text-primary" />
+      )}
+      <span className="text-sm font-medium">
+        {pending ? "Reading your CV…" : (filename ?? "Drop your CV here")}
+      </span>
+      <span className="text-xs text-muted-foreground">
+        {pending ? "Extracting skills. This takes a moment." : "PDF, up to 5 MB"}
+      </span>
+      <input
+        type="file"
+        name="file"
+        accept="application/pdf"
+        className="hidden"
+      />
+    </label>
   );
 }
 
@@ -22,28 +52,29 @@ export function CvUpload({ remaining }: { remaining: number }) {
     {},
   );
   const [filename, setFilename] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
   const outOfQuota = remaining <= 0;
 
   return (
-    <form action={formAction}>
-      <label className="flex cursor-pointer flex-col items-center gap-3 rounded-xl border border-dashed border-border px-6 py-10 text-center transition-colors hover:border-primary/50 hover:bg-accent/40">
-        <FileUp className="h-7 w-7 text-primary" />
-        <span className="text-sm font-medium">
-          {filename ?? "Drop your CV here"}
-        </span>
-        <span className="text-xs text-muted-foreground">PDF, up to 5 MB</span>
-        <input
-          ref={inputRef}
-          type="file"
-          name="file"
-          accept="application/pdf"
-          className="hidden"
-          onChange={(e) => setFilename(e.target.files?.[0]?.name ?? null)}
-        />
-      </label>
+    <form
+      action={formAction}
+      // Delegated so the file input stays uncontrolled and needs no ref.
+      onChange={(e) => {
+        const input = e.target as unknown as HTMLInputElement;
+        if (input.type === "file") {
+          setFilename(input.files?.[0]?.name ?? null);
+        }
+      }}
+    >
+      <PendingFieldset>
+        <DropZone filename={filename} />
+      </PendingFieldset>
 
-      <SubmitButton disabled={outOfQuota} />
+      <SubmitButton
+        idle="Analyze CV"
+        busy="Reading your CV…"
+        disabled={outOfQuota}
+        className="mt-4 w-full"
+      />
 
       {state.error ? (
         <p role="alert" className="mt-3 text-center text-xs text-destructive">

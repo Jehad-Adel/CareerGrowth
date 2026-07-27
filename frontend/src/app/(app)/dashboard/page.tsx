@@ -1,12 +1,14 @@
 import { ArrowRight, Sprout } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import { FarmPreview } from "@/components/farm/farm-plot";
 import { PageHeader } from "@/components/layout/page-header";
 import { Stat } from "@/components/layout/stat";
+import { DashboardSkeleton } from "@/components/skeletons";
 import { buttonVariants } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { getDashboardData, type Dashboard } from "@/lib/services";
+import { getDashboardData, getProfile, type Dashboard } from "@/lib/services";
 
 /** The single most useful thing to do next, given what exists so far. */
 function nextAction(d: Dashboard) {
@@ -43,26 +45,15 @@ function nextAction(d: Dashboard) {
   };
 }
 
-export default async function DashboardPage() {
-  // One round trip for the whole page.
+/** Everything below the header, from one round trip. */
+async function DashboardBody() {
   const data = await getDashboardData();
   const { profile, farm } = data;
   const pct = Math.round((farm.xp / farm.xp_for_next) * 100);
   const next = nextAction(data);
-  const name = profile.full_name?.split(" ")[0] ?? "there";
 
   return (
     <>
-      <PageHeader
-        eyebrow="Dashboard"
-        title={`Welcome back, ${name}`}
-        subtitle={
-          farm.roadmap.has_roadmap
-            ? `Growing toward ${farm.roadmap.target_role}.`
-            : "Let's find out where you're headed."
-        }
-      />
-
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Level" value={profile.level} hint={profile.level_title} />
         <Stat label="Plants" value={farm.counts.total} hint="skills tracked" />
@@ -159,6 +150,32 @@ export default async function DashboardPage() {
           </section>
         </aside>
       </div>
+    </>
+  );
+}
+
+export default async function DashboardPage() {
+  // Resolved already by the layout — `cache()` makes this read free, so the
+  // greeting paints with the shell instead of waiting on /dashboard.
+  const profile = await getProfile();
+  const name = profile.name.split(" ")[0];
+  const hasTarget = profile.targetRole !== "Not set yet";
+
+  return (
+    <>
+      <PageHeader
+        eyebrow="Dashboard"
+        title={`Welcome back, ${name}`}
+        subtitle={
+          hasTarget
+            ? `Growing toward ${profile.targetRole}.`
+            : "Let's find out where you're headed."
+        }
+      />
+
+      <Suspense fallback={<DashboardSkeleton />}>
+        <DashboardBody />
+      </Suspense>
     </>
   );
 }

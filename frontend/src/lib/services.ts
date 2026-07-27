@@ -4,6 +4,8 @@
 // serverFetch directly, so a change of endpoint stays a change here and
 // nowhere else.
 
+import { cache } from "react";
+
 import { serverFetch } from "@/lib/api/server";
 import type { Profile } from "@/types";
 
@@ -31,6 +33,7 @@ function toProfile(api: ApiProfile): Profile {
     name: api.full_name?.trim() || api.email?.split("@")[0] || "Farmer",
     headline: api.current_role?.trim() || "Just getting started",
     targetRole: api.target_role?.trim() || "Not set yet",
+    hasCv: api.has_cv,
     level: api.level,
     levelTitle: api.level_title,
     xp: api.xp,
@@ -39,14 +42,17 @@ function toProfile(api: ApiProfile): Profile {
   };
 }
 
-// --- Live ---
+// --- Profile ---
 
-export const getProfile = async (): Promise<Profile> =>
-  toProfile(await serverFetch<ApiProfile>("/profile"));
+/**
+ * `cache()` because the app layout renders this on every page while pages read
+ * it too — one request, one round trip, not two.
+ */
+export const getProfile = cache(
+  async (): Promise<Profile> => toProfile(await serverFetch<ApiProfile>("/profile")),
+);
 
-// No mocks remain. Every function below hits a real endpoint.
-
-// --- CV Studio (Phase 3, live) ---
+// --- CV Studio ---
 
 export type CvProfileResult = {
   full_name: string | null;
@@ -73,13 +79,19 @@ export type CvStatus = {
   daily_limit: number;
 };
 
-export const getCvStatus = (): Promise<CvStatus> =>
-  serverFetch<CvStatus>("/cv/status");
+/**
+ * Only the CV Studio needs this — every other page answers "has a CV?" from
+ * the profile it already has. Cached anyway; the page reads it beside a
+ * parallel analysis fetch.
+ */
+export const getCvStatus = cache(
+  (): Promise<CvStatus> => serverFetch<CvStatus>("/cv/status"),
+);
 
 export const getLatestCvAnalysis = (): Promise<CvAnalysisRecord | null> =>
   serverFetch<CvAnalysisRecord | null>("/cv/latest");
 
-// --- Job Match / Skill Gap / Resume Optimizer (Phase 4, live) ---
+// --- Job Match / Skill Gap / Resume Optimizer ---
 
 export type AnalysisRecord<T> = {
   id: string;
@@ -118,25 +130,13 @@ export type SkillGapResult = {
   missing_skills: SkillGapItemResult[];
 };
 
-export type ResumeResult = {
-  ats_score_before: number;
-  ats_score_after: number;
-  summary_of_changes: string[];
-  missing_information: string[];
-  optimized_sections: { title: string; content: string[] }[];
-  final_resume_text: string;
-};
-
 export const getLatestJobMatch = (): Promise<AnalysisRecord<JobMatchResult> | null> =>
   serverFetch<AnalysisRecord<JobMatchResult> | null>("/jobs/latest");
 
 export const getLatestSkillGap = (): Promise<AnalysisRecord<SkillGapResult> | null> =>
   serverFetch<AnalysisRecord<SkillGapResult> | null>("/skills/gap/latest");
 
-export const getLatestResume = (): Promise<AnalysisRecord<ResumeResult> | null> =>
-  serverFetch<AnalysisRecord<ResumeResult> | null>("/cv/optimize/latest");
-
-// --- Roadmap + Farm + Dashboard (Phase 5, live) ---
+// --- Roadmap + Farm + Dashboard ---
 
 export type FarmPlant = {
   id: string;
@@ -217,7 +217,7 @@ export const getRoadmapData = (): Promise<RoadmapRecord | null> =>
 export const getDashboardData = (): Promise<Dashboard> =>
   serverFetch<Dashboard>("/dashboard");
 
-// --- Interview Coach (Phase 6, live) ---
+// --- Interview Coach ---
 
 export type InterviewLevel =
   | "friendly_hr"
@@ -269,7 +269,7 @@ export type InterviewSessionRecord = {
 export const getLatestInterview = (): Promise<InterviewSessionRecord | null> =>
   serverFetch<InterviewSessionRecord | null>("/interview/latest");
 
-// --- Career Chat (Phase 7, live) ---
+// --- Career Chat ---
 
 export type ChatMessageRecord = {
   id: string;

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
+import { cache } from "react";
 
-import { ApiError } from "@/lib/api/client";
+import { ApiError } from "@/lib/api/error";
 import { createClient } from "@/lib/supabase/server";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -15,7 +16,12 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
  * Pages must not call this directly. Everything goes through lib/services.ts,
  * so swapping a mock for a real endpoint stays a one-line change.
  */
-async function bearer(): Promise<Record<string, string>> {
+/**
+ * `cache()` scopes this to one request. A page that fetches three endpoints in
+ * parallel would otherwise build three Supabase clients and parse the cookie
+ * jar three times for the same token.
+ */
+const bearer = cache(async (): Promise<Record<string, string>> => {
   const supabase = await createClient();
   const {
     data: { session },
@@ -23,7 +29,7 @@ async function bearer(): Promise<Record<string, string>> {
   return session?.access_token
     ? { Authorization: `Bearer ${session.access_token}` }
     : {};
-}
+});
 
 export async function serverFetch<T>(
   path: string,

@@ -28,12 +28,16 @@ Each confirmed against the bundled docs, not remembered.
 
 ## Project conventions
 
-- **Pages never call `serverFetch` or `apiFetch`.** All data access goes through `src/lib/services.ts`, so swapping a mock for a live endpoint is a one-line change there and nowhere else. Six of its functions are still mock, each labelled with the phase that replaces it.
-- `src/lib/api/server.ts` for Server Components; `src/lib/api/client.ts` for client components.
+- **Pages never call `serverFetch`.** All data access goes through `src/lib/services.ts`, so an endpoint change stays one change there and nowhere else. Every function is live; no mocks remain.
+- `src/lib/api/server.ts` is the only fetch wrapper — Server Components and server actions both use it. There is deliberately **no browser-side API client**: nothing in the app fetches the backend from the client, so adding one would also drag a browser Supabase client back into the bundle.
+- **A page's default shape is: static header, then `<Suspense>` around an async body component.** The fallback must be the same skeleton from `components/skeletons.tsx` that the route's `loading.tsx` renders, or a soft navigation and a cold load flash two different layouts.
+- **Wrap anything the layout also fetches in React's `cache()`** (`getProfile`, `getCvStatus`, `bearer()` in `api/server.ts`). Without it the layout and the page each pay a round trip for the same data on every navigation.
+- **`has_cv` is on the profile.** Gate on `profile.hasCv`, never a fresh `/cv/status` call — that endpoint exists for the CV Studio's quota counters.
+- Form pending state comes from `SubmitButton` / `PendingFieldset` in `ui/submit-button.tsx`. `useFormStatus` only reports for a form **above** the component reading it, so neither can be the element rendering the `<form>`.
 - **`Button` does not support `asChild`.** For a link styled as a button, apply `buttonVariants({ variant, size })` to a `<Link>` — the existing pattern in `landing/closing-cta.tsx` and `dashboard/page.tsx`.
 - Auth mutations are **server actions** in `src/app/(auth)/actions.ts`, validated with zod on the server. Client-side validation is convenience only.
 - **Wrong password and unknown email must return byte-identical text.** Differentiating them is a user-enumeration oracle. `CREDENTIALS_REJECTED` is the single constant both paths use.
-- No `dangerouslySetInnerHTML` anywhere. The codebase has zero; keep it that way — Phase 7 renders LLM output.
+- No `dangerouslySetInnerHTML` anywhere. The codebase has zero; keep it that way — the chat renders LLM output as plain text.
 - Security headers live in `next.config.ts`. The CSP's `connect-src` must include the API URL and the Supabase URL.
 
 ## Gotchas

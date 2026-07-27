@@ -1,20 +1,19 @@
 import { Sprout } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import { CompleteStep, GenerateRoadmap } from "@/components/roadmap/roadmap-controls";
 import { PageHeader } from "@/components/layout/page-header";
+import { RoadmapSkeleton } from "@/components/skeletons";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { getCvStatus, getProfile, getRoadmapData } from "@/lib/services";
+import { getProfile, getRoadmapData } from "@/lib/services";
 
 export default async function RoadmapPage() {
-  const [status, profile, roadmap] = await Promise.all([
-    getCvStatus(),
-    getProfile(),
-    getRoadmapData(),
-  ]);
+  // Free: the layout already resolved the profile, and `has_cv` rides on it.
+  const profile = await getProfile();
 
   const header = (
     <PageHeader
@@ -24,7 +23,7 @@ export default async function RoadmapPage() {
     />
   );
 
-  if (!status.has_cv) {
+  if (!profile.hasCv) {
     return (
       <>
         {header}
@@ -43,16 +42,28 @@ export default async function RoadmapPage() {
     );
   }
 
+  return (
+    <>
+      {header}
+      <Suspense fallback={<RoadmapSkeleton />}>
+        <RoadmapBody fallbackTarget={profile.targetRole} />
+      </Suspense>
+    </>
+  );
+}
+
+/** The plan itself. Streams in behind the header rather than blocking it. */
+async function RoadmapBody({ fallbackTarget }: { fallbackTarget: string }) {
+  const roadmap = await getRoadmapData();
+
   const done = roadmap?.steps.filter((s) => s.status === "done").length ?? 0;
   const total = roadmap?.steps.length ?? 0;
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
 
   return (
     <>
-      {header}
-
       <section className="mb-6 rounded-2xl border bg-card p-6">
-        <GenerateRoadmap targetRole={roadmap?.target_role ?? profile.targetRole} />
+        <GenerateRoadmap targetRole={roadmap?.target_role ?? fallbackTarget} />
         {roadmap ? (
           <p className="mt-3 text-xs text-muted-foreground">
             Rebuilding replaces the plan below with a fresh one. Completed steps

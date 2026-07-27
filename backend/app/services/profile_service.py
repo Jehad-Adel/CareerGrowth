@@ -169,7 +169,7 @@ def to_out(profile: CareerProfile) -> ProfileOut:
         target_role=profile.target_role,
         seniority_level=profile.seniority_level,
         summary=profile.summary,
-        has_cv=bool(profile.cv_text),
+        has_cv=profile.has_cv,
         level=info.level,
         level_title=info.title,
         xp=info.xp_in_level,

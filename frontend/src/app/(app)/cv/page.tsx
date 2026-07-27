@@ -1,7 +1,9 @@
 import { Check, Lightbulb, Sprout, TriangleAlert } from "lucide-react";
+import { Suspense } from "react";
 
 import { CvUpload } from "@/components/cv/cv-upload";
 import { PageHeader } from "@/components/layout/page-header";
+import { CvSkeleton } from "@/components/skeletons";
 import { Badge } from "@/components/ui/badge";
 import { getCvStatus, getLatestCvAnalysis } from "@/lib/services";
 
@@ -29,7 +31,7 @@ function List({
   );
 }
 
-export default async function CvPage() {
+async function CvBody() {
   // One round trip each, in parallel — not sequential awaits.
   const [status, analysis] = await Promise.all([
     getCvStatus(),
@@ -41,12 +43,6 @@ export default async function CvPage() {
 
   return (
     <>
-      <PageHeader
-        eyebrow="CV Studio"
-        title="Sharpen your CV"
-        subtitle="Upload your CV for structured, specific feedback — and to seed your farm with the skills it already proves."
-      />
-
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6">
           <section className="rounded-2xl border bg-card p-6">
@@ -148,6 +144,22 @@ export default async function CvPage() {
           )}
         </div>
       </div>
+    </>
+  );
+}
+
+export default function CvPage() {
+  return (
+    <>
+      <PageHeader
+        eyebrow="CV Studio"
+        title="Sharpen your CV"
+        subtitle="Upload your CV for structured, specific feedback — and to seed your farm with the skills it already proves."
+      />
+
+      <Suspense fallback={<CvSkeleton />}>
+        <CvBody />
+      </Suspense>
     </>
   );
 }

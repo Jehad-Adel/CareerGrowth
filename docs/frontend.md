@@ -2,7 +2,7 @@
 
 Next.js 16 (App Router) app in `frontend/`. React 19, TypeScript, Tailwind v4, shadcn/ui. Node 20+.
 
-**Current state:** the full UI is built and **static** — every page renders real, designed screens from mock data. Nothing calls the backend yet; the data layer is shaped so pages swap to the live API without UI changes.
+**Current state:** every page is live against the FastAPI backend. The mock data layer has been deleted. Each route streams: a static header paints immediately, and the data-dependent body arrives behind a `Suspense` boundary whose fallback is the same skeleton the route's `loading.tsx` uses.
 
 > **Note:** This Next.js version ships breaking changes vs. older docs. Bundled guides live in `frontend/node_modules/next/dist/docs/` — check them before using unfamiliar APIs (see `frontend/AGENTS.md`).
 
@@ -32,26 +32,29 @@ frontend/src/
     page.tsx                # landing
     (auth)/                 # login, signup + centered auth layout
     (app)/
-      layout.tsx            # sidebar + topbar shell (fetches profile)
-      dashboard|farm|cv|jobs|interview|roadmap/page.tsx
-      chat/page.tsx
+      layout.tsx            # sidebar + streamed topbar shell
+      */page.tsx            # one per feature, header + <Suspense> body
+      */loading.tsx         # route skeleton, shown during navigation
+      */actions.ts          # server actions (mutations)
   components/
+    skeletons.tsx           # every loading placeholder, shaped like its target
     farm/plant.tsx          # SVG plant by growth stage (seed→tree)
     farm/farm-plot.tsx      # beds grouped by category; FarmPreview for dashboard
-    layout/sidebar.tsx      # nav (active highlight)
-    layout/topbar.tsx       # search, streak, level/XP, avatar
+    chat/conversation.tsx   # transcript + composer, optimistic on send
+    layout/sidebar.tsx      # nav (active highlight, collapse pref in a cookie)
+    layout/topbar.tsx       # streak, level/XP, avatar, sign out
     layout/page-header.tsx  # eyebrow + title + subtitle
     layout/stat.tsx         # stat tile
-    ui/                     # shadcn/ui + score-ring.tsx
+    ui/                     # shadcn/ui + score-ring.tsx + submit-button.tsx
   lib/
-    services.ts             # data access — mock now, swap to apiFetch later
-    mock/data.ts            # sample profile, skills, goals, cv, jobs, …
-    growth.ts               # masteryToStage() + stage labels
+    services.ts             # data access — one function per endpoint
+    growth.ts               # growth-stage labels
     nav.ts                  # sidebar nav config
-    api/client.ts           # apiFetch() — attaches Supabase JWT
-    supabase/client.ts      # browser Supabase client (auth)
+    api/server.ts           # serverFetch() — attaches the Supabase JWT
+    api/error.ts            # ApiError
+    supabase/server.ts      # server Supabase client (cookies)
     utils.ts                # cn()
-  types/index.ts            # domain types (mirror the backend model)
+  types/index.ts            # shared UI types (Profile, GrowthStage)
 ```
 
 ## Design system
@@ -66,7 +69,21 @@ See [HOW-TO-GUIDE.md](../HOW-TO-GUIDE.md) for using tokens and adding pages.
 
 ## Data layer
 
-Pages call `src/lib/services.ts`. Each function returns mock data today and maps 1:1 to a future backend endpoint (e.g. `getDashboard()` → `GET /dashboard`). To go live, replace a function's body with `apiFetch<T>(path)` — signatures and pages stay identical. `apiFetch` sends the Supabase JWT automatically.
+Pages call `src/lib/services.ts`, never `serverFetch` directly. Each function maps 1:1 to a backend endpoint (e.g. `getDashboardData()` → `GET /dashboard`) and returns the wire shape, so an endpoint change stays a change in one file.
+
+`getProfile()` and `getCvStatus()` are wrapped in React's `cache()`. The app layout renders the profile on every page while pages read it too; without deduplication that is two round trips per navigation. `has_cv` rides along on the profile, so Jobs, Roadmap, Interview, and Chat gate on it instead of each calling `/cv/status`.
+
+The bearer-token lookup in `api/server.ts` is cached the same way — a page fetching three endpoints in parallel builds one Supabase client, not three.
+
+## Loading states
+
+Three layers, deliberately:
+
+1. **`loading.tsx` per route** — instant feedback on navigation, before the server has sent anything.
+2. **`Suspense` inside each page** — the header and any static shell paint first; only the data-dependent body waits. Fallbacks come from `components/skeletons.tsx`, which the route's `loading.tsx` also uses, so both paths show the same shape.
+3. **Inline pending state** — `SubmitButton` and `PendingFieldset` (`ui/submit-button.tsx`) read `useFormStatus` to swap in a spinner and freeze the form's inputs mid-request. Chat goes further: `useOptimistic` puts the question on screen immediately, with a typing indicator until the answer lands.
+
+Skeletons mirror the real component's box model — same paddings, same grid, same heights — so streamed content never shifts the layout.
 
 ## Setup & run
 
