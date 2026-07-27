@@ -27,7 +27,7 @@ from app.models import (
     SkillGapAnalysis,
 )
 from app.schemas.profile import SkillIn
-from app.services import profile_service, quota_service, xp_service
+from app.services import profile_service, quota_service, rag_service, xp_service
 
 log = get_logger(__name__)
 
@@ -65,6 +65,16 @@ def _invoke(build: Callable[[], object], payload: dict, feature: str) -> BaseMod
         raise AnalysisFailed(
             "The analysis service could not process that. Try again shortly."
         ) from exc
+
+
+def _ingest(
+    db: Session, profile_id: uuid.UUID, kind: str, text: str, source_id: uuid.UUID
+) -> None:
+    """Add a result to the chat corpus. Best-effort: never lose a paid call."""
+    try:
+        rag_service.ingest(db, profile_id, kind, text, source_id=source_id)
+    except Exception:
+        log.exception("rag_ingest_failed", kind=kind, profile_id=str(profile_id))
 
 
 def _seed_missing_skills(
@@ -120,6 +130,14 @@ def match_job(
         {"job_match_id": str(record.id), "score": record.match_score},
         xp=xp_service.XP_AWARDS["job_matched"],
     )
+    _ingest(
+        db,
+        profile_id,
+        "job_match",
+        f"Job: {job_title or 'untitled'}\n\n{job_description}\n\n"
+        f"Match summary: {result.summary}",  # type: ignore[attr-defined]
+        record.id,
+    )
 
     db.refresh(record)
     return record
@@ -162,6 +180,14 @@ def analyze_gap(
         "gap_analyzed",
         {"analysis_id": str(record.id), "gap_score": record.overall_gap_score},
         xp=xp_service.XP_AWARDS["gap_analyzed"],
+    )
+    _ingest(
+        db,
+        profile_id,
+        "skill_gap",
+        f"Skill gap for: {job_title or 'untitled role'}\n\n"
+        f"{result.gap_summary}",  # type: ignore[attr-defined]
+        record.id,
     )
 
     db.refresh(record)

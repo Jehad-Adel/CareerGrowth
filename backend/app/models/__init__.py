@@ -1,3 +1,4 @@
+from app.models.chat import ChatMessage, Document, DocumentChunk
 from app.models.cv_analysis import CvAnalysis
 from app.models.goal import Goal
 from app.models.growth_event import GrowthEvent
@@ -11,7 +12,10 @@ from app.models.usage import AiUsage
 __all__ = [
     "AiUsage",
     "CareerProfile",
+    "ChatMessage",
     "CvAnalysis",
+    "Document",
+    "DocumentChunk",
     "Goal",
     "GrowthEvent",
     "InterviewSession",

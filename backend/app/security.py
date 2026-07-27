@@ -26,6 +26,9 @@ RLS_TABLES: frozenset[str] = frozenset(
         "roadmap_steps",
         "interview_sessions",
         "interview_turns",
+        "chat_messages",
+        "documents",
+        "document_chunks",
     }
 )
 

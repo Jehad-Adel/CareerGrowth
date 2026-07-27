@@ -32,7 +32,8 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 # Chain tests hit the real Gemini API. They are opt-in: `uv run pytest -m live`.
-addopts = '-m "not live"'
+addopts = '-m "not live and not pg"'
 markers = [
     "live: hits the real Gemini API; costs money and needs GOOGLE_API_KEY",
+    "pg: needs a real Postgres with pgvector; SQLite has no vector ops. Run with `-m pg`",
 ]

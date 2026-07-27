@@ -7,7 +7,7 @@ from app.ai.chains.roadmap_chain import build_roadmap_chain
 from app.errors import AppError, NoCvOnProfile
 from app.logging import get_logger
 from app.models import CareerProfile, Roadmap, RoadmapStep, Skill
-from app.services import quota_service, xp_service
+from app.services import quota_service, rag_service, xp_service
 
 log = get_logger(__name__)
 
@@ -119,6 +119,23 @@ def generate(
         {"roadmap_id": str(roadmap.id), "target_role": roadmap.target_role},
         xp=xp_service.XP_AWARDS["roadmap_created"],
     )
+
+    # Best-effort corpus update: never lose a roadmap over a RAG failure.
+    try:
+        steps_text = "\n".join(
+            f"{i + 1}. {s.title} ({s.estimated_duration_months} months): "
+            f"{s.description}"
+            for i, s in enumerate(result.steps)
+        )
+        rag_service.ingest(
+            db,
+            profile_id,
+            "roadmap",
+            f"Roadmap toward {roadmap.target_role}\n\n{roadmap.summary}\n\n{steps_text}",
+            source_id=roadmap.id,
+        )
+    except Exception:
+        log.exception("rag_ingest_failed", kind="roadmap", profile_id=str(profile_id))
 
     db.refresh(roadmap)
     return roadmap

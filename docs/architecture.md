@@ -72,7 +72,7 @@ Still planned, per phase:
 - `cv_analyses` — **shipped** (phase 3). `job_matches`, `skill_gap_analyses`, `resume_optimizations` — phase 4
 - `roadmaps` + `roadmap_steps` — phase 5
 - `interview_sessions` + `interview_turns` — phase 6
-- `chat_messages`, `documents` + `document_chunks` (pgvector) — phase 7
+- `chat_messages`, `documents` + `document_chunks` (pgvector, HNSW) — **shipped** (phase 7)
 
 ## Build status
 
@@ -84,15 +84,15 @@ Original plan sequenced the frontend at step 4; it was **brought forward** to a 
 | — | Frontend: full static UI (all 7 features + auth, mock data, design system) | ✅ Done (brought forward) |
 | 2 | Career Profile + Farm spine (backend) | ✅ Done. Models, migrations (applied to Supabase), RLS, services, `/profile` API, quota, structured logging, security headers, rate limiting. 91 tests. |
 | 3 | CV Studio (AI + wiring frontend to API) | ✅ Done. ai/ folded into backend/app/ai/; upload -> Gemini -> profile + skills + growth events. |
-| 4 | Dashboard + Farm viz (real data) | ⬜ Static UI only |
-| 5 | Roadmap | ⬜ Static UI only |
-| 6 | Job Match | ⬜ Static UI only |
-| 7 | Interview Coach | ⬜ Static UI only |
-| 8 | Career Chat | ⬜ Static UI only |
+| 4 | Dashboard + Farm viz (real data) | ✅ Done (phase 5). Farm is a pure read model over skills, goals, and the event log. |
+| 5 | Roadmap | ✅ Done (phase 5). Steps persist; completing one emits `goal_completed` and grows the farm. |
+| 6 | Job Match · Skill Gap · Resume Optimizer | ✅ Done (phase 4). All three read CV text from the profile, never the request. |
+| 7 | Interview Coach | ✅ Done (phase 6). Stateful multi-turn; history rebuilt server-side, never accepted from the client. |
+| 8 | Career Chat | ✅ Done (phase 7). pgvector RAG; retrieval filtered by profile in SQL, not after top-k. |
 
-The frontend renders every feature from a mock data layer (`src/lib/services.ts`) shaped to swap to the real API without UI changes. "Not started" now means **backend + wiring**, not the UI.
+Every page now reads from the real API. The mock data layer has been deleted.
 
-**Deferred:** remaining feature services (phases 4-7) and deployment (Vercel + Railway, phase 8). The Supabase project is provisioned and migrated through `0004_cv_analyses`.
+**Deferred:** deployment only (Vercel + Railway, phase 8). The Supabase project is provisioned and migrated through `0008_rag`.
 
 ## Stack
 

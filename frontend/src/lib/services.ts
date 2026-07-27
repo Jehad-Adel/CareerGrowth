@@ -1,17 +1,11 @@
 // Data access for the app.
 //
-// Each function maps 1:1 to a backend endpoint. Live functions call
-// `serverFetch`; the rest still return mock data and are labelled with the
-// phase that replaces them. Pages never import serverFetch directly, so
-// going live stays a change here and nowhere else.
+// Each function maps 1:1 to a backend endpoint. Pages never import
+// serverFetch directly, so a change of endpoint stays a change here and
+// nowhere else.
 
 import { serverFetch } from "@/lib/api/server";
-import * as mock from "@/lib/mock/data";
-import type { ChatMessage, InterviewQuestion, Profile } from "@/types";
-
-/** Simulate network latency so loading states are real. Remove when live. */
-const wait = <T>(value: T, ms = 0): Promise<T> =>
-  new Promise((resolve) => setTimeout(() => resolve(value), ms));
+import type { Profile } from "@/types";
 
 /** Wire shape of GET /profile — snake_case, straight from FastAPI. */
 type ApiProfile = {
@@ -50,18 +44,7 @@ function toProfile(api: ApiProfile): Profile {
 export const getProfile = async (): Promise<Profile> =>
   toProfile(await serverFetch<ApiProfile>("/profile"));
 
-// --- Mock until their phase lands ---
-//
-// Only two remain. The rest were superseded by live endpoints in phases 3-5
-// and deleted rather than left around, so nothing can accidentally render
-// invented data next to real data.
-
-/** Phase 6. */
-export const getInterviewQuestions = (): Promise<InterviewQuestion[]> =>
-  wait(mock.interviewQuestions);
-
-/** Phase 7. */
-export const getChatHistory = (): Promise<ChatMessage[]> => wait(mock.chatHistory);
+// No mocks remain. Every function below hits a real endpoint.
 
 // --- CV Studio (Phase 3, live) ---
 
@@ -285,3 +268,23 @@ export type InterviewSessionRecord = {
 
 export const getLatestInterview = (): Promise<InterviewSessionRecord | null> =>
   serverFetch<InterviewSessionRecord | null>("/interview/latest");
+
+// --- Career Chat (Phase 7, live) ---
+
+export type ChatMessageRecord = {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  sources: { kind: string; chunk: number }[] | null;
+  created_at: string;
+};
+
+export type ChatState = {
+  messages: ChatMessageRecord[];
+  corpus_chunks: number;
+  messages_today: number;
+  daily_limit: number;
+};
+
+export const getChatState = (): Promise<ChatState> =>
+  serverFetch<ChatState>("/chat");

@@ -11,7 +11,7 @@ from app.errors import AppError
 from app.logging import get_logger
 from app.models import CvAnalysis
 from app.schemas.profile import SkillIn
-from app.services import profile_service, quota_service, xp_service
+from app.services import profile_service, quota_service, rag_service, xp_service
 
 log = get_logger(__name__)
 
@@ -115,6 +115,15 @@ def analyze(
         {"analysis_id": str(analysis.id), "skills_found": analysis.skills_found},
         xp=xp_service.XP_AWARDS["cv_analyzed"],
     )
+
+    # Feed the chat corpus. Best-effort on purpose: a RAG failure must not
+    # throw away an analysis the user already spent a quota call on.
+    try:
+        rag_service.ingest(
+            db, profile_id, "cv", cv_text, title="CV", source_id=analysis.id
+        )
+    except Exception:
+        log.exception("rag_ingest_failed", kind="cv", profile_id=str(profile_id))
 
     db.refresh(analysis)
     return analysis
