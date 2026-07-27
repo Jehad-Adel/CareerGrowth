@@ -184,8 +184,37 @@ def test_send_persists_both_turns(monkeypatch):
     reply = chat_service.send(db, p, "What should I learn next?")
 
     assert reply.role == "assistant"
-    roles = [m.role for m in db.query(ChatMessage).order_by(ChatMessage.created_at)]
+    # Read back through history(), the path the page actually uses. Ordering by
+    # created_at here would pass even when the stored order is undefined.
+    roles = [m.role for m in chat_service.history(db, p.id)]
     assert roles == ["user", "assistant"]
+
+
+def test_a_question_always_precedes_its_own_answer(monkeypatch):
+    """Regression: created_at cannot separate the two.
+
+    func.now() is transaction start time, so both rows of a turn carry the same
+    timestamp and the UUIDv4 primary key breaks no ties — ordering on
+    created_at could surface the answer above the question.
+    """
+    db = _session()
+    p = _profile(db)
+    _fake_embeddings(monkeypatch)
+    _patch_chain(monkeypatch)
+
+    chat_service.send(db, p, "first question")
+    chat_service.send(db, p, "second question")
+
+    turns = chat_service.history(db, p.id)
+    assert [m.role for m in turns] == [
+        "user",
+        "assistant",
+        "user",
+        "assistant",
+    ]
+    assert [m.position for m in turns] == [0, 1, 2, 3]
+    assert turns[0].content == "first question"
+    assert turns[2].content == "second question"
 
 
 def test_a_failed_answer_leaves_no_dangling_question(monkeypatch):

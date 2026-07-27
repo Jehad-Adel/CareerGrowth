@@ -16,10 +16,20 @@ class ChatMessage(UUIDPrimaryKey, Base):
     __tablename__ = "chat_messages"
     __table_args__ = (
         Index("ix_chat_messages_profile_created", "profile_id", "created_at"),
+        Index("ix_chat_messages_profile_position", "profile_id", "position"),
     )
 
     profile_id: Mapped[uuid.UUID] = mapped_column(
         Uuid, ForeignKey("career_profiles.id", ondelete="CASCADE"), nullable=False
+    )
+    # Conversation order, assigned by chat_service.
+    #
+    # `created_at` cannot carry it: func.now() is transaction start time in
+    # Postgres, so a question and its reply -- written in one transaction --
+    # get identical timestamps, and a UUIDv4 primary key breaks no ties.
+    # Ordering on created_at alone can put the answer before the question.
+    position: Mapped[int] = mapped_column(
+        Integer, nullable=False, default=0, server_default="0"
     )
     # user | assistant
     role: Mapped[str] = mapped_column(String(20), nullable=False)

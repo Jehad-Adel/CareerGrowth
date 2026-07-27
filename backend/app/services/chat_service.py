@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.ai.chains.chat_chain import build_chat_chain
@@ -44,16 +44,30 @@ def _profile_block(db: Session, profile: CareerProfile) -> str:
 
 
 def history(db: Session, profile_id: uuid.UUID, limit: int = PAGE_SIZE) -> list[ChatMessage]:
-    """Oldest-first page of the conversation."""
+    """Oldest-first page of the conversation, most recent `limit` turns.
+
+    Ordered by `position`, never `created_at` — see the model for why that
+    column cannot separate a question from its own answer.
+    """
     rows = list(
         db.execute(
             select(ChatMessage)
             .where(ChatMessage.profile_id == profile_id)
-            .order_by(ChatMessage.created_at.desc())
+            .order_by(ChatMessage.position.desc())
             .limit(limit)
         ).scalars()
     )
     return list(reversed(rows))
+
+
+def _next_position(db: Session, profile_id: uuid.UUID) -> int:
+    """One past the last turn. Concurrency is bounded by the quota row lock."""
+    highest = db.execute(
+        select(func.max(ChatMessage.position)).where(
+            ChatMessage.profile_id == profile_id
+        )
+    ).scalar_one()
+    return 0 if highest is None else highest + 1
 
 
 def _history_block(messages: list[ChatMessage]) -> str:
@@ -86,12 +100,20 @@ def send(db: Session, profile: CareerProfile, question: str) -> ChatMessage:
         ) from exc
 
     # Persist both turns only after a successful answer, so a failure does not
-    # leave a question hanging with no reply.
+    # leave a question hanging with no reply. The question takes the lower
+    # position: it was asked first and must render first.
+    position = _next_position(db, profile.id)
     db.add(
-        ChatMessage(profile_id=profile.id, role="user", content=question)
+        ChatMessage(
+            profile_id=profile.id,
+            position=position,
+            role="user",
+            content=question,
+        )
     )
     reply = ChatMessage(
         profile_id=profile.id,
+        position=position + 1,
         role="assistant",
         content=answer.strip(),
         sources=[
