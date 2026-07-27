@@ -92,7 +92,7 @@ Original plan sequenced the frontend at step 4; it was **brought forward** to a 
 
 Every page now reads from the real API. The mock data layer has been deleted.
 
-**Deferred:** deployment only (Vercel + Railway, phase 8). The Supabase project is provisioned and migrated through `0008_rag`.
+**Deployment:** Railway (Docker, `backend/Dockerfile`) + Vercel (root directory `frontend/`). See [runbook.md](runbook.md). Migrations are run deliberately, never on boot — replicas would race, and the runtime pooler cannot run DDL.
 
 ## Stack
 

@@ -1,0 +1,115 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      - name: Install
+        run: uv sync --frozen
+
+      - name: Test
+        # `live` and `pg` are deselected by pyproject's addopts: the first
+        # costs money, the second needs a real pgvector. Neither belongs on
+        # a pull request from a fork.
+        run: uv run pytest -q
+
+      - name: Migrations apply and reverse cleanly
+        # A migration nobody has reversed is not one you can roll back at 3am.
+        env:
+          DATABASE_URL: postgresql+psycopg2://postgres:postgres@localhost:5432/postgres
+          DIRECT_DATABASE_URL: postgresql+psycopg2://postgres:postgres@localhost:5432/postgres
+        run: |
+          uv run alembic upgrade head
+          uv run alembic downgrade base
+          uv run alembic upgrade head
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Build
+        # Build-time values only. Real secrets live in Vercel, and the build
+        # must not depend on any of them.
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: build-time-placeholder
+        run: npx next build
+
+      - name: No secret material in the client bundle
+        # The publishable key is public by design and expected here. Anything
+        # else reaching .next/static is a leak.
+        run: |
+          if grep -rlE 'sb_secret_|service_role|postgresql\+psycopg2://' .next/static/ 2>/dev/null; then
+            echo "::error::Secret material found in the client bundle"
+            exit 1
+          fi
+          echo "Client bundle clean"
+
+  audit:
+    runs-on: ubuntu-latest
+    # Advisory: npm audit currently reports transitive findings under
+    # next@16.2.11 that `--force` would "fix" by downgrading to next@9.
+    # Surfaced on every run so a genuinely new finding is visible, without
+    # blocking merges on something that has no upgrade path yet.
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm audit --omit=dev

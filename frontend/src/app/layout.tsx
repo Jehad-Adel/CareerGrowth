@@ -18,9 +18,32 @@ const fraunces = Fraunces({
   axes: ["opsz", "SOFT"],
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+const TITLE = "CareerFarm — grow your career like a farm";
+const DESCRIPTION =
+  "Upload your CV once. Match it against real jobs, see exactly what to learn next, " +
+  "and watch your skills grow into a farm that reflects what you actually did.";
+
 export const metadata: Metadata = {
-  title: "CareerFarm",
-  description: "Grow your career like a farm — AI-powered career growth platform.",
+  // Makes every relative OG/Twitter image URL absolute, which crawlers require.
+  metadataBase: new URL(SITE_URL),
+  title: { default: TITLE, template: "%s · CareerFarm" },
+  description: DESCRIPTION,
+  applicationName: "CareerFarm",
+  openGraph: {
+    type: "website",
+    siteName: "CareerFarm",
+    title: TITLE,
+    description: DESCRIPTION,
+    url: SITE_URL,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
