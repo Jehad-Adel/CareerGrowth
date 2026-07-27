@@ -64,6 +64,18 @@ def create_app() -> FastAPI:
     settings = get_settings()
     configure_logging(settings.debug)
 
+    if settings.sentry_dsn:
+        import sentry_sdk
+
+        sentry_sdk.init(
+            dsn=settings.sentry_dsn,
+            environment=settings.environment,
+            traces_sample_rate=0.1,
+            # CV text, chat messages, and job descriptions must never leave
+            # the database. Leave this off.
+            send_default_pii=False,
+        )
+
     app = FastAPI(
         title="CareerFarm API",
         docs_url=None if settings.is_production else "/docs",

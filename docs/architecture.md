@@ -55,18 +55,24 @@ sequenceDiagram
     Note over F: plants/trees grow from real events
 ```
 
-## Core data model (planned)
+## Core data model
 
-Built at sub-project 2 (Career Profile + Farm spine). Not yet implemented.
+Shipped in Phase 1 (`backend/app/models/`):
 
-- `users` — Supabase auth
-- `career_profiles` — 1:1; canonical skills summary, experience, education, target role, level/XP
-- `skills` — name, category, mastery, source → plants/trees
-- `goals` — target, status, progress → growth points
-- `growth_events` — append-only (type, payload, ts) → farm reads this
-- `cv_analyses`, `job_matches`, `interview_sessions`, `roadmaps` — per-feature records, FK to profile
-- `chat_messages` — conversation history
-- `documents` + `embeddings` (pgvector) — RAG corpus
+- `career_profiles` — canonical per user (`user_id` = Supabase `auth.users.id`, not an FK: that table is in another schema). Holds identity, target role, `cv_text`, and the denormalised `level`/`xp`/`streak_days` cache.
+- `skills` — name, category, mastery, source → plants/trees. Unique per profile on `lower(name)`, so "Python" and "python" are one plant.
+- `goals` — title, status, progress → growth points.
+- `growth_events` — append-only (type, payload, xp_awarded, ts). The farm reads this. Individual events are never updated or deleted; the whole log cascades away with its profile.
+- `ai_usage` — one row per (profile, day, feature). Backs the daily AI quota.
+
+RLS is enabled on every table with **no permissive policy**. The backend connects as a role that bypasses RLS, so authorization lives in the service layer (every method filters on `profile_id`); deny-by-default exists so the browser's public `anon` key can read nothing if it leaks.
+
+Still planned, per phase:
+
+- `cv_analyses`, `job_matches`, `skill_gap_analyses`, `resume_optimizations` — phases 3–4
+- `roadmaps` + `roadmap_steps` — phase 5
+- `interview_sessions` + `interview_turns` — phase 6
+- `chat_messages`, `documents` + `document_chunks` (pgvector) — phase 7
 
 ## Build status
 
@@ -76,7 +82,7 @@ Original plan sequenced the frontend at step 4; it was **brought forward** to a 
 |---|-------------|--------|
 | 1 | Foundation (backend bootstrap) | ✅ Done |
 | — | Frontend: full static UI (all 7 features + auth, mock data, design system) | ✅ Done (brought forward) |
-| 2 | Career Profile + Farm spine (backend) | ⬜ Not started |
+| 2 | Career Profile + Farm spine (backend) | 🟡 Models, services, `/profile` API, quota, logging, security headers, rate limiting done (85 tests). Alembic migration + live run pending a provisioned database. |
 | 3 | CV Studio (AI + wiring frontend to API) | ⬜ Static UI only |
 | 4 | Dashboard + Farm viz (real data) | ⬜ Static UI only |
 | 5 | Roadmap | ⬜ Static UI only |
