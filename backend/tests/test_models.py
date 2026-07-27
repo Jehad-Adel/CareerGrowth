@@ -1,4 +1,5 @@
 import uuid
+from datetime import date
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
@@ -57,7 +58,7 @@ def test_goal_and_usage_defaults():
     db.commit()
 
     goal = Goal(profile_id=profile.id, title="Learn Kubernetes")
-    usage = AiUsage(profile_id=profile.id, day="2026-07-27", feature="cv_analysis")
+    usage = AiUsage(profile_id=profile.id, day=date(2026, 7, 27), feature="cv_analysis")
     db.add_all([goal, usage])
     db.commit()
 
