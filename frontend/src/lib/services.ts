@@ -7,16 +7,7 @@
 
 import { serverFetch } from "@/lib/api/server";
 import * as mock from "@/lib/mock/data";
-import type {
-  ChatMessage,
-  CvAnalysis,
-  DashboardData,
-  InterviewQuestion,
-  JobMatch,
-  Profile,
-  RoadmapStep,
-  Skill,
-} from "@/types";
+import type { ChatMessage, InterviewQuestion, Profile } from "@/types";
 
 /** Simulate network latency so loading states are real. Remove when live. */
 const wait = <T>(value: T, ms = 0): Promise<T> =>
@@ -60,36 +51,14 @@ export const getProfile = async (): Promise<Profile> =>
   toProfile(await serverFetch<ApiProfile>("/profile"));
 
 // --- Mock until their phase lands ---
-
-/** Phase 5. */
-export const getDashboard = (): Promise<DashboardData> =>
-  wait({
-    profile: mock.profile,
-    skills: mock.skills,
-    goals: mock.goals,
-    events: mock.events,
-    recommended: mock.recommended,
-  });
-
-/** Phase 5. */
-export const getSkills = (): Promise<Skill[]> => wait(mock.skills);
-
-/** Phase 5. */
-export const getFarm = (): Promise<{ skills: Skill[]; goals: typeof mock.goals }> =>
-  wait({ skills: mock.skills, goals: mock.goals });
-
-/** Phase 3. */
-export const getCvAnalysis = (): Promise<CvAnalysis> => wait(mock.cvAnalysis);
-
-/** Phase 4. */
-export const getJobMatch = (): Promise<JobMatch> => wait(mock.jobMatch);
+//
+// Only two remain. The rest were superseded by live endpoints in phases 3-5
+// and deleted rather than left around, so nothing can accidentally render
+// invented data next to real data.
 
 /** Phase 6. */
 export const getInterviewQuestions = (): Promise<InterviewQuestion[]> =>
   wait(mock.interviewQuestions);
-
-/** Phase 5. */
-export const getRoadmap = (): Promise<RoadmapStep[]> => wait(mock.roadmap);
 
 /** Phase 7. */
 export const getChatHistory = (): Promise<ChatMessage[]> => wait(mock.chatHistory);
@@ -183,3 +152,84 @@ export const getLatestSkillGap = (): Promise<AnalysisRecord<SkillGapResult> | nu
 
 export const getLatestResume = (): Promise<AnalysisRecord<ResumeResult> | null> =>
   serverFetch<AnalysisRecord<ResumeResult> | null>("/cv/optimize/latest");
+
+// --- Roadmap + Farm + Dashboard (Phase 5, live) ---
+
+export type FarmPlant = {
+  id: string;
+  name: string;
+  category: string | null;
+  mastery: number;
+  source: string;
+  stage: import("@/types").GrowthStage;
+};
+
+export type FarmFeedItem = {
+  id: number;
+  type: string;
+  payload: Record<string, unknown>;
+  xp: number;
+  at: string;
+};
+
+export type Farm = {
+  level: number;
+  level_title: string;
+  xp: number;
+  xp_for_next: number;
+  streak_days: number;
+  plants: FarmPlant[];
+  counts: { total: number; seeds: number; trees: number };
+  roadmap: {
+    has_roadmap: boolean;
+    target_role: string | null;
+    done: number;
+    total: number;
+  };
+  feed: FarmFeedItem[];
+};
+
+export type RoadmapStepRecord = {
+  id: string;
+  position: number;
+  title: string;
+  description: string;
+  skills_to_acquire: string[];
+  prerequisite_skills: string[];
+  estimated_months: number;
+  status: "todo" | "done";
+};
+
+export type RoadmapRecord = {
+  id: string;
+  created_at: string;
+  target_role: string;
+  summary: string;
+  total_estimated_months: number;
+  steps: RoadmapStepRecord[];
+};
+
+export type Dashboard = {
+  profile: Record<string, unknown> & {
+    full_name: string | null;
+    email: string | null;
+    target_role: string | null;
+    level: number;
+    level_title: string;
+    xp: number;
+    xp_for_next: number;
+    streak_days: number;
+  };
+  farm: Farm;
+  usage: Record<string, number>;
+  has_cv: boolean;
+};
+
+export const getFarmData = (): Promise<Farm> => serverFetch<Farm>("/farm");
+
+export const getRoadmapData = (): Promise<RoadmapRecord | null> =>
+  serverFetch<RoadmapRecord | null>("/roadmap");
+
+/** One round trip. Five separate calls would each pay for auth and a JWKS check. */
+export const getDashboardData = (): Promise<Dashboard> =>
+  serverFetch<Dashboard>("/dashboard");

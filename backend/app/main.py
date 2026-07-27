@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 
-from app.api import cv, health, jobs, me, profile
+from app.api import cv, health, jobs, me, profile, roadmap
 from app.config import get_settings
 from app.errors import install_error_handlers
 from app.limiter import install_rate_limiting
@@ -108,6 +108,7 @@ def create_app() -> FastAPI:
     app.include_router(profile.router)
     app.include_router(cv.router)
     app.include_router(jobs.router)
+    app.include_router(roadmap.router)
 
     install_error_handlers(app)
     return app

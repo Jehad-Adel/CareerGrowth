@@ -1,42 +1,51 @@
 import { Plant } from "@/components/farm/plant";
-import { masteryToStage, stageLabel } from "@/lib/growth";
-import type { Skill, SkillCategory } from "@/types";
+import { stageLabel } from "@/lib/growth";
+import type { FarmPlant } from "@/lib/services";
 
-const CATEGORY_ORDER: SkillCategory[] = [
+/** Named beds first, in a deliberate order; anything else falls into Other. */
+const CATEGORY_ORDER = [
   "Languages",
   "Backend",
   "Frontend",
   "Data",
   "DevOps",
   "Foundations",
-];
+] as const;
 
-export function SkillPlant({ skill }: { skill: Skill }) {
-  const stage = masteryToStage(skill.mastery);
+const OTHER = "Other";
+
+export function SkillPlant({ plant }: { plant: FarmPlant }) {
+  // The stage comes from the API. The farm is a server-side projection, and
+  // recomputing it here with a second set of thresholds is how the two drift.
   return (
     <div className="group flex flex-col items-center gap-2">
       <div className="relative flex h-24 w-full items-end justify-center rounded-xl border bg-[linear-gradient(to_bottom,transparent_55%,color-mix(in_oklch,var(--soil)_16%,transparent))] pb-1 transition-colors group-hover:border-primary/40">
         <span className="absolute right-1.5 top-1.5 font-mono text-[10px] text-muted-foreground">
-          {skill.mastery}%
+          {plant.mastery}%
         </span>
         <div className="h-20 w-16 transition-transform duration-300 group-hover:-translate-y-0.5">
-          <Plant stage={stage} />
+          <Plant stage={plant.stage} />
         </div>
       </div>
       <div className="text-center">
-        <p className="text-sm font-medium leading-tight">{skill.name}</p>
+        <p className="text-sm font-medium leading-tight">{plant.name}</p>
         <p className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
-          {stageLabel[stage]}
+          {stageLabel[plant.stage]}
         </p>
       </div>
     </div>
   );
 }
 
-export function FarmPlot({ skills }: { skills: Skill[] }) {
-  const beds = CATEGORY_ORDER.map(
-    (cat) => [cat, skills.filter((s) => s.category === cat)] as const,
-  ).filter(([, items]) => items.length > 0);
+export function FarmPlot({ plants }: { plants: FarmPlant[] }) {
+  const bucket = (p: FarmPlant) =>
+    p.category && (CATEGORY_ORDER as readonly string[]).includes(p.category)
+      ? p.category
+      : OTHER;
+
+  const beds = [...CATEGORY_ORDER, OTHER]
+    .map((cat) => [cat, plants.filter((p) => bucket(p) === cat)] as const)
+    .filter(([, items]) => items.length > 0);
 
   return (
     <div className="space-y-8">
@@ -50,8 +59,8 @@ export function FarmPlot({ skills }: { skills: Skill[] }) {
             </span>
           </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-            {items.map((s) => (
-              <SkillPlant key={s.id} skill={s} />
+            {items.map((p) => (
+              <SkillPlant key={p.id} plant={p} />
             ))}
           </div>
         </section>
@@ -60,11 +69,11 @@ export function FarmPlot({ skills }: { skills: Skill[] }) {
   );
 }
 
-export function FarmPreview({ skills }: { skills: Skill[] }) {
+export function FarmPreview({ plants }: { plants: FarmPlant[] }) {
   return (
     <div className="grid grid-cols-4 gap-3 sm:grid-cols-6">
-      {skills.map((s) => (
-        <SkillPlant key={s.id} skill={s} />
+      {plants.map((p) => (
+        <SkillPlant key={p.id} plant={p} />
       ))}
     </div>
   );

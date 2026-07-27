@@ -1,118 +1,163 @@
-import Link from "next/link";
 import { ArrowRight, Sprout } from "lucide-react";
+import Link from "next/link";
 
 import { FarmPreview } from "@/components/farm/farm-plot";
 import { PageHeader } from "@/components/layout/page-header";
 import { Stat } from "@/components/layout/stat";
-import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { getDashboard } from "@/lib/services";
+import { getDashboardData, type Dashboard } from "@/lib/services";
+
+/** The single most useful thing to do next, given what exists so far. */
+function nextAction(d: Dashboard) {
+  if (!d.has_cv) {
+    return {
+      title: "Analyze your CV",
+      body: "Everything else reads from it — job matching, gaps, and your roadmap.",
+      href: "/cv",
+      cta: "Go to CV Studio",
+    };
+  }
+  if (!d.farm.roadmap.has_roadmap) {
+    return {
+      title: "Set a target role",
+      body: "We'll plan the route from where you are to where you want to be.",
+      href: "/roadmap",
+      cta: "Build a roadmap",
+    };
+  }
+  if (d.farm.roadmap.done < d.farm.roadmap.total) {
+    const left = d.farm.roadmap.total - d.farm.roadmap.done;
+    return {
+      title: "Finish your next step",
+      body: `${left} ${left === 1 ? "step" : "steps"} left toward ${d.farm.roadmap.target_role}.`,
+      href: "/roadmap",
+      cta: "Open roadmap",
+    };
+  }
+  return {
+    title: "Measure yourself against a role",
+    body: "Paste a job description and see honestly where you stand.",
+    href: "/jobs",
+    cta: "Match a job",
+  };
+}
 
 export default async function DashboardPage() {
-  const { profile, skills, goals, events, recommended } = await getDashboard();
-
-  const firstName = profile.name.split(" ")[0];
-  const growing = skills.filter((s) => s.mastery >= 20 && s.mastery < 80).length;
-  const mastered = skills.filter((s) => s.mastery >= 80).length;
-  const activeGoals = goals.filter((g) => g.status === "active");
-  const doneGoals = goals.filter((g) => g.status === "done").length;
-  const topSkills = [...skills].sort((a, b) => b.mastery - a.mastery).slice(0, 6);
+  // One round trip for the whole page.
+  const data = await getDashboardData();
+  const { profile, farm } = data;
+  const pct = Math.round((farm.xp / farm.xp_for_next) * 100);
+  const next = nextAction(data);
+  const name = profile.full_name?.split(" ")[0] ?? "there";
 
   return (
     <>
       <PageHeader
-        eyebrow={`Level ${profile.level} · ${profile.levelTitle}`}
-        title={`Welcome back, ${firstName}`}
-        subtitle="Here's how your farm is growing today."
+        eyebrow="Dashboard"
+        title={`Welcome back, ${name}`}
+        subtitle={
+          farm.roadmap.has_roadmap
+            ? `Growing toward ${farm.roadmap.target_role}.`
+            : "Let's find out where you're headed."
+        }
       />
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Stat label="Level" value={profile.level} hint={profile.level_title} />
+        <Stat label="Plants" value={farm.counts.total} hint="skills tracked" />
         <Stat
-          label="Career level"
-          value={`Lv ${profile.level}`}
-          hint={`${profile.xp}/${profile.xpForNext} XP`}
+          label="Mastered"
+          value={farm.counts.trees}
+          hint={`${farm.counts.seeds} still seeds`}
         />
-        <Stat label="Skills growing" value={growing} hint={`${mastered} mastered`} />
-        <Stat
-          label="Active goals"
-          value={activeGoals.length}
-          hint={`${doneGoals} completed`}
-        />
-        <Stat label="CV score" value="74" hint="last analysis" />
+        <Stat label="Streak" value={`${farm.streak_days}d`} />
       </div>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <section className="rounded-2xl border bg-card p-6">
-            <div className="mb-5 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Sprout className="h-4 w-4 text-primary" />
-                <h2 className="text-lg">Your farm</h2>
-              </div>
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-lg">Your farm</h2>
               <Link
                 href="/farm"
-                className="flex items-center gap-1 text-sm text-primary hover:underline"
+                className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
               >
-                Open farm <ArrowRight className="h-3.5 w-3.5" />
+                See all <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
-            <FarmPreview skills={topSkills} />
+
+            {farm.plants.length === 0 ? (
+              <div className="mt-6 text-center">
+                <Sprout className="mx-auto h-7 w-7 text-primary" />
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Nothing planted yet.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-5">
+                <FarmPreview plants={farm.plants.slice(0, 6)} />
+              </div>
+            )}
           </section>
 
           <section className="rounded-2xl border bg-card p-6">
-            <h2 className="mb-4 text-lg">Recommended next</h2>
-            <ul className="divide-y">
-              {recommended.map((r) => (
-                <li key={r.id} className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0">
-                  <span className="text-sm">{r.title}</span>
-                  <Link
-                    href={r.href}
-                    className={buttonVariants({ variant: "outline", size: "sm" })}
+            <h2 className="mb-3 text-lg">Recent growth</h2>
+            {farm.feed.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Your activity will show up here.
+              </p>
+            ) : (
+              <ol className="space-y-2.5">
+                {farm.feed.slice(0, 6).map((e) => (
+                  <li
+                    key={e.id}
+                    className="flex items-center justify-between gap-3 text-sm"
                   >
-                    {r.cta}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        </div>
-
-        <div className="space-y-6">
-          <section className="rounded-2xl border bg-card p-6">
-            <h2 className="mb-4 text-lg">Active goals</h2>
-            <ul className="space-y-4">
-              {activeGoals.map((g) => (
-                <li key={g.id}>
-                  <div className="mb-1.5 flex items-center justify-between gap-3 text-sm">
-                    <span>{g.title}</span>
-                    <span className="font-mono text-xs text-muted-foreground">
-                      {g.progress}%
+                    <span className="truncate">
+                      {e.type.replaceAll("_", " ")}
                     </span>
-                  </div>
-                  <Progress value={g.progress} className="h-1.5" />
-                </li>
-              ))}
-            </ul>
+                    <span className="shrink-0 font-mono text-xs text-muted-foreground">
+                      {new Date(e.at).toLocaleDateString()}
+                      {e.xp > 0 ? ` · +${e.xp}` : ""}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </section>
+        </div>
+
+        <aside className="space-y-6">
+          <section className="rounded-2xl border bg-card p-6">
+            <div className="flex justify-between font-mono text-xs text-muted-foreground">
+              <span>Level {profile.level}</span>
+              <span>
+                {farm.xp}/{farm.xp_for_next} XP
+              </span>
+            </div>
+            <Progress value={pct} className="mt-2 h-1.5" />
+            {farm.roadmap.has_roadmap ? (
+              <p className="mt-3 text-xs text-muted-foreground">
+                {farm.roadmap.done}/{farm.roadmap.total} roadmap steps done
+              </p>
+            ) : null}
           </section>
 
           <section className="rounded-2xl border bg-card p-6">
-            <h2 className="mb-4 text-lg">Recent growth</h2>
-            <ul className="space-y-3">
-              {events.map((e) => (
-                <li key={e.id} className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-sm leading-tight">{e.label}</p>
-                    <p className="font-mono text-[11px] text-muted-foreground">{e.at}</p>
-                  </div>
-                  <Badge variant="secondary" className="shrink-0 font-mono">
-                    +{e.xp}
-                  </Badge>
-                </li>
-              ))}
-            </ul>
+            <h2 className="text-base">Do this next</h2>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">{next.title}.</span>{" "}
+              {next.body}
+            </p>
+            <Link
+              href={next.href}
+              className={`${buttonVariants({ size: "sm" })} mt-4`}
+            >
+              {next.cta}
+            </Link>
           </section>
-        </div>
+        </aside>
       </div>
     </>
   );

@@ -1,13 +1,11 @@
 import type { GrowthStage } from "@/types";
 
-/** Map 0–100 skill mastery to a plant growth stage. */
-export function masteryToStage(mastery: number): GrowthStage {
-  if (mastery >= 80) return "tree";
-  if (mastery >= 50) return "growing";
-  if (mastery >= 20) return "sprout";
-  return "seed";
-}
-
+/**
+ * Mastery-to-stage mapping lives on the server (`farm_service.stage_for`) and
+ * arrives on each plant. It used to be duplicated here with *different*
+ * thresholds (80/50/20 vs the server's 75/50/1), so the same skill could
+ * render as two different plants depending on which path drew it.
+ */
 export const stageLabel: Record<GrowthStage, string> = {
   seed: "Seed",
   sprout: "Sprout",

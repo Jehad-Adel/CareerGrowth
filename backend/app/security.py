@@ -22,6 +22,8 @@ RLS_TABLES: frozenset[str] = frozenset(
         "job_matches",
         "skill_gap_analyses",
         "resume_optimizations",
+        "roadmaps",
+        "roadmap_steps",
     }
 )
 

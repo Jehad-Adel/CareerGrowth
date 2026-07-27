@@ -3,6 +3,7 @@ from app.models.goal import Goal
 from app.models.growth_event import GrowthEvent
 from app.models.matching import JobMatch, ResumeOptimization, SkillGapAnalysis
 from app.models.profile import CareerProfile
+from app.models.roadmap import Roadmap, RoadmapStep
 from app.models.skill import Skill
 from app.models.usage import AiUsage
 
@@ -14,6 +15,8 @@ __all__ = [
     "GrowthEvent",
     "JobMatch",
     "ResumeOptimization",
+    "Roadmap",
+    "RoadmapStep",
     "Skill",
     "SkillGapAnalysis",
 ]
