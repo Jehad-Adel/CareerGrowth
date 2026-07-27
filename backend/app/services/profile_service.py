@@ -106,6 +106,36 @@ def upsert_skills(
     return touched
 
 
+def set_cv_extract(
+    db: Session, profile_id: uuid.UUID, cv_text: str, extracted
+) -> CareerProfile:
+    """Write a CV analysis onto the canonical profile.
+
+    Only fills fields the chain actually found, and never overwrites something
+    the user set by hand with a null — a re-analysis of a thinner CV must not
+    erase their target role or a corrected name.
+    """
+    profile = db.get(CareerProfile, profile_id)
+    if profile is None:
+        raise ValueError(f"No profile {profile_id}")
+
+    profile.cv_text = cv_text
+    if extracted.full_name:
+        profile.full_name = extracted.full_name
+    if extracted.current_role:
+        profile.current_role = extracted.current_role
+    if extracted.seniority_level:
+        profile.seniority_level = extracted.seniority_level.value
+    if extracted.years_of_experience is not None:
+        profile.years_of_experience = extracted.years_of_experience
+    if extracted.summary:
+        profile.summary = extracted.summary
+
+    db.commit()
+    db.refresh(profile)
+    return profile
+
+
 def to_out(profile: CareerProfile) -> ProfileOut:
     """Project the model into the API shape, deriving level from total XP."""
     info = xp_service.level_for_xp(profile.xp)

@@ -15,22 +15,25 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
  * Pages must not call this directly. Everything goes through lib/services.ts,
  * so swapping a mock for a real endpoint stays a one-line change.
  */
-export async function serverFetch<T>(
-  path: string,
-  init: RequestInit = {},
-): Promise<T> {
+async function bearer(): Promise<Record<string, string>> {
   const supabase = await createClient();
   const {
     data: { session },
   } = await supabase.auth.getSession();
+  return session?.access_token
+    ? { Authorization: `Bearer ${session.access_token}` }
+    : {};
+}
 
+export async function serverFetch<T>(
+  path: string,
+  init: RequestInit = {},
+): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
-      ...(session?.access_token
-        ? { Authorization: `Bearer ${session.access_token}` }
-        : {}),
+      ...(await bearer()),
       ...init.headers,
     },
     // Per-user data. Caching it would serve one user's profile to another.
@@ -48,6 +51,38 @@ export async function serverFetch<T>(
       | { detail?: string }
       | null;
     throw new ApiError(res.status, body?.detail ?? res.statusText);
+  }
+
+  return res.status === 204 ? (undefined as T) : ((await res.json()) as T);
+}
+
+/**
+ * Multipart variant for file uploads.
+ *
+ * Deliberately does NOT set Content-Type: fetch must generate it so the
+ * multipart boundary matches the body. Setting it by hand yields a body the
+ * server cannot parse.
+ */
+export async function serverFetchForm<T>(
+  path: string,
+  body: FormData,
+): Promise<T> {
+  const res = await fetch(`${API_URL}${path}`, {
+    method: "POST",
+    headers: await bearer(),
+    body,
+    cache: "no-store",
+  });
+
+  if (res.status === 401) {
+    redirect("/login");
+  }
+
+  if (!res.ok) {
+    const parsed = (await res.json().catch(() => null)) as
+      | { detail?: string }
+      | null;
+    throw new ApiError(res.status, parsed?.detail ?? res.statusText);
   }
 
   return res.status === 204 ? (undefined as T) : ((await res.json()) as T);

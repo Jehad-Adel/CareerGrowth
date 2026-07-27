@@ -7,11 +7,15 @@ requires-python = ">=3.11"
 dependencies = [
     "alembic>=1.13",
     "fastapi>=0.115",
+    "langchain-core>=0.3",
+    "langchain-google-genai>=2.0",
     "pgvector>=0.3",
     "psycopg2-binary>=2.9",
     "pydantic>=2.7",
     "pydantic-settings>=2.3",
     "pyjwt[crypto]>=2.8",
+    "pypdf>=5.0",
+    "python-multipart>=0.0.9",
     "sentry-sdk[fastapi]>=2.18",
     "slowapi>=0.1.9",
     "sqlalchemy>=2.0",
@@ -23,4 +27,12 @@ dependencies = [
 dev = [
     "httpx>=0.27",
     "pytest>=8",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Chain tests hit the real Gemini API. They are opt-in: `uv run pytest -m live`.
+addopts = '-m "not live"'
+markers = [
+    "live: hits the real Gemini API; costs money and needs GOOGLE_API_KEY",
 ]

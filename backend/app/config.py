@@ -19,6 +19,12 @@ class Settings(BaseSettings):
     # ES256 signature on every Supabase access token.
     supabase_url: str = ""
     google_api_key: str = ""
+    # Gemini generation parameters. Low temperature on purpose: every chain
+    # extracts structured facts from a CV, where invention is the failure mode.
+    gemini_model: str = "gemini-flash-lite-latest"
+    temperature: float = 0.2
+    max_output_tokens: int = 2048
+
     cors_origins: str = "http://localhost:3000"
     environment: str = "development"
     debug: bool = False

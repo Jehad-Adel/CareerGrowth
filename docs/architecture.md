@@ -30,8 +30,8 @@ flowchart TD
 
 - **Frontend** (`frontend/`) — Next.js App Router UI. Talks to the backend over HTTPS, attaching the Supabase JWT.
 - **API** (`backend/app/api`) — FastAPI routers; verifies auth, delegates to services.
-- **Services** (planned, `backend/app/services`) — feature business logic. The only place features touch each other's data — through the shared profile, not direct calls.
-- **AI** (planned, `backend/app/chains` + `rag`) — LangChain chains and pgvector RAG, hidden behind the services layer. Routes never import LangChain.
+- **Services** (`backend/app/services`) — feature business logic. The only place features touch each other's data — through the shared profile, not direct calls.
+- **AI** (`backend/app/ai`) — LangChain chains and pgvector RAG, hidden behind the services layer. Routes never import LangChain.
 - **Data** — Supabase Postgres + pgvector.
 
 ## The spine (how features integrate)
@@ -69,7 +69,7 @@ RLS is enabled on every table with **no permissive policy**. The backend connect
 
 Still planned, per phase:
 
-- `cv_analyses`, `job_matches`, `skill_gap_analyses`, `resume_optimizations` — phases 3–4
+- `cv_analyses` — **shipped** (phase 3). `job_matches`, `skill_gap_analyses`, `resume_optimizations` — phase 4
 - `roadmaps` + `roadmap_steps` — phase 5
 - `interview_sessions` + `interview_turns` — phase 6
 - `chat_messages`, `documents` + `document_chunks` (pgvector) — phase 7
@@ -83,7 +83,7 @@ Original plan sequenced the frontend at step 4; it was **brought forward** to a 
 | 1 | Foundation (backend bootstrap) | ✅ Done |
 | — | Frontend: full static UI (all 7 features + auth, mock data, design system) | ✅ Done (brought forward) |
 | 2 | Career Profile + Farm spine (backend) | ✅ Done. Models, migrations (applied to Supabase), RLS, services, `/profile` API, quota, structured logging, security headers, rate limiting. 91 tests. |
-| 3 | CV Studio (AI + wiring frontend to API) | ⬜ Static UI only |
+| 3 | CV Studio (AI + wiring frontend to API) | ✅ Done. ai/ folded into backend/app/ai/; upload -> Gemini -> profile + skills + growth events. |
 | 4 | Dashboard + Farm viz (real data) | ⬜ Static UI only |
 | 5 | Roadmap | ⬜ Static UI only |
 | 6 | Job Match | ⬜ Static UI only |
@@ -92,7 +92,7 @@ Original plan sequenced the frontend at step 4; it was **brought forward** to a 
 
 The frontend renders every feature from a mock data layer (`src/lib/services.ts`) shaped to swap to the real API without UI changes. "Not started" now means **backend + wiring**, not the UI.
 
-**Deferred:** LLM module (arrives with CV Studio), backend feature services, deployment (leaning Vercel + Railway), live `alembic upgrade head` (needs a provisioned Supabase DB).
+**Deferred:** remaining feature services (phases 4-7) and deployment (Vercel + Railway, phase 8). The Supabase project is provisioned and migrated through `0004_cv_analyses`.
 
 ## Stack
 

@@ -93,3 +93,36 @@ export const getRoadmap = (): Promise<RoadmapStep[]> => wait(mock.roadmap);
 
 /** Phase 7. */
 export const getChatHistory = (): Promise<ChatMessage[]> => wait(mock.chatHistory);
+
+// --- CV Studio (Phase 3, live) ---
+
+export type CvProfileResult = {
+  full_name: string | null;
+  current_role: string | null;
+  years_of_experience: number | null;
+  seniority_level: string;
+  skills: string[];
+  strengths: string[];
+  weaknesses: string[];
+  summary: string;
+  improvement_suggestions: string[];
+};
+
+export type CvAnalysisRecord = {
+  id: string;
+  created_at: string;
+  skills_found: number;
+  result: CvProfileResult;
+};
+
+export type CvStatus = {
+  has_cv: boolean;
+  analyses_today: number;
+  daily_limit: number;
+};
+
+export const getCvStatus = (): Promise<CvStatus> =>
+  serverFetch<CvStatus>("/cv/status");
+
+export const getLatestCvAnalysis = (): Promise<CvAnalysisRecord | null> =>
+  serverFetch<CvAnalysisRecord | null>("/cv/latest");

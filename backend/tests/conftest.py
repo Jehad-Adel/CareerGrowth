@@ -1,8 +1,12 @@
 import os
 
+# Pin the suite to a throwaway database before any app import. An OS env var
+# takes precedence over the .env file in pydantic-settings, which is exactly
+# what makes this work — and is also why GOOGLE_API_KEY must NOT be set here:
+# doing so overrode the real key from .env and made every `-m live` test fail
+# with "API key not valid". Unit tests patch the chain and never need a key.
 os.environ.setdefault("DATABASE_URL", "sqlite+pysqlite:///:memory:")
 os.environ.setdefault("SUPABASE_URL", "http://localhost")
-os.environ.setdefault("GOOGLE_API_KEY", "test")
 
 import time
 import uuid
