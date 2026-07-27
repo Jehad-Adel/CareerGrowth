@@ -233,3 +233,55 @@ export const getRoadmapData = (): Promise<RoadmapRecord | null> =>
 /** One round trip. Five separate calls would each pay for auth and a JWKS check. */
 export const getDashboardData = (): Promise<Dashboard> =>
   serverFetch<Dashboard>("/dashboard");
+
+// --- Interview Coach (Phase 6, live) ---
+
+export type InterviewLevel =
+  | "friendly_hr"
+  | "technical_lead"
+  | "stress_interview";
+
+export type InterviewFeedback = {
+  strengths: string[];
+  weaknesses: string[];
+  missing_concepts: string[];
+  confidence_level: number;
+  technical_accuracy: number;
+  communication_score: number;
+};
+
+export type InterviewFinal = {
+  overall_score: number;
+  technical_skills: number;
+  communication: number;
+  confidence: number;
+  problem_solving: number;
+  weak_areas: string[];
+  strong_areas: string[];
+  hiring_recommendation: string;
+  summary: string;
+};
+
+export type InterviewTurnRecord = {
+  id: string;
+  position: number;
+  question: string;
+  difficulty: string | null;
+  expected_topics: string[];
+  answer: string | null;
+  feedback: InterviewFeedback | null;
+  score: number | null;
+};
+
+export type InterviewSessionRecord = {
+  id: string;
+  created_at: string;
+  level: InterviewLevel;
+  interviewer_name: string | null;
+  finished: boolean;
+  final_evaluation: InterviewFinal | null;
+  turns: InterviewTurnRecord[];
+};
+
+export const getLatestInterview = (): Promise<InterviewSessionRecord | null> =>
+  serverFetch<InterviewSessionRecord | null>("/interview/latest");
