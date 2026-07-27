@@ -1,86 +1,232 @@
-import { ArrowRight, Check, X } from "lucide-react";
+import { Sprout } from "lucide-react";
+import Link from "next/link";
 
+import { analyzeGap, matchJob } from "@/app/(app)/jobs/actions";
+import { JobInput } from "@/components/jobs/job-input";
 import { PageHeader } from "@/components/layout/page-header";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { ScoreRing } from "@/components/ui/score-ring";
-import { Textarea } from "@/components/ui/textarea";
-import { getJobMatch } from "@/lib/services";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  getCvStatus,
+  getLatestJobMatch,
+  getLatestSkillGap,
+  type SkillGapItemResult,
+} from "@/lib/services";
+
+const PRIORITY_STYLE: Record<SkillGapItemResult["priority"], string> = {
+  Critical: "bg-destructive/12 text-destructive",
+  High: "bg-[var(--harvest)]/15 text-[var(--harvest)]",
+  Medium: "bg-primary/12 text-primary",
+  Low: "bg-muted text-muted-foreground",
+};
+
+function NoCv() {
+  return (
+    <section className="rounded-2xl border border-dashed bg-card p-10 text-center">
+      <Sprout className="mx-auto h-8 w-8 text-primary" />
+      <h2 className="mt-3 text-lg">Analyze your CV first</h2>
+      <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">
+        Both of these compare a job against the skills your CV already proves,
+        so there is nothing to compare against yet.
+      </p>
+      <Link href="/cv" className={`${buttonVariants()} mt-4`}>
+        Go to CV Studio
+      </Link>
+    </section>
+  );
+}
+
+function Empty({ children }: { children: React.ReactNode }) {
+  return (
+    <section className="rounded-2xl border border-dashed bg-card p-10 text-center text-sm text-muted-foreground">
+      {children}
+    </section>
+  );
+}
 
 export default async function JobsPage() {
-  const job = await getJobMatch();
+  const [status, match, gap] = await Promise.all([
+    getCvStatus(),
+    getLatestJobMatch(),
+    getLatestSkillGap(),
+  ]);
+
+  const header = (
+    <PageHeader
+      eyebrow="Job Match"
+      title="Measure yourself against a role"
+      subtitle="Paste a job description. We compare it against the skills your CV already proves — no re-upload needed."
+    />
+  );
+
+  if (!status.has_cv) {
+    return (
+      <>
+        {header}
+        <NoCv />
+      </>
+    );
+  }
 
   return (
     <>
-      <PageHeader
-        eyebrow="Job Match"
-        title="Is this role a fit?"
-        subtitle="Paste a job description. See how suitable you are, your relevant strengths, and what to close before applying."
-      />
+      {header}
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <section className="rounded-2xl border bg-card p-6 lg:col-span-1">
-          <h2 className="mb-3 text-lg">Job description</h2>
-          <Textarea
-            rows={12}
-            placeholder="Paste the full job posting here…"
-            className="resize-none"
-          />
-          <Button className="mt-4 w-full">Evaluate fit</Button>
-          <p className="mt-3 text-center text-xs text-muted-foreground">
-            Preview uses a sample posting.
-          </p>
-        </section>
+      <Tabs defaultValue="match">
+        <TabsList>
+          <TabsTrigger value="match">Match</TabsTrigger>
+          <TabsTrigger value="gap">Skill gap</TabsTrigger>
+        </TabsList>
 
-        <section className="space-y-6 lg:col-span-2">
-          <div className="rounded-2xl border bg-card p-6">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <h2 className="text-xl">{job.title}</h2>
-                <p className="text-sm text-muted-foreground">{job.company}</p>
-              </div>
-              <ScoreRing value={job.fit} label="Fit" />
-            </div>
+        <TabsContent value="match">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <section className="rounded-2xl border bg-card p-6">
+              <JobInput
+                action={matchJob}
+                label="Score this job"
+                hint="We never invent skills you do not have. A low score is information, not a verdict."
+              />
+            </section>
+
+            {match ? (
+              <section className="space-y-6">
+                <div className="rounded-2xl border bg-card p-6">
+                  <div className="flex items-center gap-6">
+                    <ScoreRing value={match.result.match_score} label="Match" />
+                    <div>
+                      <h2 className="text-lg">
+                        {match.job_title ?? "Latest match"}
+                      </h2>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {match.result.summary}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-5 space-y-3">
+                    <div>
+                      <p className="mb-1.5 text-xs text-muted-foreground">
+                        You have
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {match.result.matched_skills.map((s) => (
+                          <Badge key={s} variant="secondary">
+                            {s}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <p className="mb-1.5 text-xs text-muted-foreground">
+                        They want, you lack
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {match.result.missing_skills.map((s) => (
+                          <Badge key={s} variant="outline">
+                            {s}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border bg-card p-6">
+                  <h3 className="mb-3 text-base">What to do about it</h3>
+                  <ol className="space-y-2.5">
+                    {match.result.recommendations.map((r, i) => (
+                      <li key={r} className="flex gap-3 text-sm">
+                        <span className="font-mono text-xs text-muted-foreground">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        {r}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              </section>
+            ) : (
+              <Empty>
+                No match yet. Paste a job description to see where you stand.
+              </Empty>
+            )}
           </div>
+        </TabsContent>
 
-          <div className="grid gap-6 sm:grid-cols-2">
-            <div className="rounded-2xl border bg-card p-6">
-              <h3 className="mb-3 text-base">You match</h3>
-              <div className="flex flex-wrap gap-2">
-                {job.matched.map((m) => (
-                  <Badge key={m} variant="secondary" className="gap-1">
-                    <Check className="h-3 w-3 text-primary" />
-                    {m}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-            <div className="rounded-2xl border bg-card p-6">
-              <h3 className="mb-3 text-base">Gaps to close</h3>
-              <div className="flex flex-wrap gap-2">
-                {job.gaps.map((g) => (
-                  <Badge key={g} variant="outline" className="gap-1">
-                    <X className="h-3 w-3 text-muted-foreground" />
-                    {g}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          </div>
+        <TabsContent value="gap">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <section className="rounded-2xl border bg-card p-6">
+              <JobInput
+                action={analyzeGap}
+                label="Find my gaps"
+                hint="Answers one question: what should I learn first? Ordered so prerequisites come before what depends on them."
+              />
+            </section>
 
-          <div className="rounded-2xl border bg-card p-6">
-            <h3 className="mb-4 text-base">Before you apply</h3>
-            <ul className="space-y-3">
-              {job.actions.map((a) => (
-                <li key={a} className="flex gap-3 text-sm">
-                  <ArrowRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                  {a}
-                </li>
-              ))}
-            </ul>
+            {gap ? (
+              <section className="space-y-6">
+                <div className="rounded-2xl border bg-card p-6">
+                  <div className="flex items-center gap-6">
+                    <ScoreRing value={gap.result.overall_gap_score} label="Gap" />
+                    <div>
+                      <p className="text-sm text-muted-foreground">
+                        {gap.result.gap_summary}
+                      </p>
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Strongest: {gap.result.strongest_area} · Weakest:{" "}
+                        {gap.result.weakest_area}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {gap.result.missing_skills.map((item) => (
+                    <div key={item.skill} className="rounded-2xl border bg-card p-5">
+                      <div className="flex items-center justify-between gap-3">
+                        <h3 className="text-base">{item.skill}</h3>
+                        <span
+                          className={`rounded-full px-2 py-0.5 text-xs ${PRIORITY_STYLE[item.priority]}`}
+                        >
+                          {item.priority}
+                        </span>
+                      </div>
+                      <p className="mt-1.5 text-sm text-muted-foreground">
+                        {item.importance_reason}
+                      </p>
+                      <dl className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <dt className="text-muted-foreground">You are at</dt>
+                          <dd>{item.current_level}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-muted-foreground">Time to close</dt>
+                          <dd>{item.estimated_learning_time}</dd>
+                        </div>
+                      </dl>
+                      <p className="mt-3 text-xs">
+                        <span className="text-muted-foreground">Build: </span>
+                        {item.project_to_practice}
+                      </p>
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {item.recommended_resources.map((r) => (
+                          <Badge key={r} variant="secondary">
+                            {r}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : (
+              <Empty>No gap analysis yet.</Empty>
+            )}
           </div>
-        </section>
-      </div>
+        </TabsContent>
+      </Tabs>
     </>
   );
 }

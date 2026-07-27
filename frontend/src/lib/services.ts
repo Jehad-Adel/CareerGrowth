@@ -126,3 +126,60 @@ export const getCvStatus = (): Promise<CvStatus> =>
 
 export const getLatestCvAnalysis = (): Promise<CvAnalysisRecord | null> =>
   serverFetch<CvAnalysisRecord | null>("/cv/latest");
+
+// --- Job Match / Skill Gap / Resume Optimizer (Phase 4, live) ---
+
+export type AnalysisRecord<T> = {
+  id: string;
+  created_at: string;
+  job_title: string | null;
+  result: T;
+};
+
+export type JobMatchResult = {
+  match_score: number;
+  matched_skills: string[];
+  missing_skills: string[];
+  strengths: string[];
+  weaknesses: string[];
+  recommendations: string[];
+  summary: string;
+};
+
+export type SkillGapItemResult = {
+  skill: string;
+  priority: "Critical" | "High" | "Medium" | "Low";
+  importance_reason: string;
+  current_level: "None" | "Beginner" | "Intermediate" | "Advanced";
+  estimated_learning_time: string;
+  prerequisite_skills: string[];
+  recommended_resources: string[];
+  project_to_practice: string;
+  mandatory: boolean;
+};
+
+export type SkillGapResult = {
+  overall_gap_score: number;
+  strongest_area: string;
+  weakest_area: string;
+  gap_summary: string;
+  missing_skills: SkillGapItemResult[];
+};
+
+export type ResumeResult = {
+  ats_score_before: number;
+  ats_score_after: number;
+  summary_of_changes: string[];
+  missing_information: string[];
+  optimized_sections: { title: string; content: string[] }[];
+  final_resume_text: string;
+};
+
+export const getLatestJobMatch = (): Promise<AnalysisRecord<JobMatchResult> | null> =>
+  serverFetch<AnalysisRecord<JobMatchResult> | null>("/jobs/latest");
+
+export const getLatestSkillGap = (): Promise<AnalysisRecord<SkillGapResult> | null> =>
+  serverFetch<AnalysisRecord<SkillGapResult> | null>("/skills/gap/latest");
+
+export const getLatestResume = (): Promise<AnalysisRecord<ResumeResult> | null> =>
+  serverFetch<AnalysisRecord<ResumeResult> | null>("/cv/optimize/latest");
