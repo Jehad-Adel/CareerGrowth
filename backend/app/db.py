@@ -1,12 +1,30 @@
 from collections.abc import Iterator
 from functools import lru_cache
 
-from sqlalchemy import Engine, create_engine
+from sqlalchemy import Engine, create_engine, event
 from sqlalchemy.orm import Session, declarative_base, sessionmaker
 
 from app.config import get_settings
 
 Base = declarative_base()
+
+
+@event.listens_for(Engine, "connect")
+def _enable_sqlite_foreign_keys(dbapi_connection, connection_record) -> None:
+    """Turn on FK enforcement for SQLite connections.
+
+    SQLite ships PRAGMA foreign_keys defaulted to OFF, per-connection, and
+    SQLAlchemy never issues it for you. Without this listener every
+    ondelete="CASCADE" in app/models/* is silently ignored on SQLite: rows
+    that should cascade-delete just sit there orphaned, and the test suite
+    (which runs entirely against SQLite) would give false confidence that
+    cascades work. This is a no-op for every other dialect (e.g. Postgres),
+    which enforces FKs natively and doesn't understand this pragma.
+    """
+    if type(dbapi_connection).__module__.startswith("sqlite3"):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
 
 
 @lru_cache

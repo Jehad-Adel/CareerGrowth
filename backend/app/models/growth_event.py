@@ -9,7 +9,10 @@ from app.models.base import BigIntegerType, JSONType
 
 
 class GrowthEvent(Base):
-    """Append-only. Never updated, never deleted. The Farm reads this."""
+    """Append-only from the application's side: individual events are never
+    updated or deleted. The whole log is hard-deleted along with its
+    profile via the FK's ondelete="CASCADE" — that's intended, since
+    account deletion must purge user data. The Farm reads this."""
 
     __tablename__ = "growth_events"
     __table_args__ = (

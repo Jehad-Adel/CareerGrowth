@@ -1,7 +1,7 @@
 import uuid
 from datetime import date
 
-from sqlalchemy import create_engine
+from sqlalchemy import Uuid, bindparam, create_engine, text
 from sqlalchemy.orm import Session
 
 from app.db import Base
@@ -32,6 +32,46 @@ def test_profile_defaults_and_skill_cascade():
     db.delete(profile)
     db.commit()
     assert db.query(Skill).count() == 0
+
+
+def test_raw_sql_delete_cascades_at_db_level():
+    """Exercises the DB-level ondelete="CASCADE", not the ORM's
+    cascade="all, delete-orphan". The delete below goes straight through
+    raw SQL, bypassing the ORM session entirely, so the only thing that
+    can remove the child rows is SQLite honoring the foreign key
+    constraint (see the PRAGMA foreign_keys=ON listener in app/db.py).
+    """
+    db = _session()
+    profile = CareerProfile(user_id=uuid.uuid4(), email="a@b.com")
+    db.add(profile)
+    db.commit()
+    profile_id = profile.id
+
+    db.add(Skill(profile_id=profile_id, name="Python", source="cv"))
+    db.add(Goal(profile_id=profile_id, title="Learn Kubernetes"))
+    db.add(
+        GrowthEvent(
+            profile_id=profile_id,
+            type="skill_discovered",
+            payload={"skill": "Python"},
+            xp_awarded=10,
+        )
+    )
+    db.add(
+        AiUsage(profile_id=profile_id, day=date(2026, 7, 27), feature="cv_analysis")
+    )
+    db.commit()
+
+    delete_stmt = text("DELETE FROM career_profiles WHERE id = :id").bindparams(
+        bindparam("id", type_=Uuid)
+    )
+    db.execute(delete_stmt, {"id": profile_id})
+    db.commit()
+
+    assert db.query(Skill).count() == 0
+    assert db.query(Goal).count() == 0
+    assert db.query(GrowthEvent).count() == 0
+    assert db.query(AiUsage).count() == 0
 
 
 def test_growth_event_stores_json_payload():
