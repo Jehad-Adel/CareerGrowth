@@ -2,7 +2,6 @@ import os
 
 os.environ.setdefault("DATABASE_URL", "sqlite+pysqlite:///:memory:")
 os.environ.setdefault("SUPABASE_URL", "http://localhost")
-os.environ.setdefault("SUPABASE_JWT_SECRET", "test-secret")
 os.environ.setdefault("GOOGLE_API_KEY", "test")
 
 import time
@@ -10,26 +9,60 @@ import uuid
 
 import jwt
 import pytest
+from cryptography.hazmat.primitives.asymmetric import ec
 from fastapi.testclient import TestClient
 
 from app.config import get_settings
 from app.main import create_app
 
+# Supabase signs access tokens with ES256 and publishes the public key at a
+# JWKS endpoint. Tests mint their own P-256 keypair and stub the JWKS client,
+# so the suite verifies real asymmetric signatures without a network call.
+TEST_SIGNING_KEY = ec.generate_private_key(ec.SECP256R1())
+WRONG_SIGNING_KEY = ec.generate_private_key(ec.SECP256R1())
+TEST_KID = "test-signing-key"
+
+
+class _StubSigningKey:
+    def __init__(self, key):
+        self.key = key
+
+
+class _StubJWKClient:
+    """Stands in for PyJWKClient, serving the test public key."""
+
+    def __init__(self, public_key):
+        self._public_key = public_key
+
+    def get_signing_key_from_jwt(self, _token):
+        return _StubSigningKey(self._public_key)
+
+
+@pytest.fixture(autouse=True)
+def _stub_jwks(monkeypatch):
+    """Point auth at the test keypair instead of Supabase's JWKS endpoint."""
+    import app.auth
+
+    client = _StubJWKClient(TEST_SIGNING_KEY.public_key())
+    monkeypatch.setattr(app.auth, "_jwk_client", lambda: client)
+
 
 @pytest.fixture(autouse=True)
 def _clear_settings_cache():
+    from app.auth import _jwk_client
     from app.db import get_engine, get_sessionmaker
     from app.limiter import reset_rate_limit_state
 
-    get_settings.cache_clear()
-    get_engine.cache_clear()
-    get_sessionmaker.cache_clear()
-    reset_rate_limit_state()
+    def _clear():
+        get_settings.cache_clear()
+        get_engine.cache_clear()
+        get_sessionmaker.cache_clear()
+        _jwk_client.cache_clear()
+        reset_rate_limit_state()
+
+    _clear()
     yield
-    get_settings.cache_clear()
-    get_engine.cache_clear()
-    get_sessionmaker.cache_clear()
-    reset_rate_limit_state()
+    _clear()
 
 
 @pytest.fixture
@@ -60,11 +93,22 @@ def client():
     db.close()
 
 
-def make_token(secret="test-secret", sub=None, email="a@b.com",
-               exp_offset=3600, aud="authenticated"):
-    # sub defaults to a fresh UUID: Supabase issues UUID subjects, and
-    # profile_service.get_or_create parses it as one. A literal like
-    # "user-123" would blow up there rather than in the auth layer.
-    payload = {"sub": sub or str(uuid.uuid4()), "email": email, "aud": aud,
-               "exp": int(time.time()) + exp_offset}
-    return jwt.encode(payload, secret, algorithm="HS256")
+def make_token(key=None, sub=None, email="a@b.com", exp_offset=3600,
+               aud="authenticated"):
+    """Mint an ES256 token shaped like a Supabase access token.
+
+    sub defaults to a fresh UUID because Supabase issues UUID subjects and
+    profile_service.get_or_create parses it as one.
+    """
+    payload = {
+        "sub": sub or str(uuid.uuid4()),
+        "email": email,
+        "aud": aud,
+        "exp": int(time.time()) + exp_offset,
+    }
+    return jwt.encode(
+        payload,
+        key or TEST_SIGNING_KEY,
+        algorithm="ES256",
+        headers={"kid": TEST_KID},
+    )

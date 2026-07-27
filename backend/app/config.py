@@ -15,8 +15,9 @@ class Settings(BaseSettings):
     # Direct (non-pooled) connection, used by Alembic only. Falls back to
     # database_url when unset.
     direct_database_url: str = ""
+    # Load-bearing: auth.py derives the JWKS URL from this to verify the
+    # ES256 signature on every Supabase access token.
     supabase_url: str = ""
-    supabase_jwt_secret: str = ""
     google_api_key: str = ""
     cors_origins: str = "http://localhost:3000"
     environment: str = "development"

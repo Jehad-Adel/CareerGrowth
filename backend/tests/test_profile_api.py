@@ -40,7 +40,9 @@ def test_profile_requires_auth(api):
 
 
 def test_profile_rejects_a_bad_signature(api):
-    tok = make_token(secret="wrong-secret")
+    from tests.conftest import WRONG_SIGNING_KEY
+
+    tok = make_token(key=WRONG_SIGNING_KEY)
     r = api.get("/profile", headers={"Authorization": f"Bearer {tok}"})
     assert r.status_code == 401
 
