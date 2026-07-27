@@ -1,6 +1,8 @@
-import { Flame, Search } from "lucide-react";
+import { Flame, LogOut, Search } from "lucide-react";
 
+import { signOut } from "@/app/(auth)/actions";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import type { Profile } from "@/types";
 
@@ -53,6 +55,21 @@ export function Topbar({ profile }: { profile: Profile }) {
             {initials(profile.name)}
           </AvatarFallback>
         </Avatar>
+
+        {/* A server action, so logging out works with JavaScript disabled and
+            needs no client-side Supabase call. */}
+        <form action={signOut}>
+          <Button
+            type="submit"
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9"
+            aria-label="Log out"
+            title="Log out"
+          >
+            <LogOut className="h-4 w-4" />
+          </Button>
+        </form>
       </div>
     </header>
   );

@@ -1,8 +1,7 @@
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { signUp } from "@/app/(auth)/actions";
+import { AuthForm } from "@/components/auth/auth-form";
 
 export default function SignupPage() {
   return (
@@ -12,23 +11,32 @@ export default function SignupPage() {
         Create your farm in under a minute.
       </p>
 
-      <div className="mt-6 space-y-4">
-        <div className="space-y-1.5">
-          <Label htmlFor="name">Name</Label>
-          <Input id="name" placeholder="Nour Hassan" />
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="you@example.com" />
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="password">Password</Label>
-          <Input id="password" type="password" placeholder="At least 8 characters" />
-        </div>
-        <Button type="button" className="w-full">
-          Create account
-        </Button>
-      </div>
+      <AuthForm
+        action={signUp}
+        submitLabel="Create account"
+        fields={[
+          {
+            name: "name",
+            label: "Name",
+            placeholder: "Nour Hassan",
+            autoComplete: "name",
+          },
+          {
+            name: "email",
+            label: "Email",
+            type: "email",
+            placeholder: "you@example.com",
+            autoComplete: "email",
+          },
+          {
+            name: "password",
+            label: "Password",
+            type: "password",
+            placeholder: "At least 8 characters",
+            autoComplete: "new-password",
+          },
+        ]}
+      />
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         Already have an account?{" "}
