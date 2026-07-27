@@ -1,6 +1,7 @@
 import uuid
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.auth import AuthUser
@@ -14,17 +15,38 @@ def get_or_create(db: Session, user: AuthUser) -> CareerProfile:
 
     Signup happens entirely in Supabase, so the first authenticated API call
     is where the profile row comes into existence.
+
+    That first call is rarely alone: a page renders its layout and its content
+    concurrently, so several requests reach here at once with no profile yet.
+    All of them see nothing, all of them insert, and one wins. The loser is
+    handled below rather than 500ing -- the unique index on user_id is what
+    makes this safe, and catching its violation is the whole point of having
+    it.
     """
     user_id = uuid.UUID(user.id)
-    profile = db.execute(
-        select(CareerProfile).where(CareerProfile.user_id == user_id)
-    ).scalar_one_or_none()
+
+    def _find() -> CareerProfile | None:
+        return db.execute(
+            select(CareerProfile).where(CareerProfile.user_id == user_id)
+        ).scalar_one_or_none()
+
+    profile = _find()
     if profile is not None:
         return profile
 
     profile = CareerProfile(user_id=user_id, email=user.email)
     db.add(profile)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        # A concurrent request created it between our SELECT and INSERT.
+        db.rollback()
+        existing = _find()
+        if existing is None:
+            # The violation was not the one we expected; do not swallow it.
+            raise
+        return existing
+
     db.refresh(profile)
     return profile
 

@@ -4,10 +4,11 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+from sqlalchemy.pool import StaticPool
 
 from app.auth import AuthUser
 from app.db import Base
-from app.models import GrowthEvent, Skill
+from app.models import CareerProfile, GrowthEvent, Skill
 from app.schemas.profile import ProfileUpdate, SkillIn
 from app.services import profile_service
 
@@ -31,6 +32,61 @@ def test_get_or_create_is_idempotent():
 
     assert first.id == second.id
     assert first.email == "a@b.com"
+
+
+def test_get_or_create_survives_a_concurrent_insert():
+    """Two requests race to create the same profile; the loser must not 500.
+
+    A page renders its layout and its content concurrently, so the very first
+    authenticated call is usually several calls at once. All of them see no
+    profile, all of them insert, and one loses on the unique index over
+    user_id. This is the exact bug that made the first real login fail.
+    """
+    # One engine, two sessions -- otherwise each session gets its own
+    # in-memory database and there is nothing to collide with.
+    engine = create_engine(
+        "sqlite+pysqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    Base.metadata.create_all(engine)
+    db = Session(engine)
+    rival = Session(engine)
+
+    user = _user()
+    user_id = uuid.UUID(user.id)
+    real_commit = db.commit
+    calls = {"n": 0}
+
+    def commit_losing_the_race():
+        calls["n"] += 1
+        if calls["n"] == 1:
+            # The other request wins between our SELECT and our INSERT.
+            rival.add(CareerProfile(user_id=user_id, email=user.email))
+            rival.commit()
+        return real_commit()
+
+    db.commit = commit_losing_the_race  # type: ignore[method-assign]
+    try:
+        profile = profile_service.get_or_create(db, user)
+    finally:
+        db.commit = real_commit  # type: ignore[method-assign]
+
+    assert profile.user_id == user_id
+    assert db.query(CareerProfile).filter_by(user_id=user_id).count() == 1
+
+
+def test_get_or_create_does_not_swallow_an_unrelated_integrity_error():
+    """Only the race is recovered from; other violations must still surface."""
+    db = _session()
+    user = _user()
+
+    def commit_that_always_fails():
+        raise IntegrityError("INSERT", {}, Exception("something else broke"))
+
+    db.commit = commit_that_always_fails  # type: ignore[method-assign]
+    with pytest.raises(IntegrityError):
+        profile_service.get_or_create(db, user)
 
 
 def test_get_or_create_separates_users():
