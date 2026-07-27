@@ -18,9 +18,10 @@ def test_me_expired(client):
 
 
 def test_me_valid(client):
-    tok = make_token()
+    sub = "11111111-1111-1111-1111-111111111111"
+    tok = make_token(sub=sub)
     r = client.get("/me", headers={"Authorization": f"Bearer {tok}"})
     assert r.status_code == 200
     body = r.json()
-    assert body["id"] == "user-123"
+    assert body["id"] == sub
     assert body["email"] == "a@b.com"

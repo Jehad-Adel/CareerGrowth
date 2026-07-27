@@ -6,6 +6,7 @@ os.environ.setdefault("SUPABASE_JWT_SECRET", "test-secret")
 os.environ.setdefault("GOOGLE_API_KEY", "test")
 
 import time
+import uuid
 
 import jwt
 import pytest
@@ -36,8 +37,11 @@ def client():
     return TestClient(create_app())
 
 
-def make_token(secret="test-secret", sub="user-123", email="a@b.com",
+def make_token(secret="test-secret", sub=None, email="a@b.com",
                exp_offset=3600, aud="authenticated"):
-    payload = {"sub": sub, "email": email, "aud": aud,
+    # sub defaults to a fresh UUID: Supabase issues UUID subjects, and
+    # profile_service.get_or_create parses it as one. A literal like
+    # "user-123" would blow up there rather than in the auth layer.
+    payload = {"sub": sub or str(uuid.uuid4()), "email": email, "aud": aud,
                "exp": int(time.time()) + exp_offset}
     return jwt.encode(payload, secret, algorithm="HS256")
