@@ -1,27 +1,14 @@
 import type { NextConfig } from "next";
 
 const isProd = process.env.NODE_ENV === "production";
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 
-// 'unsafe-inline' on style-src is required by Tailwind's runtime style
-// injection. script-src needs 'unsafe-inline' in development for Turbopack's
-// HMR client; production drops it.
-const csp = [
-  "default-src 'self'",
-  `script-src 'self'${isProd ? "" : " 'unsafe-inline' 'unsafe-eval'"}`,
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
-  "font-src 'self' data:",
-  `connect-src 'self' ${apiUrl} ${supabaseUrl}`.trim(),
-  "frame-ancestors 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-  "object-src 'none'",
-].join("; ");
-
+// The CSP is deliberately NOT here — it needs a per-request nonce, so it is
+// built in `src/lib/csp.ts` and set by `src/proxy.ts`. Adding one back to this
+// list does not override that header, it adds a second policy: both are
+// enforced, and a static `script-src 'self'` would block the nonced scripts
+// the proxy just allowed. That failure looks like a page that renders and
+// then never hydrates.
 const securityHeaders = [
-  { key: "Content-Security-Policy", value: csp },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },

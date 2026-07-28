@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+import { buildCsp, generateNonce } from "@/lib/csp";
 import { updateSession } from "@/lib/supabase/proxy";
 
 /**
@@ -13,6 +14,9 @@ import { updateSession } from "@/lib/supabase/proxy";
  * visitor seeing an app shell. It is not the authorization boundary. That
  * lives in the FastAPI service, which verifies the token's ES256 signature
  * against Supabase's JWKS on every request.
+ *
+ * It also mints the CSP nonce — see `lib/csp.ts` for why the policy cannot be
+ * a static header.
  */
 
 /** Routes that require a session. Everything else is public. */
@@ -44,7 +48,16 @@ function copyCookies(from: NextResponse, to: NextResponse) {
 }
 
 export async function proxy(request: NextRequest) {
-  const { response, claims } = await updateSession(request);
+  const nonce = generateNonce();
+  const csp = buildCsp(nonce);
+
+  // Next reads the nonce off the *request* CSP header during render and
+  // stamps it onto its own script tags; `x-nonce` is for our own code, should
+  // a Server Component ever need to pass it to a <Script>.
+  const { response, claims } = await updateSession(request, {
+    "x-nonce": nonce,
+    "Content-Security-Policy": csp,
+  });
   const { pathname } = request.nextUrl;
 
   const needsAuth = PROTECTED.some(
@@ -68,6 +81,7 @@ export async function proxy(request: NextRequest) {
     return copyCookies(response, NextResponse.redirect(url));
   }
 
+  response.headers.set("Content-Security-Policy", csp);
   return response;
 }
 

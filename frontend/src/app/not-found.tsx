@@ -1,8 +1,13 @@
 import Link from "next/link";
+import { connection } from "next/server";
 
 import { buttonVariants } from "@/components/ui/button";
 
-export default function NotFound() {
+// Dynamic for the same reason as `/` — a prerendered 404 carries scripts with
+// no nonce, which the CSP then blocks.
+export default async function NotFound() {
+  await connection();
+
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-4 px-6 py-24 text-center">
       <p className="font-mono text-sm text-muted-foreground">404</p>

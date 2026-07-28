@@ -7,9 +7,27 @@ import { NextResponse, type NextRequest } from "next/server";
  * Returns the response that carries any refreshed cookies. Callers must build
  * their redirects by copying cookies off this response, or the refresh is lost
  * and the user is silently logged out on the next hop.
+ *
+ * `extraRequestHeaders` is forwarded to the rendering pass — that is how the
+ * CSP nonce reaches Next, which reads it off the request rather than the
+ * response.
  */
-export async function updateSession(request: NextRequest) {
-  let response = NextResponse.next({ request });
+export async function updateSession(
+  request: NextRequest,
+  extraRequestHeaders: Record<string, string> = {},
+) {
+  // Rebuilt on every call rather than hoisted: `request.cookies.set` below
+  // rewrites the request's own `cookie` header, and the forwarded copy has to
+  // be taken after that or the refreshed session never reaches the render.
+  const forwardRequest = () => {
+    const headers = new Headers(request.headers);
+    for (const [key, value] of Object.entries(extraRequestHeaders)) {
+      headers.set(key, value);
+    }
+    return NextResponse.next({ request: { headers } });
+  };
+
+  let response = forwardRequest();
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -23,7 +41,7 @@ export async function updateSession(request: NextRequest) {
           for (const { name, value } of cookiesToSet) {
             request.cookies.set(name, value);
           }
-          response = NextResponse.next({ request });
+          response = forwardRequest();
           for (const { name, value, options } of cookiesToSet) {
             response.cookies.set(name, value, options);
           }

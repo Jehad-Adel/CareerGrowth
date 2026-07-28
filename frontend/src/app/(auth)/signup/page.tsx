@@ -1,9 +1,15 @@
 import Link from "next/link";
+import { connection } from "next/server";
 
 import { signUp } from "@/app/(auth)/actions";
 import { AuthForm } from "@/components/auth/auth-form";
 
-export default function SignupPage() {
+// Dynamic on purpose — a prerendered page has no request to take a CSP nonce
+// from, so its scripts get blocked and the form never hydrates. `/login` is
+// already dynamic because it awaits searchParams.
+export default async function SignupPage() {
+  await connection();
+
   return (
     <div className="rounded-2xl border bg-card p-8">
       <h1 className="text-2xl">Start growing</h1>

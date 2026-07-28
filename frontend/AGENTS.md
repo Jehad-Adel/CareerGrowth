@@ -38,7 +38,9 @@ Each confirmed against the bundled docs, not remembered.
 - Auth mutations are **server actions** in `src/app/(auth)/actions.ts`, validated with zod on the server. Client-side validation is convenience only.
 - **Wrong password and unknown email must return byte-identical text.** Differentiating them is a user-enumeration oracle. `CREDENTIALS_REJECTED` is the single constant both paths use.
 - No `dangerouslySetInnerHTML` anywhere. The codebase has zero; keep it that way — the chat renders LLM output as plain text.
-- Security headers live in `next.config.ts`. The CSP's `connect-src` must include the API URL and the Supabase URL.
+- Security headers live in `next.config.ts` — **except the CSP**, which is built per request in `lib/csp.ts` and set by `proxy.ts`. Its `connect-src` must include the API URL and the Supabase URL.
+- **The CSP carries a per-request nonce, so every route that ships HTML must be dynamic.** The App Router emits inline bootstrap scripts (`self.__next_f.push(...)`); a prerendered page freezes them at build time, where there is no request and no nonce, and the browser blocks all of them — the page renders and then never hydrates, with nothing failing server-side. `/`, `/signup`, and `not-found.tsx` each `await connection()` for exactly this reason. Check after adding a route: `npm run build` must show `ƒ`, not `○`, for anything that returns a document. Only `opengraph-image`, `robots.txt`, and `sitemap.xml` are legitimately static.
+- **Never put a CSP back in `next.config.ts`.** A second policy does not replace the proxy's, it is enforced alongside it, and a static `script-src 'self'` re-blocks the nonced scripts.
 
 ## Gotchas
 
