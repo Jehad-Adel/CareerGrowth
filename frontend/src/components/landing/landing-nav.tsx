@@ -1,5 +1,6 @@
 "use client";
 
+import { LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -13,7 +14,7 @@ const LINKS = [
   { href: "#connected", label: "Connected" },
 ];
 
-export function LandingNav() {
+export function LandingNav({ signedIn = false }: { signedIn?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -32,10 +33,12 @@ export function LandingNav() {
           : "border-b border-transparent",
       )}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
-        <Link href="/" className="flex items-center gap-2">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:px-6 sm:py-3.5">
+        <Link href="/" className="flex min-w-0 items-center gap-2">
           <Logo />
-          <span className="font-heading text-lg font-semibold">CareerFarm</span>
+          <span className="truncate font-heading text-base font-semibold sm:text-lg">
+            CareerFarm
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex">
@@ -50,16 +53,28 @@ export function LandingNav() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <Link
-            href="/login"
-            className={buttonVariants({ variant: "ghost", size: "sm" })}
-          >
-            Log in
-          </Link>
-          <Link href="/signup" className={buttonVariants({ size: "sm" })}>
-            Get started
-          </Link>
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+          {/* One primary action either way. Offering a signed-in visitor
+              "Log in" sends them to a route the proxy immediately bounces
+              back to /dashboard — a redirect that reads as a broken link. */}
+          {signedIn ? (
+            <Link href="/dashboard" className={buttonVariants({ size: "sm" })}>
+              <LayoutDashboard className="me-1.5 h-4 w-4" />
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className={buttonVariants({ variant: "ghost", size: "sm" })}
+              >
+                Log in
+              </Link>
+              <Link href="/signup" className={buttonVariants({ size: "sm" })}>
+                Get started
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

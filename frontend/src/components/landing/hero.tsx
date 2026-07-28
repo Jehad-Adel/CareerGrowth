@@ -13,6 +13,7 @@ import {
 import { Plant } from "@/components/farm/plant";
 import { buttonVariants } from "@/components/ui/button";
 import { stageLabel } from "@/lib/growth";
+import { cn } from "@/lib/utils";
 import type { GrowthStage } from "@/types";
 
 const STAGES: GrowthStage[] = ["seed", "sprout", "growing", "tree"];
@@ -44,7 +45,7 @@ export function Hero() {
   const contentOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
 
   return (
-    <section ref={ref} className="relative overflow-hidden px-6 pt-40 pb-24">
+    <section ref={ref} className="relative overflow-hidden px-5 pt-28 pb-16 sm:px-6 sm:pt-40 sm:pb-24">
       {/* Depth 0–1 — ambient atmosphere */}
       <m.div
         aria-hidden
@@ -91,7 +92,7 @@ export function Hero() {
           initial={reduce ? false : "hidden"}
           animate={reduce ? undefined : "show"}
           aria-label="Grow your career like a farm."
-          className="mx-auto mt-5 max-w-3xl text-5xl leading-[1.03] tracking-tight sm:text-7xl"
+          className="mx-auto mt-5 max-w-3xl text-4xl leading-[1.05] tracking-tight sm:text-6xl sm:leading-[1.03] md:text-7xl"
         >
           {HEADLINE.map((w, i) => (
             <span
@@ -115,7 +116,7 @@ export function Hero() {
           initial={reduce ? false : { opacity: 0, y: 12 }}
           animate={reduce ? undefined : { opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.7 }}
-          className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground"
+          className="mx-auto mt-5 max-w-xl text-base text-muted-foreground sm:mt-6 sm:text-lg"
         >
           Understand where you stand, find your skill gaps, and take real steps
           to grow — in one connected space that makes progress something you can
@@ -126,14 +127,23 @@ export function Hero() {
           initial={reduce ? false : { opacity: 0, y: 12 }}
           animate={reduce ? undefined : { opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.85 }}
-          className="mt-9 flex items-center justify-center gap-3"
+          // Two `lg` buttons side by side are wider than a 375px screen, which
+          // squeezed both labels onto two cramped lines. They stack until
+          // there is room for a row.
+          className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:mt-9 sm:flex-row sm:items-center"
         >
-          <Link href="/signup" className={buttonVariants({ size: "lg" })}>
+          <Link
+            href="/signup"
+            className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto")}
+          >
             Start growing — free
           </Link>
           <Link
             href="/dashboard"
-            className={buttonVariants({ variant: "outline", size: "lg" })}
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "w-full sm:w-auto",
+            )}
           >
             See the live demo
           </Link>
@@ -141,8 +151,8 @@ export function Hero() {
       </m.div>
 
       {/* Signature — the growth strip */}
-      <div className="mx-auto mt-16 max-w-3xl">
-        <div className="rounded-3xl border bg-card/70 px-6 py-10 backdrop-blur-sm sm:px-12">
+      <div className="mx-auto mt-12 max-w-3xl sm:mt-16">
+        <div className="rounded-3xl border bg-card/70 px-3 py-8 backdrop-blur-sm sm:px-12 sm:py-10">
           <div className="flex items-end justify-between gap-2 sm:gap-8">
             {STAGES.map((stage, i) => (
               <m.div
@@ -157,7 +167,9 @@ export function Hero() {
                 }}
                 className="flex flex-1 flex-col items-center gap-2"
               >
-                <div className="h-24 w-20 cf-sway" style={{ animationDelay: `${i * 0.4}s` }}>
+                {/* Five 80px plants plus gaps overflow a phone. They shrink
+                    rather than clip, so the whole growth arc stays visible. */}
+                <div className="cf-sway h-16 w-12 sm:h-24 sm:w-20" style={{ animationDelay: `${i * 0.4}s` }}>
                   <Plant stage={stage} />
                 </div>
                 <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">

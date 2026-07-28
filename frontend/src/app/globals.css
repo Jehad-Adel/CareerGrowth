@@ -214,6 +214,29 @@
     background: transparent;
   }
 
+  /* Lenis (landing page only — see components/landing/smooth-scroll.tsx).
+     These four rules are the library's stylesheet, inlined so the smoothing
+     costs no extra stylesheet request. `scroll-behavior: auto` is the
+     important one: with Lenis running, the CSS smooth scroll above would
+     animate the same scroll position from the other side and the two fight
+     over every hash link. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+    scroll-behavior: auto;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+  .lenis [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  /* Wheel events over an iframe never reach Lenis, so the page would jump
+     between smoothed and native mid-scroll. */
+  .lenis.lenis-smooth iframe {
+    pointer-events: none;
+  }
+
   /* Inner panes (chat transcript, sidebars) get a slimmer bar so they do not
      compete with the page's own. */
   .scroll-area::-webkit-scrollbar {

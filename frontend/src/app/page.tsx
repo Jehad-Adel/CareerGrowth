@@ -7,8 +7,10 @@ import { Hero } from "@/components/landing/hero";
 import { LandingNav } from "@/components/landing/landing-nav";
 import { MotionProvider } from "@/components/landing/motion-provider";
 import { SiteFooter } from "@/components/landing/site-footer";
+import { SmoothScroll } from "@/components/landing/smooth-scroll";
 import { Stats } from "@/components/landing/stats";
 import { Steps } from "@/components/landing/steps";
+import { getVerifiedClaims } from "@/lib/supabase/server";
 
 // Prerendering this page would freeze its <script> tags at build time, where
 // there is no request and therefore no CSP nonce — the browser then blocks
@@ -19,9 +21,16 @@ import { Steps } from "@/components/landing/steps";
 export default async function Home() {
   await connection();
 
+  // Signed-in visitors get "Dashboard" instead of "Log in / Get started".
+  // Verified here rather than in the nav: the claims come from a signature
+  // check against Supabase's JWKS, which is server-only work, and the landing
+  // page is already rendered per request.
+  const signedIn = (await getVerifiedClaims()) !== null;
+
   return (
     <div className="min-h-screen">
-      <LandingNav />
+      <SmoothScroll />
+      <LandingNav signedIn={signedIn} />
       <MotionProvider>
         <main>
           <Hero />
