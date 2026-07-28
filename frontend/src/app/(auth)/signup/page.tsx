@@ -7,8 +7,13 @@ import { AuthForm } from "@/components/auth/auth-form";
 // Dynamic on purpose — a prerendered page has no request to take a CSP nonce
 // from, so its scripts get blocked and the form never hydrates. `/login` is
 // already dynamic because it awaits searchParams.
-export default async function SignupPage() {
+export default async function SignupPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ notice?: string; error?: string }>;
+}) {
   await connection();
+  const { notice, error } = await searchParams;
 
   return (
     <div className="rounded-2xl border bg-card p-8">
@@ -20,6 +25,8 @@ export default async function SignupPage() {
       <AuthForm
         action={signUp}
         submitLabel="Create account"
+        initialNotice={notice}
+        initialError={error}
         fields={[
           {
             name: "name",

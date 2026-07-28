@@ -10,15 +10,6 @@ import {
   signUpSchema,
 } from "@/lib/validation/auth";
 
-/**
- * One message for every credential failure.
- *
- * Distinguishing "no such account" from "wrong password" is a user-enumeration
- * oracle: it lets anyone check whether an address has an account here. Keep
- * this single constant as the only thing either path returns.
- */
-const CREDENTIALS_REJECTED = "That email and password combination is not valid.";
-
 /** Only allow same-origin relative paths, so `next` cannot become an open redirect. */
 function safeNext(next: FormDataEntryValue | null): string {
   if (typeof next !== "string") return "/dashboard";
@@ -51,9 +42,42 @@ export async function signIn(
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
 
   if (error) {
-    // Never surface error.message: it differentiates unconfirmed accounts,
-    // wrong passwords, and rate limiting.
-    return { formError: CREDENTIALS_REJECTED };
+    const msg = error.message.toLowerCase();
+    if (
+      msg.includes("confirm") ||
+      msg.includes("not confirmed") ||
+      (error.status === 400 && msg.includes("email"))
+    ) {
+      return {
+        formError:
+          "Please check your email and confirm your account before logging in.",
+      };
+    }
+    if (
+      msg.includes("rate limit") ||
+      msg.includes("too many") ||
+      error.status === 429
+    ) {
+      return {
+        formError:
+          "Too many login attempts. Please wait a few minutes and try again.",
+      };
+    }
+    if (
+      msg.includes("invalid login") ||
+      msg.includes("invalid credentials") ||
+      msg.includes("not found")
+    ) {
+      return {
+        formError:
+          "Invalid email or password. Please check your credentials and try again.",
+      };
+    }
+    return {
+      formError:
+        error.message ||
+        "Could not log in. Please check your credentials and try again.",
+    };
   }
 
   revalidatePath("/", "layout");
@@ -81,17 +105,53 @@ export async function signUp(
   });
 
   if (error) {
-    return { formError: "Could not create that account. Try again." };
+    const msg = error.message.toLowerCase();
+    if (
+      msg.includes("already registered") ||
+      msg.includes("already exists") ||
+      error.status === 422
+    ) {
+      return {
+        formError:
+          "An account with this email address already exists. Please log in instead.",
+      };
+    }
+    if (
+      msg.includes("rate limit") ||
+      msg.includes("too many") ||
+      error.status === 429
+    ) {
+      return {
+        formError:
+          "Too many signup attempts. Please wait a few minutes before trying again.",
+      };
+    }
+    return {
+      formError:
+        error.message || "Could not create that account. Try again.",
+    };
+  }
+
+  // When email enumeration protection is enabled in Supabase, calling signUp on an
+  // already registered email returns a user with empty identities and no error.
+  if (data.user && data.user.identities && data.user.identities.length === 0) {
+    return {
+      formError:
+        "An account with this email address already exists. Please log in instead.",
+    };
   }
 
   // This project has email confirmation enabled (mailer_autoconfirm is off),
-  // so signUp returns a user with no session. Say so plainly instead of
-  // redirecting to an app the user cannot actually enter yet.
+  // so signUp returns a user with no session. Redirect to login with an explicit
+  // confirmation notice instead of leaving them stuck on the signup form or
+  // redirecting as if logged in.
   if (!data.session) {
-    return {
-      notice:
-        "Check your email to confirm your account, then log in to start growing.",
-    };
+    redirect(
+      "/login?notice=" +
+        encodeURIComponent(
+          "Account created! Please check your email to confirm your account before logging in.",
+        ),
+    );
   }
 
   revalidatePath("/", "layout");

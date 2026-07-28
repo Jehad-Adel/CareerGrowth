@@ -25,38 +25,55 @@ function SubmitButton({ label }: { label: string }) {
   );
 }
 
+function formatInitialError(err?: string) {
+  if (!err) return undefined;
+  if (err === "invalid_code") {
+    return "That confirmation link is expired or invalid. Please try logging in or sign up again.";
+  }
+  if (err === "missing_code") {
+    return "Could not confirm your email address. Please try logging in.";
+  }
+  return err;
+}
+
 export function AuthForm({
   action,
   fields,
   submitLabel,
   next,
+  initialNotice,
+  initialError,
 }: {
   action: (prev: AuthState, formData: FormData) => Promise<AuthState>;
   fields: Field[];
   submitLabel: string;
   next?: string;
+  initialNotice?: string;
+  initialError?: string;
 }) {
   const [state, formAction] = useActionState<AuthState, FormData>(action, {});
+  const notice = state.notice || initialNotice;
+  const formError = state.formError || formatInitialError(initialError);
 
   return (
     <form action={formAction} className="mt-6 space-y-4" noValidate>
       {next ? <input type="hidden" name="next" value={next} /> : null}
 
-      {state.notice ? (
+      {notice ? (
         <p
           role="status"
           className="rounded-lg border border-primary/30 bg-primary/8 px-3 py-2 text-sm text-foreground"
         >
-          {state.notice}
+          {notice}
         </p>
       ) : null}
 
-      {state.formError ? (
+      {formError ? (
         <p
           role="alert"
           className="rounded-lg border border-destructive/40 bg-destructive/8 px-3 py-2 text-sm text-destructive"
         >
-          {state.formError}
+          {formError}
         </p>
       ) : null}
 

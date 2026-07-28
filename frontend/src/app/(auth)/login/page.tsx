@@ -6,9 +6,9 @@ import { AuthForm } from "@/components/auth/auth-form";
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; notice?: string; error?: string }>;
 }) {
-  const { next } = await searchParams;
+  const { next, notice, error } = await searchParams;
 
   return (
     <div className="rounded-2xl border bg-card p-8">
@@ -19,6 +19,8 @@ export default async function LoginPage({
         action={signIn}
         submitLabel="Log in"
         next={next}
+        initialNotice={notice}
+        initialError={error}
         fields={[
           {
             name: "email",
