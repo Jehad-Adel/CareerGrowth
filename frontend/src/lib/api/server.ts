@@ -31,20 +31,42 @@ const bearer = cache(async (): Promise<Record<string, string>> => {
     : {};
 });
 
+async function fetchWithTimeout(
+  url: string,
+  init: RequestInit,
+  timeoutMs = 60000,
+): Promise<Response> {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, {
+      ...init,
+      signal: init.signal ?? controller.signal,
+    });
+  } finally {
+    clearTimeout(id);
+  }
+}
+
 export async function serverFetch<T>(
   path: string,
   init: RequestInit = {},
+  timeoutMs = 60000,
 ): Promise<T> {
-  const res = await fetch(`${API_URL}${path}`, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...(await bearer()),
-      ...init.headers,
+  const res = await fetchWithTimeout(
+    `${API_URL}${path}`,
+    {
+      ...init,
+      headers: {
+        "Content-Type": "application/json",
+        ...(await bearer()),
+        ...init.headers,
+      },
+      // Per-user data. Caching it would serve one user's profile to another.
+      cache: "no-store",
     },
-    // Per-user data. Caching it would serve one user's profile to another.
-    cache: "no-store",
-  });
+    timeoutMs,
+  );
 
   if (res.status === 401) {
     // The session died server-side. Bounce to login rather than rendering a
@@ -72,13 +94,18 @@ export async function serverFetch<T>(
 export async function serverFetchForm<T>(
   path: string,
   body: FormData,
+  timeoutMs = 60000,
 ): Promise<T> {
-  const res = await fetch(`${API_URL}${path}`, {
-    method: "POST",
-    headers: await bearer(),
-    body,
-    cache: "no-store",
-  });
+  const res = await fetchWithTimeout(
+    `${API_URL}${path}`,
+    {
+      method: "POST",
+      headers: await bearer(),
+      body,
+      cache: "no-store",
+    },
+    timeoutMs,
+  );
 
   if (res.status === 401) {
     redirect("/login");
@@ -93,3 +120,4 @@ export async function serverFetchForm<T>(
 
   return res.status === 204 ? (undefined as T) : ((await res.json()) as T);
 }
+

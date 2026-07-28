@@ -42,23 +42,23 @@ export function StartInterview() {
     <form action={action} className="space-y-5">
       <PendingFieldset>
         <div className="space-y-5">
-          <fieldset className="space-y-2">
-            <legend className="mb-2 text-sm font-medium">Interviewer</legend>
+          <fieldset className="space-y-2.5">
+            <legend className="mb-2 text-sm font-semibold">Interviewer</legend>
             {LEVELS.map((level, i) => (
               <label
                 key={level.value}
-                className="flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition-colors hover:border-primary/50 has-[:checked]:border-primary has-[:checked]:bg-primary/5 has-[:disabled]:cursor-progress"
+                className="min-h-16 flex cursor-pointer items-center gap-3.5 rounded-xl border p-3.5 transition-all hover:border-primary/60 hover:shadow-sm has-[:checked]:border-primary has-[:checked]:bg-primary/5 has-[:checked]:shadow-sm has-[:disabled]:cursor-progress"
               >
                 <input
                   type="radio"
                   name="level"
                   value={level.value}
                   defaultChecked={i === 0}
-                  className="mt-1 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  className="h-4 w-4 shrink-0 accent-primary focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 />
                 <span>
-                  <span className="block text-sm font-medium">{level.label}</span>
-                  <span className="block text-xs text-muted-foreground">
+                  <span className="block text-sm font-semibold text-foreground">{level.label}</span>
+                  <span className="block text-xs text-muted-foreground mt-0.5">
                     {level.blurb}
                   </span>
                 </span>

@@ -102,7 +102,7 @@ export function Hero() {
               <m.span
                 variants={word}
                 className={
-                  i >= 3 ? "mr-[0.22em] inline-block text-primary" : "mr-[0.22em] inline-block"
+                  i >= 3 ? "me-[0.22em] inline-block text-primary" : "me-[0.22em] inline-block"
                 }
               >
                 {w}

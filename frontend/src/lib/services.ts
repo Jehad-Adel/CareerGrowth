@@ -160,11 +160,29 @@ export type SkillGapResult = {
   missing_skills: SkillGapItemResult[];
 };
 
+export type ResumeSection = {
+  title: string;
+  content: string[];
+};
+
+export type ResumeOptimizationResult = {
+  ats_score_before: number;
+  ats_score_after: number;
+  summary_of_changes: string[];
+  missing_information: string[];
+  optimized_sections: ResumeSection[];
+  final_resume_text: string;
+};
+
 export const getLatestJobMatch = (): Promise<AnalysisRecord<JobMatchResult> | null> =>
   serverFetch<AnalysisRecord<JobMatchResult> | null>("/jobs/latest");
 
 export const getLatestSkillGap = (): Promise<AnalysisRecord<SkillGapResult> | null> =>
   serverFetch<AnalysisRecord<SkillGapResult> | null>("/skills/gap/latest");
+
+export const getLatestResumeOptimization = (): Promise<AnalysisRecord<ResumeOptimizationResult> | null> =>
+  serverFetch<AnalysisRecord<ResumeOptimizationResult> | null>("/cv/optimize/latest");
+
 
 // --- Roadmap + Farm + Dashboard ---
 

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { ApiError } from "@/lib/api/error";
+import { normalizeApiError } from "@/lib/api/error";
 import { serverFetch } from "@/lib/api/server";
 
 export type ApplicationActionState = {
@@ -14,9 +14,9 @@ export type ApplicationActionState = {
 const PATH = "/applications";
 
 function fail(error: unknown, fallback: string): ApplicationActionState {
-  if (error instanceof ApiError) return { error: error.message };
-  return { error: fallback };
+  return { error: normalizeApiError(error, fallback) };
 }
+
 
 export async function addApplication(
   _prev: ApplicationActionState,

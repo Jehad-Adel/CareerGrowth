@@ -22,7 +22,7 @@ export function Topbar({ profile }: { profile: Profile }) {
 
   return (
     <header className="sticky top-0 z-10 flex items-center gap-4 border-b bg-background/80 px-4 py-3 backdrop-blur sm:px-6">
-      <div className="ml-auto flex items-center gap-5">
+      <div className="ms-auto flex items-center gap-5">
         <span
           className="flex items-center gap-1.5 font-mono text-sm text-muted-foreground"
           title={`${profile.streakDays}-day streak`}
@@ -47,7 +47,7 @@ export function Topbar({ profile }: { profile: Profile }) {
           <Progress value={pct} className="mt-1 h-1.5" />
         </div>
 
-        <Avatar className="h-9 w-9">
+        <Avatar className="h-10 w-10">
           <AvatarFallback className="bg-primary/12 font-medium text-primary">
             {initials(profile.name)}
           </AvatarFallback>
@@ -60,7 +60,7 @@ export function Topbar({ profile }: { profile: Profile }) {
             type="submit"
             variant="ghost"
             size="icon"
-            className="h-9 w-9 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             aria-label="Log out"
             title="Log out"
           >

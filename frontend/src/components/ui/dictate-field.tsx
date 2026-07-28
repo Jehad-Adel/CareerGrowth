@@ -52,7 +52,7 @@ export function DictateField({
           onChange={(e) => setValue(e.target.value)}
           placeholder={placeholder}
           aria-label={ariaLabel}
-          className={cn(dictation.supported && "pr-12")}
+          className={cn(dictation.supported && "pe-14")}
         />
 
         {dictation.supported ? (
@@ -68,7 +68,7 @@ export function DictateField({
                 ? "Stop dictating"
                 : "Dictate — your browser transcribes it, and you can edit before sending"
             }
-            className="absolute right-2 top-2"
+            className="absolute end-1.5 top-1.5 h-11 w-11 rounded-xl"
           >
             {dictation.listening ? (
               <Square className="h-4 w-4" />
@@ -88,7 +88,7 @@ export function DictateField({
           </span>
         ) : dictation.listening ? (
           <>
-            <span className="mr-1.5 inline-block h-2 w-2 animate-pulse rounded-full bg-destructive align-middle" />
+            <span className="me-1.5 inline-block h-2 w-2 animate-pulse rounded-full bg-destructive align-middle" />
             Listening… {dictation.interim}
           </>
         ) : null}

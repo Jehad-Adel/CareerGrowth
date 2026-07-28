@@ -55,14 +55,14 @@ export function CoverLetterActions({
     <div className="flex gap-2">
       <Button type="button" variant="outline" size="sm" onClick={copy}>
         {copied ? (
-          <Check className="mr-1.5 h-3.5 w-3.5" />
+          <Check className="me-1.5 h-3.5 w-3.5" />
         ) : (
-          <Copy className="mr-1.5 h-3.5 w-3.5" />
+          <Copy className="me-1.5 h-3.5 w-3.5" />
         )}
         {copied ? "Copied" : "Copy"}
       </Button>
       <Button type="button" variant="outline" size="sm" onClick={download}>
-        <Download className="mr-1.5 h-3.5 w-3.5" />
+        <Download className="me-1.5 h-3.5 w-3.5" />
         Download
       </Button>
     </div>

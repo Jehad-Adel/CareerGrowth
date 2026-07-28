@@ -102,7 +102,7 @@ function Thinking() {
     <Button
       type="submit"
       size="icon"
-      className="h-10 w-10 shrink-0"
+      className="h-11 w-11 shrink-0 rounded-xl"
       aria-label="Send"
       disabled={pending}
       aria-busy={pending}
@@ -123,7 +123,7 @@ function ClearChatButton() {
     <Button
       variant="ghost"
       size="sm"
-      className="h-7 text-xs text-muted-foreground hover:text-destructive focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-1"
+      className="min-h-9 px-3 text-xs text-muted-foreground hover:text-destructive focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-1"
       aria-label="Clear chat history"
       disabled={isPending}
       onClick={() => {
@@ -132,7 +132,7 @@ function ClearChatButton() {
         });
       }}
     >
-      <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+      <Trash2 className="me-1.5 h-3.5 w-3.5" />
       {isPending ? "Clearing..." : "Clear history"}
     </Button>
   );
@@ -231,7 +231,7 @@ export function Conversation({
               onClick={() => {
                 if (inputRef.current) inputRef.current.value = s;
               }}
-              className="rounded-full border px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:opacity-50"
+              className="min-h-9 inline-flex items-center rounded-full border px-3.5 py-1.5 text-xs text-muted-foreground transition-all hover:border-primary/60 hover:bg-primary/5 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:opacity-50"
             >
               {s}
             </button>
@@ -249,7 +249,7 @@ export function Conversation({
                 ? "Analyze your CV first so there's something to talk about"
                 : "Ask anything about your career…"
             }
-            className="h-10 flex-1 rounded-lg border bg-background px-3 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 disabled:opacity-60"
+            className="h-11 flex-1 rounded-xl border bg-background px-3.5 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 disabled:opacity-60"
           />
           {/* Writes straight into the uncontrolled input, the same way the
               suggestion chips above already do. Never submits on its own —

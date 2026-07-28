@@ -52,7 +52,7 @@ function Card({
   const waiting = daysSince(application.applied_at);
 
   return (
-    <li className="flex flex-col gap-3 rounded-xl border bg-card p-4 transition-shadow hover:shadow-sm">
+    <li className="flex flex-col gap-3.5 rounded-2xl border bg-card p-4.5 transition-all hover:shadow-md">
       <div className="space-y-1 min-w-0">
         <p className="text-sm font-semibold leading-snug break-words">{application.role}</p>
         <p className="text-xs text-muted-foreground break-words">{application.company}</p>
@@ -72,14 +72,14 @@ function Card({
             href={application.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-primary underline-offset-4 hover:underline focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 rounded-sm"
+            className="font-medium text-primary underline-offset-4 hover:underline focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 rounded-sm min-h-11 min-w-11 inline-flex items-center"
           >
             Posting ↗
           </a>
         ) : null}
       </div>
 
-      <div className="flex items-center gap-2 border-t border-border/50 pt-2.5">
+      <div className="flex items-center gap-2 border-t border-border/50 pt-3">
         <form action={moveApplication} className="flex-1 min-w-0">
           <input type="hidden" name="id" value={application.id} />
           <label className="sr-only" htmlFor={`move-${application.id}`}>
@@ -90,7 +90,7 @@ function Card({
             name="status"
             defaultValue={application.status}
             onChange={(e) => e.currentTarget.form?.requestSubmit()}
-            className="w-full rounded-lg border bg-background px-2.5 py-1.5 text-xs outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+            className="w-full h-11 min-h-11 rounded-xl border bg-background px-3 py-2 text-xs outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
           >
             {statuses.map((s) => (
               <option key={s} value={s}>
@@ -105,7 +105,7 @@ function Card({
           <button
             type="submit"
             aria-label={`Delete ${application.role} at ${application.company}`}
-            className="min-h-[36px] min-w-[36px] flex items-center justify-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:ring-2 focus-visible:ring-destructive focus-visible:outline-none"
+            className="min-h-11 min-w-11 flex items-center justify-center rounded-xl p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:ring-2 focus-visible:ring-destructive focus-visible:outline-none"
           >
             <Trash2 className="h-4 w-4" />
           </button>
@@ -156,26 +156,26 @@ export function ApplicationsBoard({ board }: { board: ApplicationBoard }) {
         </form>
       </section>
 
-      <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
+      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
         {board.statuses.map((status) => {
           const column = board.applications.filter((a) => a.status === status);
           return (
-            <section key={status} className="space-y-2.5 min-w-0">
-              <div className="flex items-center justify-between">
+            <section key={status} className="space-y-3 min-w-0">
+              <div className="mb-1 flex items-center justify-between">
                 <h2 className="text-sm font-medium">{LABELS[status]}</h2>
                 <span
-                  className={`rounded-full px-2 py-0.5 text-xs ${ACCENT[status]}`}
+                  className={`rounded-full px-2.5 py-0.5 text-xs font-mono ${ACCENT[status]}`}
                 >
                   {board.counts[status] ?? 0}
                 </span>
               </div>
 
               {column.length === 0 ? (
-                <p className="rounded-xl border border-dashed p-3 text-xs text-muted-foreground">
+                <p className="rounded-xl border border-dashed p-4 text-xs text-muted-foreground text-center">
                   Nothing here.
                 </p>
               ) : (
-                <ul className="space-y-2.5">
+                <ul className="space-y-3">
                   {column.map((application) => (
                     <Card
                       key={application.id}

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { ApiError } from "@/lib/api/error";
+import { normalizeApiError } from "@/lib/api/error";
 import { serverFetch } from "@/lib/api/server";
 
 export type RoadmapActionState = {
@@ -24,8 +24,12 @@ export async function generateRoadmap(
       body: JSON.stringify({ target_role: raw || null }),
     });
   } catch (error) {
-    if (error instanceof ApiError) return { error: error.message };
-    return { error: "Could not build a roadmap. Try again shortly." };
+    return {
+      error: normalizeApiError(
+        error,
+        "Could not build a roadmap. Try again shortly.",
+      ),
+    };
   }
 
   for (const p of TOUCHED) revalidatePath(p);
@@ -42,8 +46,9 @@ export async function completeStep(
   try {
     await serverFetch(`/roadmap/steps/${stepId}/complete`, { method: "POST" });
   } catch (error) {
-    if (error instanceof ApiError) return { error: error.message };
-    return { error: "Could not mark that step done." };
+    return {
+      error: normalizeApiError(error, "Could not mark that step done."),
+    };
   }
 
   // The farm grows off this event, so it must be revalidated too.

@@ -22,13 +22,13 @@ function SubmitButton({ label }: { label: string }) {
   return (
     <Button
       type="submit"
-      className="w-full h-10 font-medium"
+      className="w-full h-11 min-h-11 font-medium"
       disabled={pending}
       aria-busy={pending}
     >
       {pending ? (
         <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          <Loader2 className="me-2 h-4 w-4 animate-spin" />
           Working…
         </>
       ) : (

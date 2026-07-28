@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { ApiError } from "@/lib/api/error";
+import { normalizeApiError } from "@/lib/api/error";
 import { serverFetch } from "@/lib/api/server";
 
 export type JobActionState = {
@@ -45,11 +45,12 @@ async function run(
       body: JSON.stringify({ job_description: jd, job_title: title }),
     });
   } catch (error) {
-    if (error instanceof ApiError) {
-      // The API writes these for humans and leaks nothing.
-      return { error: error.message };
-    }
-    return { error: "Could not run that analysis. Try again shortly." };
+    return {
+      error: normalizeApiError(
+        error,
+        "Could not run that analysis. Try again shortly.",
+      ),
+    };
   }
 
   for (const p of revalidate) revalidatePath(p);
@@ -77,4 +78,35 @@ export async function writeCoverLetter(
   // No farm or dashboard revalidation: a letter presents capability the CV
   // already proved, so nothing grew and no XP was awarded.
   return run("/jobs/cover-letter", formData, ["/jobs"]);
+}
+
+export async function optimizeResume(
+  _prev: JobActionState,
+  formData: FormData,
+): Promise<JobActionState> {
+  const { jd, title } = readJob(formData);
+  if (jd) {
+    const invalid = validate(jd);
+    if (invalid) return { error: invalid };
+  }
+
+  try {
+    await serverFetch("/cv/optimize", {
+      method: "POST",
+      body: JSON.stringify({
+        job_description: jd || null,
+        job_title: title || null,
+      }),
+    });
+  } catch (error) {
+    return {
+      error: normalizeApiError(
+        error,
+        "Could not optimize your resume. Try again shortly.",
+      ),
+    };
+  }
+
+  revalidatePath("/jobs");
+  return { ok: true };
 }

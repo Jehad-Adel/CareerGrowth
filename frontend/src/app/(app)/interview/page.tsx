@@ -51,12 +51,12 @@ function InterviewHistoryList({
   return (
     <section className="rounded-2xl border bg-card p-6">
       <div className="flex items-center justify-between gap-2 mb-4">
-        <h2 className="text-base">Interview History</h2>
+        <h2 className="text-base font-semibold">Interview History</h2>
         <span className="font-mono text-xs text-muted-foreground">
           {sessions.length} {sessions.length === 1 ? "session" : "sessions"}
         </span>
       </div>
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         {sessions.map((s, index) => {
           const isLatest = index === 0;
           const isActive = activeId ? s.id === activeId : isLatest;
@@ -67,26 +67,26 @@ function InterviewHistoryList({
               key={s.id}
               href={isLatest ? "/interview" : `/interview?session=${s.id}`}
               className={cn(
-                "block rounded-xl border p-3 text-xs transition-colors hover:border-primary/50",
+                "min-h-11 block rounded-xl border p-3.5 text-xs transition-all hover:border-primary/60 hover:shadow-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
                 isActive
-                  ? "border-primary bg-primary/10"
-                  : "bg-background",
+                  ? "border-primary bg-primary/10 font-semibold shadow-sm"
+                  : "bg-background text-muted-foreground",
               )}
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="font-medium truncate">
+                <span className="font-medium text-foreground truncate">
                   {s.interviewer_name ?? "Interviewer"} ({label})
                 </span>
                 <span className="font-mono text-[10px] text-muted-foreground shrink-0">
                   {new Date(s.created_at).toLocaleDateString()}
                 </span>
               </div>
-              <div className="mt-1.5 flex items-center justify-between gap-2 text-[10px] text-muted-foreground">
+              <div className="mt-1.5 flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
                 <span>
                   {s.finished ? "Finished" : `${turnsCount} answers`}
                 </span>
                 {s.final_evaluation ? (
-                  <span className="font-mono font-medium text-primary">
+                  <span className="font-mono font-semibold text-primary">
                     Score: {s.final_evaluation.overall_score}
                   </span>
                 ) : null}
@@ -188,23 +188,28 @@ async function InterviewBody({
                 </div>
               </section>
 
-              {answered.map((turn) => (
-                <section key={turn.id} className="rounded-2xl border bg-card p-6">
+              {answered.map((turn, idx) => (
+                <section key={turn.id} className="rounded-2xl border bg-card p-6 shadow-sm">
                   <div className="flex items-start justify-between gap-3">
-                    <p className="text-sm font-medium">{turn.question}</p>
-                    {turn.score !== null ? (
-                      <span className="shrink-0 font-mono text-xs text-primary">
-                        {turn.score}
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-xs text-muted-foreground">
+                        Q{idx + 1}
                       </span>
+                      <p className="text-sm font-semibold text-foreground">{turn.question}</p>
+                    </div>
+                    {turn.score !== null ? (
+                      <Badge variant="outline" className="shrink-0 font-mono text-xs text-primary border-primary/30 bg-primary/5">
+                        Score: {turn.score}
+                      </Badge>
                     ) : null}
                   </div>
-                  <p className="mt-2 whitespace-pre-wrap rounded-xl bg-muted px-4 py-3 text-sm">
+                  <p className="mt-3 whitespace-pre-wrap rounded-xl bg-muted/60 border px-4 py-3 text-sm text-foreground">
                     {turn.answer}
                   </p>
 
                   {turn.feedback ? (
-                    <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                      <div className="space-y-2">
+                    <div className="mt-5 grid gap-5 sm:grid-cols-2 border-t pt-4">
+                      <div className="space-y-2.5">
                         <Metric
                           label="Technical accuracy"
                           value={turn.feedback.technical_accuracy}
@@ -218,19 +223,31 @@ async function InterviewBody({
                           value={turn.feedback.confidence_level}
                         />
                       </div>
-                      <div className="space-y-2 text-xs">
+                      <div className="space-y-3 text-xs">
                         {turn.feedback.weaknesses.length > 0 ? (
                           <div>
-                            <p className="text-muted-foreground">Weak spots</p>
-                            <p>{turn.feedback.weaknesses.join(" · ")}</p>
+                            <p className="font-medium text-foreground mb-1.5">Weak spots</p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {turn.feedback.weaknesses.map((w) => (
+                                <Badge key={w} variant="secondary" className="text-[11px] font-normal">
+                                  {w}
+                                </Badge>
+                              ))}
+                            </div>
                           </div>
                         ) : null}
                         {turn.feedback.missing_concepts.length > 0 ? (
                           <div>
-                            <p className="text-muted-foreground">
+                            <p className="font-medium text-foreground mb-1.5">
                               You didn&apos;t mention
                             </p>
-                            <p>{turn.feedback.missing_concepts.join(" · ")}</p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {turn.feedback.missing_concepts.map((c) => (
+                                <Badge key={c} variant="outline" className="text-[11px] font-normal border-amber-500/30 text-amber-600 dark:text-amber-400">
+                                  {c}
+                                </Badge>
+                              ))}
+                            </div>
                           </div>
                         ) : null}
                       </div>

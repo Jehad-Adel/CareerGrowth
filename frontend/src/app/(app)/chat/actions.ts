@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { ApiError } from "@/lib/api/error";
+import { normalizeApiError } from "@/lib/api/error";
 import { serverFetch } from "@/lib/api/server";
 
 export type ChatActionState = {
@@ -29,8 +29,12 @@ export async function askQuestion(
       body: JSON.stringify({ message }),
     });
   } catch (error) {
-    if (error instanceof ApiError) return { error: error.message };
-    return { error: "The assistant is unavailable. Try again shortly." };
+    return {
+      error: normalizeApiError(
+        error,
+        "The assistant is unavailable. Try again shortly.",
+      ),
+    };
   }
 
   revalidatePath("/chat");
@@ -43,8 +47,9 @@ export async function clearChat(): Promise<ChatActionState> {
       method: "DELETE",
     });
   } catch (error) {
-    if (error instanceof ApiError) return { error: error.message };
-    return { error: "Could not clear chat history." };
+    return {
+      error: normalizeApiError(error, "Could not clear chat history."),
+    };
   }
 
   revalidatePath("/chat");

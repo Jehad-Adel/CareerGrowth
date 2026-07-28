@@ -5,10 +5,12 @@ import { Suspense } from "react";
 import {
   analyzeGap,
   matchJob,
+  optimizeResume,
   writeCoverLetter,
 } from "@/app/(app)/jobs/actions";
 import { CoverLetterActions } from "@/components/jobs/cover-letter-actions";
 import { JobInput } from "@/components/jobs/job-input";
+import { ResumeOptimizationResultsView } from "@/components/jobs/resume-optimization-results";
 import { PageHeader } from "@/components/layout/page-header";
 import { ResultsSkeleton } from "@/components/skeletons";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   getLatestCoverLetter,
   getLatestJobMatch,
+  getLatestResumeOptimization,
   getLatestSkillGap,
   getProfile,
   type JobMatchResult,
@@ -112,7 +115,7 @@ function SkillBreakdown({ result }: { result: JobMatchResult }) {
                 <span>
                   {m.job_skill}
                   {m.requirement_level === "Preferred" && (
-                    <span className="ml-2 text-xs text-muted-foreground">
+                    <span className="ms-2 text-xs text-muted-foreground">
                       preferred
                     </span>
                   )}
@@ -352,6 +355,11 @@ async function GapResults() {
   );
 }
 
+async function ResumeOptimizationResult() {
+  const latest = await getLatestResumeOptimization();
+  return <ResumeOptimizationResultsView result={latest?.result ?? null} />;
+}
+
 export default async function JobsPage() {
   // `has_cv` rides along on the profile the layout already fetched, so the
   // gate costs nothing. A separate /cv/status call would be a second trip.
@@ -379,10 +387,11 @@ export default async function JobsPage() {
       {header}
 
       <Tabs defaultValue="match" className="space-y-6">
-        <TabsList>
+        <TabsList className="flex flex-wrap h-auto gap-1">
           <TabsTrigger value="match">Match</TabsTrigger>
           <TabsTrigger value="gap">Skill gap</TabsTrigger>
           <TabsTrigger value="letter">Cover letter</TabsTrigger>
+          <TabsTrigger value="optimize">Resume Optimizer</TabsTrigger>
         </TabsList>
 
         <TabsContent value="match">
@@ -435,6 +444,24 @@ export default async function JobsPage() {
               fallback={<ResultsSkeleton label="Loading your latest letter" />}
             >
               <CoverLetterResult />
+            </Suspense>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="optimize">
+          <div className="grid items-start gap-6 lg:grid-cols-2">
+            <section className="rounded-2xl border bg-card p-6">
+              <JobInput
+                action={optimizeResume}
+                label="Optimize my resume"
+                hint="We tailor your resume summary and bullet points to emphasize verified experiences matching this role."
+              />
+            </section>
+
+            <Suspense
+              fallback={<ResultsSkeleton label="Loading your latest optimization" />}
+            >
+              <ResumeOptimizationResult />
             </Suspense>
           </div>
         </TabsContent>

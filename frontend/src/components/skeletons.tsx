@@ -294,7 +294,7 @@ export function ChatSkeleton() {
 export function TopbarSkeleton() {
   return (
     <header className="sticky top-0 z-10 flex items-center gap-4 border-b bg-background/80 px-6 py-3 backdrop-blur">
-      <div className="ml-auto flex items-center gap-5">
+      <div className="ms-auto flex items-center gap-5">
         <Skeleton className="h-4 w-10" />
         <div className="hidden w-44 sm:block">
           <div className="flex justify-between">
@@ -303,8 +303,8 @@ export function TopbarSkeleton() {
           </div>
           <Skeleton className="mt-1.5 h-1.5 w-full rounded-full" />
         </div>
-        <Skeleton className="h-9 w-9 rounded-full" />
-        <Skeleton className="h-9 w-9 rounded-lg" />
+        <Skeleton className="h-10 w-10 rounded-full" />
+        <Skeleton className="h-10 w-10 rounded-xl" />
       </div>
     </header>
   );

@@ -29,34 +29,40 @@ function RoadmapHistoryBar({
   return (
     <section className="mb-6 rounded-2xl border bg-card p-5">
       <div className="flex items-center justify-between gap-2 mb-3">
-        <h3 className="text-sm font-medium">Roadmap History</h3>
+        <h3 className="text-sm font-semibold">Roadmap History</h3>
         <span className="font-mono text-xs text-muted-foreground">
-          {history.length} roadmaps saved
+          {history.length} {history.length === 1 ? "roadmap" : "roadmaps"} saved
         </span>
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2.5">
         {history.map((r, index) => {
           const isLatest = index === 0;
           const isActive = activeId ? r.id === activeId : isLatest;
           const done = r.steps.filter((s) => s.status === "done").length;
           const total = r.steps.length;
+          const createdDate = r.created_at ? new Date(r.created_at).toLocaleDateString() : "";
           return (
             <Link
               key={r.id}
               href={isLatest ? "/roadmap" : `/roadmap?id=${r.id}`}
               className={cn(
-                "flex items-center gap-2.5 rounded-xl border px-3.5 py-2 text-xs transition-colors hover:border-primary/50",
+                "min-h-11 flex items-center gap-2.5 rounded-xl border px-4 py-2 text-xs transition-all hover:border-primary/60 hover:shadow-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
                 isActive
-                  ? "border-primary bg-primary/10 text-foreground font-medium"
+                  ? "border-primary bg-primary/10 text-foreground font-semibold shadow-sm"
                   : "bg-background text-muted-foreground",
               )}
             >
-              <span>{r.target_role}</span>
-              <span className="rounded-md bg-muted px-1.5 py-0.5 font-mono text-[10px]">
+              <span className="truncate max-w-[160px] sm:max-w-[220px]">{r.target_role}</span>
+              <span className="rounded-md bg-muted px-1.5 py-0.5 font-mono text-[11px] text-foreground">
                 {done}/{total}
               </span>
+              {createdDate ? (
+                <span className="hidden sm:inline font-mono text-[10px] text-muted-foreground">
+                  {createdDate}
+                </span>
+              ) : null}
               {isLatest && (
-                <span className="rounded bg-primary/20 px-1.5 py-0.5 text-[10px] text-primary">
+                <span className="rounded bg-primary/20 px-1.5 py-0.5 text-[10px] font-medium text-primary">
                   Latest
                 </span>
               )}

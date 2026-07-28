@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { ApiError } from "@/lib/api/error";
+import { normalizeApiError } from "@/lib/api/error";
 import { serverFetch } from "@/lib/api/server";
 
 export type InterviewActionState = {
@@ -40,8 +40,12 @@ export async function startInterview(
       body: JSON.stringify({ level, job_description: jd }),
     });
   } catch (error) {
-    if (error instanceof ApiError) return { error: error.message };
-    return { error: "Could not start the interview. Try again shortly." };
+    return {
+      error: normalizeApiError(
+        error,
+        "Could not start the interview. Try again shortly.",
+      ),
+    };
   }
 
   revalidatePath("/interview");
@@ -70,8 +74,12 @@ export async function submitAnswer(
       body: JSON.stringify({ answer }),
     });
   } catch (error) {
-    if (error instanceof ApiError) return { error: error.message };
-    return { error: "Could not submit that answer. Try again shortly." };
+    return {
+      error: normalizeApiError(
+        error,
+        "Could not submit that answer. Try again shortly.",
+      ),
+    };
   }
 
   // A finished interview awards XP, so the farm changes too.

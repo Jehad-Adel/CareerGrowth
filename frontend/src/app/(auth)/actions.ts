@@ -46,11 +46,11 @@ export async function signIn(
     if (
       msg.includes("confirm") ||
       msg.includes("not confirmed") ||
-      (error.status === 400 && msg.includes("email"))
+      error.status === 400 && msg.includes("email")
     ) {
       return {
         formError:
-          "Please check your email and confirm your account before logging in.",
+          "Your email address has not been confirmed yet. Please check your inbox for the confirmation link before logging in.",
       };
     }
     if (
@@ -66,6 +66,7 @@ export async function signIn(
     if (
       msg.includes("invalid login") ||
       msg.includes("invalid credentials") ||
+      msg.includes("invalid_grant") ||
       msg.includes("not found")
     ) {
       return {
@@ -98,6 +99,9 @@ export async function signUp(
   }
 
   const supabase = await createClient();
+  // Ensure no stale session exists before creating a new account
+  await supabase.auth.signOut();
+
   const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
@@ -109,7 +113,8 @@ export async function signUp(
     if (
       msg.includes("already registered") ||
       msg.includes("already exists") ||
-      error.status === 422
+      msg.includes("user already registered") ||
+      error.status === 422 && msg.includes("registered")
     ) {
       return {
         formError:
@@ -126,9 +131,16 @@ export async function signUp(
           "Too many signup attempts. Please wait a few minutes before trying again.",
       };
     }
+    if (
+      msg.includes("password") && (msg.includes("least") || msg.includes("short") || msg.includes("character"))
+    ) {
+      return {
+        formError: "Your password must be at least 8 characters long.",
+      };
+    }
     return {
       formError:
-        error.message || "Could not create that account. Try again.",
+        error.message || "Could not create that account. Please try again.",
     };
   }
 
@@ -142,20 +154,19 @@ export async function signUp(
   }
 
   // This project has email confirmation enabled (mailer_autoconfirm is off),
-  // so signUp returns a user with no session. Redirect to login with an explicit
-  // confirmation notice instead of leaving them stuck on the signup form or
-  // redirecting as if logged in.
-  if (!data.session) {
-    redirect(
-      "/login?notice=" +
-        encodeURIComponent(
-          "Account created! Please check your email to confirm your account before logging in.",
-        ),
-    );
+  // so signUp returns a user with no session.
+  // Never redirect to dashboard as if logged in. Even if a session was returned
+  // by Supabase, sign out and redirect to login with confirmation notice.
+  if (data.session) {
+    await supabase.auth.signOut();
   }
 
-  revalidatePath("/", "layout");
-  redirect("/dashboard");
+  redirect(
+    "/login?notice=" +
+      encodeURIComponent(
+        "Account created! Please check your email to confirm your account before logging in.",
+      ),
+  );
 }
 
 export async function signOut() {

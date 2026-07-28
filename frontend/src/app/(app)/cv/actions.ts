@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { ApiError } from "@/lib/api/error";
+import { normalizeApiError } from "@/lib/api/error";
 import { serverFetchForm } from "@/lib/api/server";
 
 export type CvUploadState = {
@@ -33,14 +33,16 @@ export async function analyzeCv(
   try {
     await serverFetchForm("/cv/analyze", body);
   } catch (error) {
-    if (error instanceof ApiError) {
-      // The API's messages are written for humans and carry no internals.
-      return { error: error.message };
-    }
-    return { error: "Could not analyze that CV. Try again shortly." };
+    return {
+      error: normalizeApiError(
+        error,
+        "Could not analyze that CV. Try again shortly.",
+      ),
+    };
   }
 
   revalidatePath("/cv");
   revalidatePath("/dashboard");
   return { ok: true };
 }
+

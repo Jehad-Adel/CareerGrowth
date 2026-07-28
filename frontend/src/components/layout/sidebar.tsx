@@ -23,7 +23,7 @@ function NavPending() {
     <Loader2
       aria-hidden
       className={cn(
-        "ml-auto h-3.5 w-3.5 shrink-0 animate-spin transition-opacity",
+        "ms-auto h-3.5 w-3.5 shrink-0 animate-spin transition-opacity",
         pending ? "opacity-100" : "opacity-0",
       )}
     />
@@ -57,7 +57,7 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
   return (
     <aside
       className={cn(
-        "sticky top-0 flex h-screen shrink-0 flex-col border-r border-sidebar-border bg-sidebar transition-[width] duration-200",
+        "sticky top-0 flex h-screen shrink-0 flex-col border-e border-sidebar-border bg-sidebar transition-[width] duration-200",
         isCollapsed ? "w-16" : "w-60",
       )}
     >
