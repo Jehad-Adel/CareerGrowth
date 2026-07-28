@@ -4,8 +4,10 @@ import { Mic, Square } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { DictationLanguage } from "@/components/ui/dictation-language";
 import { Textarea } from "@/components/ui/textarea";
 import { useDictation } from "@/lib/use-dictation";
+import { useDictationLanguage } from "@/lib/use-dictation-language";
 import { cn } from "@/lib/utils";
 
 /**
@@ -34,13 +36,14 @@ export function DictateField({
   ariaLabel?: string;
 }) {
   const [value, setValue] = useState("");
+  const [lang, setLang] = useDictationLanguage();
 
   const dictation = useDictation((phrase) => {
     if (!phrase) return;
     setValue((current) =>
       current ? `${current.trimEnd()} ${phrase}` : phrase,
     );
-  });
+  }, lang);
 
   return (
     <div className="space-y-2">
@@ -78,6 +81,14 @@ export function DictateField({
           </Button>
         ) : null}
       </div>
+
+      {dictation.supported ? (
+        <div className="flex items-center justify-end px-1">
+          {/* The picker sits with the control it configures. Recognising the
+              wrong language does not fail — it returns confident nonsense. */}
+          <DictationLanguage value={lang} onChange={setLang} />
+        </div>
+      ) : null}
 
       {/* aria-live so a screen reader hears that recording started, and hears
           the words as they are recognised. */}

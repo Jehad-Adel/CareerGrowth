@@ -4,7 +4,9 @@ import { Mic, Square } from "lucide-react";
 import type { RefObject } from "react";
 
 import { Button } from "@/components/ui/button";
+import { DictationLanguage } from "@/components/ui/dictation-language";
 import { useDictation } from "@/lib/use-dictation";
+import { useDictationLanguage } from "@/lib/use-dictation-language";
 
 /**
  * Mic button for an existing uncontrolled input.
@@ -25,6 +27,8 @@ export function DictateButton({
   inputRef: RefObject<HTMLInputElement | null>;
   disabled?: boolean;
 }) {
+  const [lang, setLang] = useDictationLanguage();
+
   const dictation = useDictation((phrase) => {
     const input = inputRef.current;
     if (!input || !phrase) return;
@@ -42,7 +46,7 @@ export function DictateButton({
     tracker?.setValue("");
     input.dispatchEvent(new Event("input", { bubbles: true }));
     input.scrollLeft = input.scrollWidth;
-  });
+  }, lang);
 
   if (!dictation.supported) return null;
 
@@ -59,10 +63,20 @@ export function DictateButton({
           {dictation.error ? (
             <span className="text-destructive">{dictation.error}</span>
           ) : (
-            <span className="line-clamp-2 text-muted-foreground">
-              <span className="me-1.5 inline-block h-2 w-2 animate-pulse rounded-full bg-destructive align-middle" />
-              {dictation.interim || "Listening…"}
-            </span>
+            <>
+              <span className="line-clamp-2 text-muted-foreground">
+                <span className="me-1.5 inline-block h-2 w-2 animate-pulse rounded-full bg-destructive align-middle" />
+                {dictation.interim || "Listening…"}
+              </span>
+              {/* Offered while listening, since a wrong language is only
+                  obvious once the first nonsense words arrive. It applies to
+                  the next dictation — Chrome reads `lang` at start. */}
+              <DictationLanguage
+                value={lang}
+                onChange={setLang}
+                className="mt-1.5"
+              />
+            </>
           )}
         </div>
       ) : null}

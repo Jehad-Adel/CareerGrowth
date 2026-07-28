@@ -127,7 +127,17 @@ const getSnapshot = () => getConstructor() !== null;
 // render true on the client and false on the server — a hydration mismatch.
 const getServerSnapshot = () => false;
 
-export function useDictation(onResult: (text: string) => void): Dictation {
+/**
+ * @param lang BCP-47 tag to recognise in. Accuracy collapses when this is
+ *   wrong — an Arabic sentence transcribed as en-US comes back as nonsense
+ *   words rather than as nothing, which reads as "the mic is inaccurate".
+ *   Chrome reads `lang` at `start()`, so changing it takes effect on the next
+ *   dictation, not mid-sentence.
+ */
+export function useDictation(
+  onResult: (text: string) => void,
+  lang?: string,
+): Dictation {
   const supported = useSyncExternalStore(
     subscribe,
     getSnapshot,
@@ -145,13 +155,19 @@ export function useDictation(onResult: (text: string) => void): Dictation {
   const wanted = useRef(false);
   const restarts = useRef<number[]>([]);
   const lastFinal = useRef<{ text: string; at: number } | null>(null);
+  // How many results of the current recognition session have already been
+  // committed. See the loop in `onresult` for why this is the real fix for
+  // repeated words. Reset whenever a new session starts.
+  const committed = useRef(0);
   // Held in a ref so re-creating the callback each render does not force the
   // recognition instance to be rebuilt mid-sentence. Assigned in an effect,
   // not during render — a ref write during render is not safe under
   // concurrent rendering, and React 19's lint rules reject it.
   const onResultRef = useRef(onResult);
+  const langRef = useRef(lang);
   useEffect(() => {
     onResultRef.current = onResult;
+    langRef.current = lang;
   });
 
   useEffect(() => {
@@ -169,21 +185,39 @@ export function useDictation(onResult: (text: string) => void): Dictation {
     instance.maxAlternatives = 1;
 
     instance.onresult = (event) => {
+      // Iterating from 0 and committing by index, rather than starting at
+      // `event.resultIndex`, is the fix for repeated words.
+      //
+      // With `continuous`, `event.results` is cumulative for the whole
+      // session, and `resultIndex` is only meant to say where the changed
+      // results begin. Chrome regularly reports an index at or below results
+      // it already delivered as final — after a pause, and on the event that
+      // follows a phrase being finalised. Trusting it re-emits phrases that
+      // were already committed, which is exactly the stutter: the same words
+      // appended two or three times.
+      //
+      // A result's index is stable for the life of a session, so "committed
+      // everything below `committed.current`" is an exact record of what the
+      // caller already has, regardless of what index the event claims.
       let pending = "";
-      for (let i = event.resultIndex; i < event.results.length; i += 1) {
+      for (let i = 0; i < event.results.length; i += 1) {
         const result = event.results[i];
         const text = result[0].transcript;
+
         if (!result.isFinal) {
           pending += text;
           continue;
         }
 
+        if (i < committed.current) continue;
+        committed.current = i + 1;
+
         const phrase = text.trim();
         if (!phrase) continue;
 
-        // Drop a phrase the engine has just handed us before. See
-        // DUPLICATE_WINDOW_MS — this is what stops dictation stuttering words
-        // into the field twice.
+        // Second net, for the session boundary only: indices restart at 0
+        // after `onend` restarts the engine, and Chrome sometimes finalises
+        // the tail of the previous session again in the new one.
         const key = normalise(phrase);
         const now = Date.now();
         const previous = lastFinal.current;
@@ -229,6 +263,10 @@ export function useDictation(onResult: (text: string) => void): Dictation {
       }
 
       try {
+        // A restart is a fresh session: `results` starts empty and indices
+        // begin at 0 again, so the commit mark has to go with it or every
+        // phrase after the first restart would be silently swallowed.
+        committed.current = 0;
         instance.start();
       } catch {
         // Already restarting on its own; the state we want is unchanged.
@@ -257,8 +295,13 @@ export function useDictation(onResult: (text: string) => void): Dictation {
     // A new dictation is a new context; a phrase repeated from the last one is
     // the user saying it again, not the engine stuttering.
     lastFinal.current = null;
+    committed.current = 0;
     wanted.current = true;
     try {
+      // Set here rather than at construction: the picker can change between
+      // dictations, and Chrome only reads this when a session starts.
+      recognition.current.lang =
+        langRef.current || navigator.language || "en-US";
       recognition.current.start();
     } catch {
       // Chrome throws if start() is called while already running. The state is
