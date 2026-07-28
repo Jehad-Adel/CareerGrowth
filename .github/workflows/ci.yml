@@ -99,12 +99,6 @@ jobs:
 
   audit:
     runs-on: ubuntu-latest
-    # Advisory: npm audit currently reports 3 high transitive findings
-    # (postcss, sharp) under next@16.2.11 that `--force` would "fix" by
-    # downgrading to next@9. Surfaced on every run so a genuinely new finding
-    # is visible, without blocking merges on something that has no upgrade
-    # path yet — next@16.2.12, the current latest, is still in range.
-    continue-on-error: true
     defaults:
       run:
         working-directory: frontend
@@ -113,4 +107,14 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 20
-      - run: npm audit --omit=dev
+
+      - name: Audit production dependencies
+        # `npm audit` exits non-zero on any finding, and three of them are
+        # transitive under next@16.2.11 with no upgrade path: `--force` would
+        # "fix" them by installing next@9. Rather than turn the whole job
+        # advisory — which makes a genuinely new advisory just as invisible —
+        # each accepted finding is allowlisted by GHSA id in the script below.
+        # Anything not on that list fails the job.
+        run: |
+          npm audit --omit=dev --json > audit.json || true
+          node scripts/check-audit.mjs audit.json

@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# npm audit --json output, read by scripts/check-audit.mjs
+audit.json
