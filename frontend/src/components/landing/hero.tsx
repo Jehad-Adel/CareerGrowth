@@ -138,15 +138,19 @@ export function Hero() {
           >
             Start growing — free
           </Link>
-          <Link
-            href="/dashboard"
+          {/* Was "See the live demo" pointing at /dashboard, which is a
+              protected route: a logged-out visitor clicking the demo landed on
+              the login screen. This keeps them on the page instead, scrolling
+              to the explanation the button promises. */}
+          <a
+            href="#how"
             className={cn(
               buttonVariants({ variant: "outline", size: "lg" }),
               "w-full sm:w-auto",
             )}
           >
-            See the live demo
-          </Link>
+            See how it works
+          </a>
         </m.div>
       </m.div>
 

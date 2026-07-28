@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { Logo } from "@/components/brand/logo";
 import { navItems } from "@/lib/nav";
@@ -66,7 +67,15 @@ export function MobileNav() {
         <Menu className="h-5 w-5" />
       </button>
 
-      {open ? (
+      {/* Portalled to <body> on purpose. The topbar this button lives in has
+          `backdrop-blur`, and any filter or backdrop-filter on an ancestor
+          makes that ancestor the containing block for `position: fixed`
+          descendants — so the drawer laid itself out inside the 56px header
+          strip instead of over the viewport, which is what "the menu does not
+          open" looked like. `open` only becomes true on a click, so this never
+          runs during SSR. */}
+      {open
+        ? createPortal(
         <div className="fixed inset-0 z-50 lg:hidden">
           {/* 60% scrim: at the lighter end of the range the page behind still
               competes with the drawer's own surface in dark mode. */}
@@ -136,8 +145,10 @@ export function MobileNav() {
               })}
             </nav>
           </div>
-        </div>
-      ) : null}
+        </div>,
+            document.body,
+          )
+        : null}
     </>
   );
 }

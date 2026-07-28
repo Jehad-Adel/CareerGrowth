@@ -67,12 +67,12 @@ async function DashboardBody() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <section className="rounded-2xl border bg-card p-6">
-            <div className="flex items-center justify-between gap-3">
+          <section className="rounded-2xl border bg-card p-5 sm:p-6">
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
               <h2 className="text-lg">Your farm</h2>
               <Link
                 href="/farm"
-                className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                className="inline-flex shrink-0 items-center gap-1 text-sm text-primary hover:underline"
               >
                 See all <ArrowRight className="h-3.5 w-3.5" />
               </Link>
@@ -92,7 +92,7 @@ async function DashboardBody() {
             )}
           </section>
 
-          <section className="rounded-2xl border bg-card p-6">
+          <section className="rounded-2xl border bg-card p-5 sm:p-6">
             <h2 className="mb-3 text-lg">Recent growth</h2>
             {farm.feed.length === 0 ? (
               <p className="text-sm text-muted-foreground">
@@ -100,12 +100,16 @@ async function DashboardBody() {
               </p>
             ) : (
               <ol className="space-y-2.5">
+                {/* The date is `shrink-0`, so on a phone it was the label that
+                    gave way — event names truncated to two words and an
+                    ellipsis while the timestamp kept its full width. Wrapping
+                    the row puts the date on its own line instead. */}
                 {farm.feed.slice(0, 6).map((e) => (
                   <li
                     key={e.id}
-                    className="flex items-center justify-between gap-3 text-sm"
+                    className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 text-sm"
                   >
-                    <span className="truncate">
+                    <span className="min-w-0 break-words">
                       {e.type.replaceAll("_", " ")}
                     </span>
                     <span className="shrink-0 font-mono text-xs text-muted-foreground">
@@ -120,8 +124,8 @@ async function DashboardBody() {
         </div>
 
         <aside className="space-y-6">
-          <section className="rounded-2xl border bg-card p-6">
-            <div className="flex justify-between font-mono text-xs text-muted-foreground">
+          <section className="rounded-2xl border bg-card p-5 sm:p-6">
+            <div className="flex flex-wrap justify-between gap-x-2 font-mono text-xs text-muted-foreground">
               <span>Level {profile.level}</span>
               <span>
                 {farm.xp}/{farm.xp_for_next} XP
@@ -135,7 +139,7 @@ async function DashboardBody() {
             ) : null}
           </section>
 
-          <section className="rounded-2xl border bg-card p-6">
+          <section className="rounded-2xl border bg-card p-5 sm:p-6">
             <h2 className="text-base">Do this next</h2>
             <p className="mt-1.5 text-sm text-muted-foreground">
               <span className="font-medium text-foreground">{next.title}.</span>{" "}

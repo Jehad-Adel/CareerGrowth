@@ -39,7 +39,7 @@ export function Features() {
   const reduce = useReducedMotion();
 
   return (
-    <section id="features" className="cv-section mx-auto max-w-6xl px-6 py-24">
+    <section id="features" className="cv-section mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
       <div className="mx-auto mb-14 max-w-2xl text-center">
         <p className="mb-3 font-mono text-xs uppercase tracking-widest text-muted-foreground">
           The platform
@@ -53,7 +53,7 @@ export function Features() {
         whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="grid items-center gap-8 overflow-hidden rounded-3xl border bg-card p-8 sm:p-10 lg:grid-cols-2"
+        className="grid items-center gap-6 overflow-hidden rounded-3xl border bg-card p-6 sm:gap-8 sm:p-10 lg:grid-cols-2"
       >
         <div>
           <LogoMark className="h-8 w-8 text-primary" />
@@ -64,11 +64,15 @@ export function Features() {
             feeling like something alive.
           </p>
         </div>
-        <div className="flex items-end justify-center gap-4 rounded-2xl bg-[linear-gradient(to_bottom,transparent_60%,color-mix(in_oklch,var(--soil)_12%,transparent))] py-6 sm:gap-8">
+        {/* Four 80px plants plus 3×16px gaps need 368px; a 375px phone offers
+            311 inside this card's padding, so the last stage — the tree the
+            whole section is selling — was cut off by the card's own
+            `overflow-hidden`. They scale down instead of clipping. */}
+        <div className="flex items-end justify-center gap-2 rounded-2xl bg-[linear-gradient(to_bottom,transparent_60%,color-mix(in_oklch,var(--soil)_12%,transparent))] py-5 sm:gap-8 sm:py-6">
           {SHOWCASE_STAGES.map((stage, i) => (
             <div
               key={stage}
-              className="h-24 w-20 cf-sway"
+              className="cf-sway h-16 w-12 shrink sm:h-24 sm:w-20"
               style={{ animationDelay: `${i * 0.35}s` }}
             >
               <Plant stage={stage} />
