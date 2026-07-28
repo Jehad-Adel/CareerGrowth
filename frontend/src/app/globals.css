@@ -98,6 +98,13 @@
   --sidebar-accent-foreground: oklch(0.3 0.04 155);
   --sidebar-border: oklch(0.89 0.02 125);
   --sidebar-ring: oklch(0.585 0.115 150);
+
+  /* Chrome */
+  --selection: oklch(0.585 0.115 150 / 22%);
+  --selection-foreground: oklch(0.22 0.04 155);
+  --scrollbar-thumb: oklch(0.585 0.115 150 / 35%);
+  --scrollbar-thumb-hover: oklch(0.585 0.115 150 / 60%);
+  --scrollbar-track: oklch(0.945 0.015 122);
 }
 
 .dark {
@@ -140,6 +147,14 @@
   --sidebar-accent-foreground: oklch(0.96 0.01 120);
   --sidebar-border: oklch(1 0 0 / 12%);
   --sidebar-ring: oklch(0.7 0.13 150);
+
+  /* Chrome — tonal variants, not the light values reused: a 22% tint that
+     reads as a highlight on paper disappears against a dark surface. */
+  --selection: oklch(0.7 0.13 150 / 32%);
+  --selection-foreground: oklch(0.98 0.01 120);
+  --scrollbar-thumb: oklch(0.7 0.13 150 / 32%);
+  --scrollbar-thumb-hover: oklch(0.7 0.13 150 / 62%);
+  --scrollbar-track: oklch(0.26 0.022 155);
 }
 
 @layer base {
@@ -151,6 +166,67 @@
   }
   html {
     @apply font-sans;
+    /* Anchor jumps and `scrollIntoView` glide instead of teleporting. The
+       reduced-motion block at the bottom of this file turns it back off. */
+    scroll-behavior: smooth;
+    /* Reserve the sticky header's height so a hash target does not land
+       underneath it. */
+    scroll-padding-top: 5rem;
+    /* Firefox scrollbar styling — the only two properties it honours. */
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+    scrollbar-width: thin;
+  }
+  body {
+    /* Keep the gutter reserved at all times: without this, navigating from a
+       short page to a scrolling one adds a scrollbar and shifts every centred
+       element sideways. */
+    scrollbar-gutter: stable;
+  }
+
+  /* Selection — brand-tinted, with an explicit foreground so text stays
+     readable in both themes instead of inheriting whatever it sat on. */
+  ::selection {
+    background-color: var(--selection);
+    color: var(--selection-foreground);
+  }
+
+  /* Custom scrollbar (WebKit/Blink). Overlay-thin, appears on the element it
+     belongs to, and darkens on hover so it reads as grabbable. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 9999px;
+    /* Transparent border + background-clip is what insets the thumb from the
+       track edges; a padding property would do nothing here. */
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* Inner panes (chat transcript, sidebars) get a slimmer bar so they do not
+     compete with the page's own. */
+  .scroll-area::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  /* Momentum scrolling inside a pane must not chain to the page behind it —
+     that is the "scrolled the chat, the whole page moved" bug. */
+  .overflow-y-auto,
+  .overflow-auto,
+  .overflow-x-auto {
+    overscroll-behavior: contain;
   }
   h1,
   h2,
