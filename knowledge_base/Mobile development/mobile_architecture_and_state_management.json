@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Mobile Development",
+    "file_name": "mobile_architecture_and_state_management.json",
+    "target_features": [
+      "Mobile_Analyzer",
+      "Architecture_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Google Android Clean Architecture Guidelines",
+      "Apple iOS Design & Architecture Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "MOB-ARC-001",
+      "rule_name": "Clean Architecture and Separation of Concerns",
+      "category": "App Architecture",
+      "severity": "Critical",
+      "explanation": "Writing monolithic UI classes that directly handle database queries, network calls, and business logic makes the mobile app unmaintainable and untestable.",
+      "do": "Implement Clean Architecture principles, cleanly separating UI components, ViewModels/Presenters, Domain use cases, and Data/Repository layers.",
+      "dont": "Do not mix UI rendering code directly with business logic or direct database/network fetching inside activity or view classes.",
+      "ats_keywords": [
+        "Clean Architecture",
+        "Separation of Concerns",
+        "Repository Pattern",
+        "Domain Layer",
+        "Maintainable Code"
+      ]
+    },
+    {
+      "rule_id": "MOB-ARC-002",
+      "rule_name": "Predictable State Management and Unidirectional Data Flow",
+      "category": "State Management",
+      "severity": "High",
+      "explanation": "Managing application state via scattered, mutable global variables leads to unpredictable UI bugs and race conditions.",
+      "do": "Adopt predictable state management frameworks (e.g., BLoC, Riverpod, Redux, Jetpack ViewModel with StateFlow) enforcing a unidirectional data flow (UDF).",
+      "dont": "Do not mutate global application states directly from arbitrary UI widgets without a controlled state pipeline.",
+      "ats_keywords": [
+        "State Management",
+        "Unidirectional Data Flow",
+        "Reactive Streams",
+        "Immutable State",
+        "Predictable UI"
+      ]
+    },
+    {
+      "rule_id": "MOB-ARC-003",
+      "rule_name": "Lifecycle-Aware Resource Management and Memory Leak Prevention",
+      "category": "Performance & Memory",
+      "severity": "High",
+      "explanation": "Failing to release subscriptions, streams, or context references when mobile components destroy causes severe memory leaks and app crashes.",
+      "do": "Observe component lifecycles properly, dispose of controllers, streams, and listeners in `onDispose` or equivalent teardown methods.",
+      "dont": "Do not retain long-lived references to UI Context or View objects inside background threads or static singletons.",
+      "ats_keywords": [
+        "Lifecycle Awareness",
+        "Memory Leak Prevention",
+        "Resource Cleanup",
+        "Garbage Collection",
+        "App Stability"
+      ]
+    },
+    {
+      "rule_id": "MOB-ARC-004",
+      "rule_name": "Modular UI Design and Component Reusability",
+      "category": "UI Engineering",
+      "severity": "Medium",
+      "explanation": "Building giant, monolithic screen layouts containing hundreds of lines of code reduces reusability and slows rendering performance.",
+      "do": "Break down user interfaces into small, stateless, reusable atomic widgets and composable design components.",
+      "dont": "Do not write massive single-file screen layouts that handle multiple unrelated layout sections.",
+      "ats_keywords": [
+        "Modular UI",
+        "Component Reusability",
+        "Atomic Design",
+        "Widget Composition",
+        "UI Optimization"
+      ]
+    }
+  ]
+}

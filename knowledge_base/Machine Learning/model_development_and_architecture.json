@@ -1,0 +1,77 @@
+{
+  "file_metadata": {
+    "category": "Machine Learning",
+    "file_name": "model_development_and_architecture.json",
+    "target_features": [
+      "ML_Analyzer",
+      "Model_Architecture_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Google Machine Learning Production Best Practices",
+      "PyTorch and Scikit-Learn Engineering Guidelines"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "ML-DEV-001",
+      "rule_name": "Strict Data Leakage Prevention and Splitting",
+      "category": "Data Engineering",
+      "severity": "Critical",
+      "explanation": "Applying pre-processing transformations (e.g., scaling, normalization, imputation) on the entire dataset before splitting causes data leakage from the test set into training.",
+      "do": "Split data into train/validation/test sets BEFORE fitting scalers, encoders, or imputation transformers.",
+      "dont": "Do not compute global dataset statistics (mean, std, vocabulary) across test splits during data pre-processing.",
+      "ats_keywords": [
+        "Data Leakage Guard",
+        "Train-Test Split",
+        "Preprocessing Isolation",
+        "Feature Scaling Integrity"
+      ]
+    },
+    {
+      "rule_id": "ML-DEV-002",
+      "rule_name": "Explicit Feature Engineering Pipeline",
+      "category": "Pipeline Design",
+      "severity": "High",
+      "explanation": "Manual, ad-hoc feature transformations make ML experiments non-reproducible and prone to production execution errors.",
+      "do": "Encapsulate feature engineering inside reproducible pipelines (e.g., Scikit-Learn Pipeline, ColumnTransformer, or PyTorch Dataset classes).",
+      "dont": "Do not rely on loose, unscripted Jupyter Notebook cell transformations for training pipeline data preparation.",
+      "ats_keywords": [
+        "ML Pipeline",
+        "ColumnTransformer",
+        "Reproducible Experiments",
+        "Feature Engineering"
+      ]
+    },
+    {
+      "rule_id": "ML-DEV-003",
+      "rule_name": "Baseline Model Comparison Requirement",
+      "category": "Model Selection",
+      "severity": "Critical",
+      "explanation": "Complex deep learning architectures should always be benchmarked against simple, interpretable baseline models to justify added computational complexity.",
+      "do": "Establish simple baselines (e.g., Logistic Regression, Dummy Classifier, basic heuristic) before testing complex ensembles or neural networks.",
+      "dont": "Do not deploy high-complexity deep learning models without comparing performance and latency against simple baselines.",
+      "ats_keywords": [
+        "Baseline Benchmark",
+        "Model Justification",
+        "Heuristic Comparison",
+        "Complexity vs Performance"
+      ]
+    },
+    {
+      "rule_id": "ML-DEV-004",
+      "rule_name": "Class Imbalance Handling Strategy",
+      "category": "Data Balance",
+      "severity": "High",
+      "explanation": "Standard accuracy metrics fail on imbalanced datasets, causing models to predict only majority classes.",
+      "do": "Apply domain-appropriate techniques (SMOTE, class weighting, focal loss, stratified sampling) for skewed class distributions.",
+      "dont": "Do not evaluate imbalanced classification tasks using standard accuracy alone.",
+      "ats_keywords": [
+        "Class Imbalance",
+        "SMOTE",
+        "Stratified K-Fold",
+        "Class Weighting"
+      ]
+    }
+  ]
+}

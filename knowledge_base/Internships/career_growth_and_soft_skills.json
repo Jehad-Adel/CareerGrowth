@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Internships",
+    "file_name": "career_growth_and_soft_skills.json",
+    "target_features": [
+      "Internship_Analyzer",
+      "Behavioral_SoftSkills_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Amazon Leadership Principles Behavioral Framework",
+      "STAR Communication Method Guidelines"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "INT-SFT-001",
+      "rule_name": "Structured Behavioral Responses Using STAR Method",
+      "category": "Behavioral Interview",
+      "severity": "Critical",
+      "explanation": "Answering behavioral questions with vague generalizations makes it hard for interviewers to evaluate your actual contribution and decision-making.",
+      "do": "Structure non-technical/behavioral answers clearly using Situation, Task, Action, and Result (STAR), focusing on 'I' rather than 'We'.",
+      "dont": "Do not give long, unfocused stories without a clear outcome, actionable steps, or personal contribution.",
+      "ats_keywords": [
+        "STAR Method",
+        "Behavioral Interview",
+        "Personal Impact",
+        "Conflict Resolution",
+        "Leadership Principles"
+      ]
+    },
+    {
+      "rule_id": "INT-SFT-002",
+      "rule_name": "Active Ownership and Conflict Resolution",
+      "category": "Professional Mindset",
+      "severity": "High",
+      "explanation": "Blaming team members or deflecting responsibility during project failures signals poor team dynamics and low emotional intelligence.",
+      "do": "Demonstrate ownership, constructive conflict resolution, empathy, and learning lessons when discussing past technical or team mistakes.",
+      "dont": "Do not criticize former teammates, mentors, or companies during behavioral discussions.",
+      "ats_keywords": [
+        "Ownership",
+        "Constructive Feedback",
+        "Team Collaboration",
+        "Emotional Intelligence",
+        "Problem Ownership"
+      ]
+    },
+    {
+      "rule_id": "INT-SFT-003",
+      "rule_name": "Technical Translation for Non-Technical Stakeholders",
+      "category": "Communication",
+      "severity": "High",
+      "explanation": "Over-complicating technical concepts when speaking to non-engineering stakeholders causes misalignment and miscommunication.",
+      "do": "Adapt technical explanations using intuitive analogies, high-level functional impacts, and clear business outcomes based on the audience.",
+      "dont": "Do not use dense, unexplained technical jargon when presenting outcomes to non-technical managers or product owners.",
+      "ats_keywords": [
+        "Stakeholder Communication",
+        "Technical Translation",
+        "Audience Adaptation",
+        "Business Value",
+        "Cross-Functional Collaboration"
+      ]
+    },
+    {
+      "rule_id": "INT-SFT-004",
+      "rule_name": "Continuous Learning and Initiative Alignment",
+      "category": "Career Growth",
+      "severity": "Medium",
+      "explanation": "Relying solely on formal university coursework without self-driven learning shows lack of initiative in fast-evolving tech fields.",
+      "do": "Highlight self-initiated projects, open-source contributions, technical workshops, and community leadership experience.",
+      "dont": "Do not present a static skill set without showing recent efforts to learn new tools, patterns, or frameworks.",
+      "ats_keywords": [
+        "Continuous Learning",
+        "Self-Initiative",
+        "Community Growth",
+        "Growth Mindset",
+        "Technical Curiosity"
+      ]
+    }
+  ]
+}

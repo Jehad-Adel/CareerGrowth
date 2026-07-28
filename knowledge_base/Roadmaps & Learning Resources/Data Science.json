@@ -1,0 +1,129 @@
+[
+  {
+    "topic": "Data Science",
+    "description": "Data Science combines statistics, programming, machine learning, and domain expertise to collect, process, analyze, and interpret data in order to generate insights, build predictive models, and support business decision-making.",
+    "roadmap": "https://roadmap.sh/ai-data-scientist",
+    "resources": [
+      {
+        "name": "roadmap.sh - AI & Data Scientist Roadmap",
+        "url": "https://roadmap.sh/ai-data-scientist",
+        "type": "roadmap",
+        "level": "all levels"
+      },
+      {
+        "name": "Kaggle Learn",
+        "url": "https://www.kaggle.com/learn",
+        "type": "interactive courses",
+        "level": "beginner"
+      },
+      {
+        "name": "pandas Documentation",
+        "url": "https://pandas.pydata.org/docs/",
+        "type": "documentation",
+        "level": "beginner"
+      },
+      {
+        "name": "NumPy Documentation",
+        "url": "https://numpy.org/doc/",
+        "type": "documentation",
+        "level": "beginner"
+      },
+      {
+        "name": "Matplotlib Documentation",
+        "url": "https://matplotlib.org/stable/",
+        "type": "documentation",
+        "level": "beginner"
+      },
+      {
+        "name": "Seaborn Documentation",
+        "url": "https://seaborn.pydata.org/",
+        "type": "documentation",
+        "level": "beginner"
+      },
+      {
+        "name": "scikit-learn Documentation",
+        "url": "https://scikit-learn.org/stable/",
+        "type": "documentation",
+        "level": "intermediate"
+      },
+      {
+        "name": "Jupyter Documentation",
+        "url": "https://docs.jupyter.org/",
+        "type": "documentation",
+        "level": "beginner"
+      },
+      {
+        "name": "Python for Data Analysis (Wes McKinney)",
+        "url": "https://wesmckinney.com/book/",
+        "type": "book",
+        "level": "intermediate"
+      },
+      {
+        "name": "Google Data Analytics Learning Resources",
+        "url": "https://developers.google.com/learn",
+        "type": "learning platform",
+        "level": "beginner"
+      },
+      {
+        "name": "Microsoft Learn - Data Science",
+        "url": "https://learn.microsoft.com/training/browse/?products=azure&roles=data-scientist",
+        "type": "learning platform",
+        "level": "beginner"
+      },
+      {
+        "name": "IBM Data Science Learning Path",
+        "url": "https://www.ibm.com/training/data-science",
+        "type": "learning platform",
+        "level": "beginner"
+      },
+      {
+        "name": "Coursera Data Science Courses",
+        "url": "https://www.coursera.org/browse/data-science",
+        "type": "courses",
+        "level": "all levels"
+      },
+      {
+        "name": "edX Data Science Programs",
+        "url": "https://www.edx.org/learn/data-science",
+        "type": "courses",
+        "level": "all levels"
+      },
+      {
+        "name": "Towards Data Science",
+        "url": "https://towardsdatascience.com/",
+        "type": "articles",
+        "level": "intermediate"
+      },
+      {
+        "name": "DataCamp",
+        "url": "https://www.datacamp.com/",
+        "type": "interactive courses",
+        "level": "beginner"
+      },
+      {
+        "name": "UCI Machine Learning Repository",
+        "url": "https://archive.ics.uci.edu/ml/index.php",
+        "type": "datasets",
+        "level": "all levels"
+      },
+      {
+        "name": "Kaggle Datasets",
+        "url": "https://www.kaggle.com/datasets",
+        "type": "datasets",
+        "level": "all levels"
+      },
+      {
+        "name": "Google Dataset Search",
+        "url": "https://datasetsearch.research.google.com/",
+        "type": "dataset search engine",
+        "level": "all levels"
+      },
+      {
+        "name": "Awesome Data Science (GitHub)",
+        "url": "https://github.com/academic/awesome-datascience",
+        "type": "resource collection",
+        "level": "all levels"
+      }
+    ]
+  }
+]

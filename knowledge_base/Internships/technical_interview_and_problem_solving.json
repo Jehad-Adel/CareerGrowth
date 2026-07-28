@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Internships",
+    "file_name": "technical_interview_and_problem_solving.json",
+    "target_features": [
+      "Internship_Analyzer",
+      "Technical_Interview_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Cracking the Coding Interview Framework",
+      "Big-O Algorithm Analysis & MIT DSA Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "INT-TEC-001",
+      "rule_name": "Structured Problem Clarification and Edge Case Discovery",
+      "category": "Problem Solving",
+      "severity": "Critical",
+      "explanation": "Jumping straight into coding without clarifying constraints or edge cases leads to flawed implementations and lost interview time.",
+      "do": "Ask clarifying questions about input bounds, types, and edge cases (e.g., empty arrays, negative values, duplicates) before writing code.",
+      "dont": "Do not start writing code immediately after receiving a problem statement without verifying assumptions with the interviewer.",
+      "ats_keywords": [
+        "Edge Case Analysis",
+        "Problem Clarification",
+        "Constraint Identification",
+        "Interview Communication",
+        "Requirement Gathering"
+      ]
+    },
+    {
+      "rule_id": "INT-TEC-002",
+      "rule_name": "Explicit Big-O Complexity Analysis",
+      "category": "Algorithm Efficiency",
+      "severity": "Critical",
+      "explanation": "Failing to analyze time and space complexity demonstrates a lack of foundational computer science understanding.",
+      "do": "State both Time Complexity O(N) and Auxiliary Space Complexity O(1) explicitly before and after optimizing the solution.",
+      "dont": "Do not present a brute-force or optimized solution without stating its formal Big-O efficiency bounds.",
+      "ats_keywords": [
+        "Big-O Time Complexity",
+        "Auxiliary Space Complexity",
+        "Algorithmic Efficiency",
+        "Trade-off Analysis",
+        "Optimization"
+      ]
+    },
+    {
+      "rule_id": "INT-TEC-003",
+      "rule_name": "Think-Aloud Protocol and Trade-off Communication",
+      "category": "Communication",
+      "severity": "High",
+      "explanation": "Coding in total silence isolates the interviewer and makes it impossible for them to evaluate your thought process.",
+      "do": "Verbalize your reasoning continuously, walking through sample test cases, candidate data structures, and trade-offs aloud.",
+      "dont": "Do not sit silent for long stretches while trying to solve a problem without giving the interviewer visibility into your mental model.",
+      "ats_keywords": [
+        "Think-Aloud Technique",
+        "Technical Communication",
+        "Trade-off Explanation",
+        "Collaborative Problem Solving",
+        "Verbal Reasoning"
+      ]
+    },
+    {
+      "rule_id": "INT-TEC-004",
+      "rule_name": "Dry Running and Code Walkthrough Verification",
+      "category": "Code Quality",
+      "severity": "High",
+      "explanation": "Declaring code finished without manual tracing often leaves syntax errors, off-by-one mistakes, or unhandled boundaries.",
+      "do": "Manually dry run the code line-by-line using a simple example trace table before declaring the task complete.",
+      "dont": "Do not tell the interviewer 'I am done' without executing a manual dry run with sample data first.",
+      "ats_keywords": [
+        "Code Dry Run",
+        "Manual Tracing",
+        "Off-by-One Guard",
+        "Execution Verification",
+        "Bug Identification"
+      ]
+    }
+  ]
+}

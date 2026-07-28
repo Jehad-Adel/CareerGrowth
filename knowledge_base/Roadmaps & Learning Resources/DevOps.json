@@ -1,0 +1,81 @@
+[
+  {
+    "topic": "DevOps",
+    "description": "Practices, culture, and tools that unify software development and IT operations to deliver software faster, more reliably, and with continuous improvement.",
+    "roadmap": "https://roadmap.sh/devops",
+    "resources": [
+      {
+        "name": "roadmap.sh DevOps Roadmap",
+        "url": "https://roadmap.sh/devops",
+        "type": "roadmap",
+        "level": "all levels"
+      },
+      {
+        "name": "Docker Documentation",
+        "url": "https://docs.docker.com/",
+        "type": "documentation",
+        "level": "beginner"
+      },
+      {
+        "name": "Kubernetes Documentation",
+        "url": "https://kubernetes.io/docs/home/",
+        "type": "documentation",
+        "level": "intermediate"
+      },
+      {
+        "name": "GitHub Actions Documentation",
+        "url": "https://docs.github.com/actions",
+        "type": "documentation",
+        "level": "beginner"
+      },
+      {
+        "name": "Jenkins Documentation",
+        "url": "https://www.jenkins.io/doc/",
+        "type": "documentation",
+        "level": "intermediate"
+      },
+      {
+        "name": "Terraform Documentation",
+        "url": "https://developer.hashicorp.com/terraform/docs",
+        "type": "documentation",
+        "level": "intermediate"
+      },
+      {
+        "name": "Ansible Documentation",
+        "url": "https://docs.ansible.com/",
+        "type": "documentation",
+        "level": "intermediate"
+      },
+      {
+        "name": "Microsoft Learn - DevOps",
+        "url": "https://learn.microsoft.com/training/devops/",
+        "type": "learning platform",
+        "level": "beginner"
+      },
+      {
+        "name": "AWS DevOps Learning Plan",
+        "url": "https://skillbuilder.aws/",
+        "type": "learning platform",
+        "level": "intermediate"
+      },
+      {
+        "name": "Google Cloud DevOps Guides",
+        "url": "https://cloud.google.com/architecture/devops",
+        "type": "documentation",
+        "level": "advanced"
+      },
+      {
+        "name": "Azure DevOps Documentation",
+        "url": "https://learn.microsoft.com/azure/devops/",
+        "type": "documentation",
+        "level": "intermediate"
+      },
+      {
+        "name": "The Twelve-Factor App",
+        "url": "https://12factor.net/",
+        "type": "best practices",
+        "level": "intermediate"
+      }
+    ]
+  }
+]

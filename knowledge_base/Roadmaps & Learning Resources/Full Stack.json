@@ -1,0 +1,99 @@
+{
+  "topic": "Full Stack Development",
+  "description": "Full Stack Development involves building complete web applications by combining frontend technologies, backend services, databases, APIs, authentication, deployment, and DevOps practices. A Full Stack Developer can develop, test, deploy, and maintain an application from the user interface to the server and database.",
+
+  "roadmap": "https://roadmap.sh/full-stack",
+
+  "resources": [
+    {
+      "name": "roadmap.sh Full Stack Roadmap",
+      "url": "https://roadmap.sh/full-stack",
+      "type": "roadmap",
+      "level": "all levels"
+    },
+    {
+      "name": "MDN Web Docs",
+      "url": "https://developer.mozilla.org/",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "The Odin Project",
+      "url": "https://www.theodinproject.com/",
+      "type": "project-based course",
+      "level": "beginner"
+    },
+    {
+      "name": "freeCodeCamp",
+      "url": "https://www.freecodecamp.org/learn/",
+      "type": "interactive course",
+      "level": "beginner"
+    },
+    {
+      "name": "Node.js Documentation",
+      "url": "https://nodejs.org/docs/latest/api/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Express.js Documentation",
+      "url": "https://expressjs.com/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "React Documentation",
+      "url": "https://react.dev/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Next.js Documentation",
+      "url": "https://nextjs.org/docs",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "FastAPI Documentation",
+      "url": "https://fastapi.tiangolo.com/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "PostgreSQL Documentation",
+      "url": "https://www.postgresql.org/docs/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "MongoDB Documentation",
+      "url": "https://www.mongodb.com/docs/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Docker Documentation",
+      "url": "https://docs.docker.com/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Git Documentation",
+      "url": "https://git-scm.com/doc",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "GitHub Skills",
+      "url": "https://skills.github.com/",
+      "type": "interactive tutorials",
+      "level": "beginner"
+    },
+    {
+      "name": "Microsoft Learn",
+      "url": "https://learn.microsoft.com/",
+      "type": "learning platform",
+      "level": "all levels"
+    }
+  ]
+}

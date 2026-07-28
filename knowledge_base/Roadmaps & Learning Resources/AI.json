@@ -1,0 +1,114 @@
+{
+  "topic": "Artificial Intelligence",
+  "description": "Artificial Intelligence (AI) is the field of computer science focused on building systems capable of performing tasks that normally require human intelligence, such as reasoning, learning, perception, language understanding, planning, and decision-making.",
+
+  "roadmap": {
+    "name": "AI Engineer Roadmap",
+    "url": "https://roadmap.sh/ai-engineer"
+  },
+
+  "learning_order": [
+    "Programming Fundamentals (Python)",
+    "Data Structures and Algorithms",
+    "Mathematics for AI",
+    "Statistics and Probability",
+    "Linear Algebra",
+    "Calculus",
+    "Machine Learning Fundamentals",
+    "Deep Learning",
+    "Natural Language Processing (NLP)",
+    "Computer Vision",
+    "Generative AI",
+    "Large Language Models (LLMs)",
+    "Prompt Engineering",
+    "AI Agents",
+    "Vector Databases",
+    "Retrieval-Augmented Generation (RAG)",
+    "Model Deployment (MLOps)",
+    "Cloud AI Services",
+    "Building Production AI Applications"
+  ],
+
+  "resources": [
+    {
+      "name": "roadmap.sh AI Engineer",
+      "url": "https://roadmap.sh/ai-engineer",
+      "type": "roadmap",
+      "level": "all"
+    },
+    {
+      "name": "Google Machine Learning Crash Course",
+      "url": "https://developers.google.com/machine-learning/crash-course",
+      "type": "course",
+      "level": "beginner"
+    },
+    {
+      "name": "Microsoft Learn AI",
+      "url": "https://learn.microsoft.com/training/browse/?products=azure-ai-services",
+      "type": "learning path",
+      "level": "beginner"
+    },
+    {
+      "name": "Hugging Face Course",
+      "url": "https://huggingface.co/learn",
+      "type": "course",
+      "level": "intermediate"
+    },
+    {
+      "name": "LangChain Documentation",
+      "url": "https://python.langchain.com/docs/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "OpenAI API Documentation",
+      "url": "https://platform.openai.com/docs",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "DeepLearning.AI",
+      "url": "https://www.deeplearning.ai/",
+      "type": "courses",
+      "level": "intermediate"
+    },
+    {
+      "name": "PyTorch Documentation",
+      "url": "https://pytorch.org/docs/stable/",
+      "type": "documentation",
+      "level": "advanced"
+    },
+    {
+      "name": "TensorFlow Documentation",
+      "url": "https://www.tensorflow.org/learn",
+      "type": "documentation",
+      "level": "advanced"
+    }
+  ],
+
+  "recommended_projects": [
+    "AI Chatbot",
+    "Resume Analyzer",
+    "Sentiment Analysis System",
+    "Image Classification Model",
+    "Object Detection System",
+    "Question Answering System",
+    "RAG-based Assistant",
+    "LLM-powered Career Advisor",
+    "AI Interview Simulator",
+    "AI Document Search Engine"
+  ],
+
+  "career_paths": [
+    "AI Engineer",
+    "Machine Learning Engineer",
+    "Deep Learning Engineer",
+    "Generative AI Engineer",
+    "LLM Engineer",
+    "NLP Engineer",
+    "Computer Vision Engineer",
+    "Applied AI Engineer",
+    "Research Engineer",
+    "MLOps Engineer"
+  ]
+}

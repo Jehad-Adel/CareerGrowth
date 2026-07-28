@@ -18,8 +18,8 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
 from app.config import get_settings
-from app.models import CareerProfile, DocumentChunk
-from app.services import rag_service
+from app.models import CareerProfile, DocumentChunk, KnowledgeChunk
+from app.services import knowledge_service, rag_service
 
 pytestmark = pytest.mark.pg
 
@@ -139,3 +139,88 @@ def test_embeddings_round_trip_at_the_declared_dimension(db, profiles, monkeypat
 
     stored = db.query(DocumentChunk).filter_by(profile_id=mine.id).one()
     assert len(stored.embedding) == DIMS
+
+
+# --- Curated corpus ---------------------------------------------------------
+#
+# The shared knowledge_base/ corpus. Same reason for living here: ordering by
+# `<=>` needs the real operator. The property that matters is the mirror image
+# of the one above — this corpus has no owner, so retrieval must reach every
+# row regardless of who is asking.
+
+
+def _stub_knowledge_embeddings(monkeypatch, mapping: dict[str, float]):
+    monkeypatch.setattr(
+        knowledge_service.embeddings,
+        "embed_documents",
+        lambda texts: [_vec(mapping.get(t, 0)) for t in texts],
+    )
+    monkeypatch.setattr(
+        knowledge_service.embeddings, "embed_query", lambda t: _vec(mapping.get(t, 0))
+    )
+
+
+def _add_guide(db, title: str, seed: float, category: str = "ATS") -> None:
+    db.add(
+        KnowledgeChunk(
+            category=category,
+            source=f"{category}/{title}.json",
+            chunk_index=0,
+            title=title,
+            content=f"Body of {title}.",
+            content_hash=title,
+            embedding=_vec(seed),
+        )
+    )
+    db.flush()
+
+
+def test_the_knowledge_hnsw_index_exists(db):
+    found = db.execute(
+        text(
+            "select indexdef from pg_indexes "
+            "where tablename='knowledge_chunks' and indexname like '%hnsw%'"
+        )
+    ).scalar()
+    assert found and "hnsw" in found.lower(), (
+        "No HNSW index on knowledge_chunks.embedding — every chat turn would "
+        "sequentially scan the whole corpus."
+    )
+
+
+def test_knowledge_retrieval_orders_by_similarity(db, monkeypatch):
+    _stub_knowledge_embeddings(monkeypatch, {"query": 5})
+    _add_guide(db, "near", seed=5)
+    _add_guide(db, "far", seed=300)
+
+    hits = knowledge_service.retrieve(db, "query", k=2)
+
+    assert hits[0].title == "near"
+
+
+def test_knowledge_retrieval_is_shared_across_profiles(db, profiles, monkeypatch):
+    """The inverse of the isolation guarantee above: this corpus belongs to
+    nobody, so every caller must see the same rows. A stray profile filter
+    here would silently return nothing for everyone."""
+    _stub_knowledge_embeddings(monkeypatch, {"query": 7})
+    _add_guide(db, "shared", seed=7)
+
+    first = knowledge_service.retrieve(db, "query")
+    second = knowledge_service.retrieve(db, "query")
+
+    assert [c.title for c in first] == ["shared"]
+    assert [c.title for c in second] == ["shared"]
+
+
+def test_knowledge_retrieval_does_not_load_embeddings(db, monkeypatch):
+    """Deferred on purpose: 768 floats per row that nothing downstream reads."""
+    from sqlalchemy import inspect as sa_inspect
+
+    _stub_knowledge_embeddings(monkeypatch, {"query": 9})
+    _add_guide(db, "deferred", seed=9)
+    db.expire_all()
+
+    hit = knowledge_service.retrieve(db, "query")[0]
+
+    assert "embedding" in sa_inspect(hit).unloaded
+    assert hit.content  # the column that is actually used loaded fine

@@ -1,0 +1,76 @@
+{
+  "file_metadata": {
+    "category": "ATS",
+    "file_name": "ats_parsing_rules.json",
+    "target_features": [
+      "CV_Analyzer",
+      "ATS_Score",
+      "Resume_Optimizer",
+      "Hybrid_RAG"
+    ],
+    "source": "Indeed Career Guide"
+  },
+  "rules": [
+    {
+      "rule_id": "ATS-PAR-001",
+      "rule_name": "Use Standard Section Headings",
+      "category": "Structure & Headings",
+      "severity": "High",
+      "explanation": "Applicant tracking systems scan resumes to import data into structured online profiles. They search for predictable and common standard headings to identify sections correctly.",
+      "do": "Use universally recognized headers like 'Work History', 'Work Experience', or 'Experience'.",
+      "dont": "Do not use non-standard or overly creative section headers that parsers might misinterpret or fail to parse.",
+      "ats_keywords": [
+        "Standard Headings",
+        "Section Titles",
+        "Resume Structure",
+        "Work History"
+      ]
+    },
+    {
+      "rule_id": "ATS-PAR-002",
+      "rule_name": "Avoid Complex Layout Formatting",
+      "category": "Layout & Design",
+      "severity": "Critical",
+      "explanation": "Elements like tables, multi-column layouts, headers, and footers often scramble or drop data during plain-text translation, causing critical information to be lost.",
+      "do": "Keep the layout linear and simple, placing all essential content directly in the main body text.",
+      "dont": "Do not place key skills, experience details, or contact information inside tables, text boxes, headers, or footers.",
+      "ats_keywords": [
+        "Formatting Errors",
+        "Tables",
+        "Headers and Footers",
+        "Columns",
+        "Parsing Failures"
+      ]
+    },
+    {
+      "rule_id": "ATS-PAR-003",
+      "rule_name": "Tailor Keywords to Job Description",
+      "category": "Keyword Optimization",
+      "severity": "High",
+      "explanation": "ATS systems filter applicants based on specific skill sets and repeated terms from the job post. Submitting a generic resume reduces match accuracy.",
+      "do": "Analyze the target job description, extract high-priority repeated keywords, and naturally incorporate them into targeted resume copies.",
+      "dont": "Do not submit a single untailored resume for multiple different job openings.",
+      "ats_keywords": [
+        "Job Description Matching",
+        "Keyword Targeting",
+        "Tailored Resume",
+        "ATS Optimization"
+      ]
+    },
+    {
+      "rule_id": "ATS-PAR-004",
+      "rule_name": "Avoid Unnatural Keyword Stuffing",
+      "category": "Keyword Optimization",
+      "severity": "Medium",
+      "explanation": "Over-optimizing by forcing keywords out of context may pass the automated filter but will appear nonsensical to the human recruiter reading it afterward.",
+      "do": "Place keywords naturally within meaningful context (e.g., accomplishments and work responsibilities).",
+      "dont": "Do not insert random keyword lists or hide repetitive terms just to satisfy the ATS filter.",
+      "ats_keywords": [
+        "Keyword Stuffing",
+        "Readable Context",
+        "Recruiter Review",
+        "Over-Optimization"
+      ]
+    }
+  ]
+}

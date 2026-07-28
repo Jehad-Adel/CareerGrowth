@@ -116,11 +116,26 @@ async function RoadmapBody({ fallbackTarget }: { fallbackTarget: string }) {
                       </h3>
                       <Badge variant="outline">
                         ~{step.estimated_months} mo
+                        {step.estimated_weekly_hours > 0 &&
+                          ` · ${step.estimated_weekly_hours} h/wk`}
                       </Badge>
+                      {step.difficulty && (
+                        <Badge variant="outline">{step.difficulty}</Badge>
+                      )}
                     </div>
                     <p className="mt-2 text-sm text-muted-foreground">
                       {step.description}
                     </p>
+
+                    {/* Empty on roadmaps generated before these fields
+                        existed, so every one of them is rendered
+                        conditionally rather than as an empty row. */}
+                    {step.reason ? (
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        <span className="text-foreground">Why now: </span>
+                        {step.reason}
+                      </p>
+                    ) : null}
 
                     {step.skills_to_acquire.length > 0 ? (
                       <div className="mt-3 flex flex-wrap gap-1.5">
@@ -135,6 +150,20 @@ async function RoadmapBody({ fallbackTarget }: { fallbackTarget: string }) {
                     {step.prerequisite_skills.length > 0 ? (
                       <p className="mt-2 text-xs text-muted-foreground">
                         Needs first: {step.prerequisite_skills.join(", ")}
+                      </p>
+                    ) : null}
+
+                    {step.project_to_practice ? (
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Build: {step.project_to_practice}
+                      </p>
+                    ) : null}
+
+                    {step.recommended_resources.length > 0 ? (
+                      // Names, not links — the backend never stores URLs from
+                      // a generation, so there is nothing to link to.
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Learn from: {step.recommended_resources.join(", ")}
                       </p>
                     ) : null}
                   </div>

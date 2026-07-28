@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "DevOps",
+    "file_name": "containerization_and_orchestration.json",
+    "target_features": [
+      "DevOps_Analyzer",
+      "Container_Orchestration_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Docker Production Security & Multi-Stage Building Guidelines",
+      "Kubernetes Enterprise Hardening Standards (CNCF)"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "DO-CNT-001",
+      "rule_name": "Multi-Stage Docker Builds and Minimal Images",
+      "category": "Containerization",
+      "severity": "Critical",
+      "explanation": "Including compilers, SDKs, and build toolchains in final container production images drastically increases image size and attack surface.",
+      "do": "Utilize multi-stage Docker builds and deploy final binaries/artifacts onto minimal base images (e.g., Alpine, Distroless, Scratch).",
+      "dont": "Do not ship heavy full OS distribution base images (e.g., Ubuntu/Debian default tags) containing build utilities to production registries.",
+      "ats_keywords": [
+        "Multi-Stage Build",
+        "Distroless Images",
+        "Docker Security",
+        "Attack Surface Reduction",
+        "Minimal Base Image"
+      ]
+    },
+    {
+      "rule_id": "DO-CNT-002",
+      "rule_name": "Non-Root User Container Execution",
+      "category": "Container Security",
+      "severity": "Critical",
+      "explanation": "Running containers as the default root user allows potential container breakout exploits to compromise the underlying host OS kernel.",
+      "do": "Define explicit unprivileged system user groups (e.g., USER node/appuser) within Dockerfiles before execution commands.",
+      "dont": "Do not execute container entrypoint processes as the default root user inside production container environments.",
+      "ats_keywords": [
+        "Non-Root Execution",
+        "Least Privilege",
+        "Container Isolation",
+        "Security Context",
+        "Host Protection"
+      ]
+    },
+    {
+      "rule_id": "DO-CNT-003",
+      "rule_name": "Resource Limits and Quota Management in Kubernetes",
+      "category": "Kubernetes Orchestration",
+      "severity": "High",
+      "explanation": "Deploying Pods without explicit memory and CPU boundaries enables noisy neighbor syndrome and causes Node Out-Of-Memory (OOM) crashes.",
+      "do": "Configure explicit resource requests and limits (CPU and Memory) for every container manifest in Kubernetes deployment specifications.",
+      "dont": "Do not launch unconstrained workloads into Kubernetes clusters without defining resource requests and limits.",
+      "ats_keywords": [
+        "Kubernetes Limits",
+        "Resource Requests",
+        "OOMKilled Guard",
+        "Pod Allocation",
+        "Cluster Stability"
+      ]
+    },
+    {
+      "rule_id": "DO-CNT-004",
+      "rule_name": "Liveness and Readiness Probe Configuration",
+      "category": "Orchestration Reliability",
+      "severity": "High",
+      "explanation": "Without health probes, orchestrators route client traffic to unresponsive or initializing containers, leading to failed requests.",
+      "do": "Implement precise liveness, readiness, and startup probes pointing to dedicated application health-check endpoints.",
+      "dont": "Do not rely strictly on process existence without verifying network-level application readiness and dependency health.",
+      "ats_keywords": [
+        "Liveness Probe",
+        "Readiness Probe",
+        "Health Checks",
+        "Traffic Management",
+        "Kubernetes Self-Healing"
+      ]
+    }
+  ]
+}

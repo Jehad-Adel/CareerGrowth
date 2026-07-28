@@ -3,11 +3,18 @@ import uuid
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.ai import embeddings
 from app.ai.chains.chat_chain import build_chat_chain
 from app.errors import AppError
 from app.logging import get_logger
-from app.models import CareerProfile, ChatMessage, Skill
-from app.services import quota_service, rag_service
+from app.models import (
+    CareerProfile,
+    ChatMessage,
+    DocumentChunk,
+    KnowledgeChunk,
+    Skill,
+)
+from app.services import knowledge_service, quota_service, rag_service
 
 log = get_logger(__name__)
 
@@ -70,6 +77,37 @@ def _next_position(db: Session, profile_id: uuid.UUID) -> int:
     return 0 if highest is None else highest + 1
 
 
+def _sources(
+    chunks: list[DocumentChunk], guides: list[KnowledgeChunk]
+) -> list[dict]:
+    """What grounded this reply, for the "why did it say that" line.
+
+    Both corpora are recorded. Attributing only the personal documents was
+    misleading once curated guidance started shaping answers: a reply built
+    entirely from the ATS rules showed no source at all.
+
+    `origin` separates them because they mean different things to a reader —
+    "your CV" is evidence about them, "CareerFarm guidance" is not.
+    """
+    return [
+        {
+            "origin": "document",
+            "kind": chunk.document.kind,
+            "label": chunk.document.kind,
+            "chunk": chunk.chunk_index,
+        }
+        for chunk in chunks
+    ] + [
+        {
+            "origin": "guide",
+            "kind": "guide",
+            "label": guide.category,
+            "title": guide.title,
+        }
+        for guide in guides
+    ]
+
+
 def _history_block(messages: list[ChatMessage]) -> str:
     if not messages:
         return "No earlier turns."
@@ -82,13 +120,33 @@ def send(db: Session, profile: CareerProfile, question: str) -> ChatMessage:
     quota_service.consume(db, profile.id, FEATURE)
 
     prior = history(db, profile.id)
-    chunks = rag_service.retrieve(db, profile.id, question)
+
+    # Two corpora, one question, one embedding. Letting each retrieval embed
+    # the question itself costs a second network round trip to Google for a
+    # byte-identical vector, on the hot path of every chat turn.
+    question_vector = embeddings.embed_query(question) if question.strip() else None
+    chunks = rag_service.retrieve(db, profile.id, question, vector=question_vector)
+
+    # The curated corpus is a separate *ranking*, though, not extra rows in
+    # the same one. A single top-k over both lets a well-phrased general rule
+    # evict the document the question was actually about — and the two answer
+    # different halves of a career question anyway.
+    #
+    # Best-effort: an empty or unreachable corpus degrades the answer, it does
+    # not fail the turn the user already paid a quota call for.
+    try:
+        guides = knowledge_service.retrieve(db, question, vector=question_vector)
+    except Exception:
+        log.exception("knowledge_retrieve_failed", profile_id=str(profile.id))
+        guides = []
+    guidance = knowledge_service.build_context(guides)
 
     try:
         answer = build_chat_chain().invoke(
             {
                 "profile": _profile_block(db, profile),
                 "context": rag_service.build_context(chunks),
+                "guidance": guidance or "No curated guidance matched this question.",
                 "history": _history_block(prior),
                 "question": question,
             }
@@ -116,9 +174,7 @@ def send(db: Session, profile: CareerProfile, question: str) -> ChatMessage:
         position=position + 1,
         role="assistant",
         content=answer.strip(),
-        sources=[
-            {"kind": c.document.kind, "chunk": c.chunk_index} for c in chunks
-        ],
+        sources=_sources(chunks, guides),
     )
     db.add(reply)
     db.commit()

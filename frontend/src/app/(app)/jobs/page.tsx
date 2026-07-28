@@ -14,7 +14,9 @@ import {
   getLatestJobMatch,
   getLatestSkillGap,
   getProfile,
+  type JobMatchResult,
   type SkillGapItemResult,
+  type SkillMatchResult,
 } from "@/lib/services";
 
 const PRIORITY_STYLE: Record<SkillGapItemResult["priority"], string> = {
@@ -23,6 +25,131 @@ const PRIORITY_STYLE: Record<SkillGapItemResult["priority"], string> = {
   Medium: "bg-primary/12 text-primary",
   Low: "bg-muted text-muted-foreground",
 };
+
+const SEVERITY_STYLE: Record<
+  NonNullable<SkillMatchResult["severity_if_missing"]>,
+  string
+> = {
+  Blocking: "bg-destructive/12 text-destructive",
+  Significant: "bg-[var(--harvest)]/15 text-[var(--harvest)]",
+  Minor: "bg-muted text-muted-foreground",
+};
+
+/** Worst gaps first, so the thing that sinks the application is at the top. */
+const SEVERITY_ORDER = { Blocking: 0, Significant: 1, Minor: 2 } as const;
+
+function sortedGaps(matches: SkillMatchResult[]): SkillMatchResult[] {
+  return matches
+    .filter((m) => !m.matched)
+    .sort(
+      (a, b) =>
+        SEVERITY_ORDER[a.severity_if_missing ?? "Significant"] -
+        SEVERITY_ORDER[b.severity_if_missing ?? "Significant"],
+    );
+}
+
+/**
+ * The detailed breakdown, when the stored result has one.
+ *
+ * Results generated before 2026-07-28 only carry the two flat name lists, and
+ * there is no way to reconstruct severity or provenance from those — so the
+ * old rendering stays as the fallback rather than showing an empty panel.
+ */
+function SkillBreakdown({ result }: { result: JobMatchResult }) {
+  const matches = result.skill_matches;
+
+  if (!matches?.length) {
+    return (
+      <div className="mt-5 space-y-3">
+        <div>
+          <p className="mb-1.5 text-xs text-muted-foreground">You have</p>
+          <div className="flex flex-wrap gap-1.5">
+            {result.matched_skills.map((s) => (
+              <Badge key={s} variant="secondary">
+                {s}
+              </Badge>
+            ))}
+          </div>
+        </div>
+        <div>
+          <p className="mb-1.5 text-xs text-muted-foreground">
+            They want, you lack
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {result.missing_skills.map((s) => (
+              <Badge key={s} variant="outline">
+                {s}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const gaps = sortedGaps(matches);
+  const have = matches.filter((m) => m.matched);
+
+  return (
+    <div className="mt-5 space-y-4">
+      {gaps.length > 0 && (
+        <div>
+          <p className="mb-2 text-xs text-muted-foreground">
+            They want, you lack
+          </p>
+          <ul className="space-y-1.5">
+            {gaps.map((m) => (
+              <li
+                key={m.job_skill}
+                className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2 text-sm"
+              >
+                <span>
+                  {m.job_skill}
+                  {m.requirement_level === "Preferred" && (
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      preferred
+                    </span>
+                  )}
+                </span>
+                <span
+                  className={`shrink-0 rounded-full px-2 py-0.5 text-xs ${
+                    SEVERITY_STYLE[m.severity_if_missing ?? "Significant"]
+                  }`}
+                >
+                  {m.severity_if_missing ?? "Significant"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {have.length > 0 && (
+        <div>
+          <p className="mb-2 text-xs text-muted-foreground">You have</p>
+          <div className="flex flex-wrap gap-1.5">
+            {have.map((m) => (
+              <Badge
+                key={m.job_skill}
+                variant={m.is_transferable_match ? "outline" : "secondary"}
+                // The transferable case is the one worth explaining: it looks
+                // like a match and is only close enough to argue for.
+                title={
+                  m.is_transferable_match && m.matched_via
+                    ? `Close match via ${m.matched_via}`
+                    : (m.matched_via ?? undefined)
+                }
+              >
+                {m.job_skill}
+                {m.is_transferable_match && " ~"}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function NoCv() {
   return (
@@ -63,38 +190,26 @@ async function MatchResults() {
       <div className="rounded-2xl border bg-card p-6">
         <div className="flex items-center gap-6">
           <ScoreRing value={match.result.match_score} label="Match" />
+          {typeof match.result.hiring_probability === "number" && (
+            <ScoreRing
+              value={match.result.hiring_probability}
+              label="Screen odds"
+            />
+          )}
           <div>
             <h2 className="text-lg">{match.job_title ?? "Latest match"}</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               {match.result.summary}
             </p>
+            {match.result.hiring_probability_reasoning && (
+              <p className="mt-2 text-xs text-muted-foreground">
+                {match.result.hiring_probability_reasoning}
+              </p>
+            )}
           </div>
         </div>
 
-        <div className="mt-5 space-y-3">
-          <div>
-            <p className="mb-1.5 text-xs text-muted-foreground">You have</p>
-            <div className="flex flex-wrap gap-1.5">
-              {match.result.matched_skills.map((s) => (
-                <Badge key={s} variant="secondary">
-                  {s}
-                </Badge>
-              ))}
-            </div>
-          </div>
-          <div>
-            <p className="mb-1.5 text-xs text-muted-foreground">
-              They want, you lack
-            </p>
-            <div className="flex flex-wrap gap-1.5">
-              {match.result.missing_skills.map((s) => (
-                <Badge key={s} variant="outline">
-                  {s}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        </div>
+        <SkillBreakdown result={match.result} />
       </div>
 
       <div className="rounded-2xl border bg-card p-6">

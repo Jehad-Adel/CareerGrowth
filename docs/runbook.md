@@ -49,6 +49,38 @@ Or locally with `DIRECT_DATABASE_URL` set. Verify:
 uv run alembic current   # expect the newest revision, marked (head)
 ```
 
+### 2b. Knowledge base corpus
+
+`knowledge_chunks` is populated by a CLI, not by a request and not on boot.
+Run it after any migration that touches the table, and after editing anything
+under `knowledge_base/`:
+
+```bash
+cd backend && uv run python -m app.cli.ingest_knowledge
+```
+
+**Run it from a checkout, not from the container.** The Docker build context
+is `backend/`, so `knowledge_base/` is not in the image — by design, since the
+running API only ever reads the ingested rows out of Postgres. Inside a
+container the command exits with `Knowledge base directory not found`.
+
+**The free tier allows 100 *contents* per minute, not 100 requests.** A batch
+of 50 texts spends 50 of them, so the full 291-entry corpus takes roughly
+three minutes and the command pauses between batches to stay inside the
+budget. That wait is normal, not a hang. On a paid tier, raise it:
+
+```bash
+cd backend && uv run python -m app.cli.ingest_knowledge --per-minute 1000
+```
+
+Re-running is cheap: entries are skipped by content hash, so only what changed
+is re-embedded. Each batch commits as it lands, so an interrupted run — Ctrl-C,
+a dropped connection, an exhausted quota — keeps everything already embedded
+and the next run resumes from there. `--dry-run` parses and reports without
+touching the embedding API or the database. Use `--force` only after changing
+the embedding model or the entry rendering, where the text is unchanged but
+its vector is no longer comparable to the rest.
+
 ### 3. Vercel (frontend)
 
 **Root Directory must be set to `frontend` in the Vercel project settings.**

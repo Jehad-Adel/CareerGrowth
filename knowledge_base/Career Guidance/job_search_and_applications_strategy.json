@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Career Guidance",
+    "file_name": "job_search_and_applications_strategy.json",
+    "target_features": [
+      "Career_Analyzer",
+      "JobSearch_Strategy_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Modern Tech Recruiting & Application Tracking Standards",
+      "Engineering Career Management & Pipeline Frameworks"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "CG-SRH-001",
+      "rule_name": "Targeted Company Tiering and Segment Alignment",
+      "category": "Job Search Strategy",
+      "severity": "Critical",
+      "explanation": "Applying blindly to every available job posting without aligning with company scale, tech stack, and role maturity leads to wasted effort and mismatched opportunities.",
+      "do": "Segment target employers into strategic tiers (e.g., multinational corporations, high-growth startups, software houses) and tailor application materials to match their specific engineering culture.",
+      "dont": "Do not send identical, uncustomized resumes and generic cover letters across drastically different industrial sectors.",
+      "ats_keywords": [
+        "Company Tiering",
+        "Targeted Job Search",
+        "Culture Fit",
+        "Stack Alignment",
+        "Application Customization"
+      ]
+    },
+    {
+      "rule_id": "CG-SRH-002",
+      "rule_name": "Systematic Application Tracking and Pipeline Management",
+      "category": "Pipeline Management",
+      "severity": "High",
+      "explanation": "Treating job hunting as an unorganized series of ad-hoc clicks leads to missed follow-ups, lost interview schedules, and lack of performance visibility.",
+      "do": "Maintain a centralized application tracking board (e.g., Notion, Excel, Kanban board) recording dates, company names, contact points, application statuses, and interview rounds.",
+      "dont": "Do not rely on memory or scattered browser tabs to keep track of active internship and job applications.",
+      "ats_keywords": [
+        "Application Tracking",
+        "Pipeline Management",
+        "Job Search Dashboard",
+        "Follow-up Strategy",
+        "Tracking Board"
+      ]
+    },
+    {
+      "rule_id": "CG-SRH-003",
+      "rule_name": "Tailored Cover Letter and Portfolio Mapping",
+      "category": "Application Quality",
+      "severity": "High",
+      "explanation": "Submitting applications without addressing specific role requirements or linking relevant projects fails to answer why you are uniquely qualified.",
+      "do": "Craft concise, impact-driven cover letters and portfolio highlights that directly link your past competition wins or projects to the target job description's core pain points.",
+      "dont": "Do not use robotic, overly generic template cover letters that omit company names and specific role references.",
+      "ats_keywords": [
+        "Tailored Cover Letter",
+        "Role Mapping",
+        "Value Proposition",
+        "Project Alignment",
+        "Recruiter Pitch"
+      ]
+    },
+    {
+      "rule_id": "CG-SRH-004",
+      "rule_name": "Post-Application Networking and Follow-Up Protocols",
+      "category": "Outreach Strategy",
+      "severity": "Medium",
+      "explanation": "Waiting passively after submitting an application through black-hole portals significantly reduces interview conversion rates.",
+      "do": "Identify engineering managers, team leads, or recruiters from target companies on professional networks and send professional, value-backed follow-up inquiries.",
+      "dont": "Do not spam company hiring managers aggressively or demand immediate status updates without professional courtesy.",
+      "ats_keywords": [
+        "Post-Application Follow-up",
+        "Recruiter Outreach",
+        "Proactive Networking",
+        "Hiring Pipeline",
+        "Professional Courtesy"
+      ]
+    }
+  ]
+}

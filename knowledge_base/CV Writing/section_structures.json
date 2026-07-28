@@ -1,0 +1,77 @@
+{
+  "file_metadata": {
+    "category": "CV_Writing",
+    "file_name": "section_structures.json",
+    "target_features": [
+      "CV_Analyzer",
+      "Section_Parser",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Harvard College Guide to Creating a Strong Resume",
+      "Resume Worded Standard Hierarchy Framework"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "CV-SEC-001",
+      "rule_name": "Education Placement Based on Seniority",
+      "category": "Section Order",
+      "severity": "Critical",
+      "explanation": "For current students and recent graduates, Education should be placed near the top right after Contact Information. For experienced professionals (2+ years), Work Experience takes top priority.",
+      "do": "Place Education above Work Experience if you are a student/recent graduate, or below Experience if you have established career history.",
+      "dont": "Do not push Education to the bottom if you are a student or fresh graduate.",
+      "ats_keywords": [
+        "Education Placement",
+        "Section Order",
+        "Recent Graduate Hierarchy",
+        "Student Structure"
+      ]
+    },
+    {
+      "rule_id": "CV-SEC-002",
+      "rule_name": "Enforce Reverse Chronological Order",
+      "category": "Temporal Alignment",
+      "severity": "Critical",
+      "explanation": "All entries within Education, Work Experience, Projects, and Leadership must strictly follow reverse chronological order (most recent first).",
+      "do": "List your current or most recent degree, job, or project at the top of its respective section.",
+      "dont": "Do not mix dates out of sequence or list older experiences before current ones.",
+      "ats_keywords": [
+        "Reverse Chronological",
+        "Date Alignment",
+        "Most Recent First",
+        "Timeline Consistency"
+      ]
+    },
+    {
+      "rule_id": "CV-SEC-003",
+      "rule_name": "Strict Contact Info Requirements",
+      "category": "Header Formatting",
+      "severity": "High",
+      "explanation": "The header must contain essential professional contact channels only. Unnecessary personal attributes reduce scannability and introduce compliance risks.",
+      "do": "Include full name, professional email, phone number, location (City, Country/State), and LinkedIn/GitHub links.",
+      "dont": "Do not include photos, age, gender, full home address, or personal status.",
+      "ats_keywords": [
+        "Header Details",
+        "Contact Information",
+        "No Photo Policy",
+        "Clean Header"
+      ]
+    },
+    {
+      "rule_id": "CV-SEC-004",
+      "rule_name": "Categorized Technical Skills Section",
+      "category": "Skills Layout",
+      "severity": "Medium",
+      "explanation": "A clean skills section clusters related proficiencies into labeled categories, improving human scannability and ATS keyword parsing.",
+      "do": "Group skills logically (e.g., 'Programming Languages', 'Frameworks & Tools', 'Certifications').",
+      "dont": "Do not dump an unstructured comma-separated block of 30+ mixed skills.",
+      "ats_keywords": [
+        "Categorized Skills",
+        "Logical Clustering",
+        "Skills Hierarchy",
+        "Technical Proficiencies"
+      ]
+    }
+  ]
+}

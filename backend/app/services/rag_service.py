@@ -8,7 +8,7 @@ upload anything twice.
 import uuid
 
 from sqlalchemy import delete, func, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, defer, selectinload
 
 from app.ai import embeddings
 from app.logging import get_logger
@@ -118,7 +118,11 @@ def ingest(
 
 
 def retrieve(
-    db: Session, profile_id: uuid.UUID, query: str, k: int = TOP_K
+    db: Session,
+    profile_id: uuid.UUID,
+    query: str,
+    k: int = TOP_K,
+    vector: list[float] | None = None,
 ) -> list[DocumentChunk]:
     """Top-k chunks for this query, belonging to this profile.
 
@@ -126,14 +130,31 @@ def retrieve(
     vector ordering — never applied to an already-computed top-k. Post-
     filtering would mean another user's chunks could consume the k slots, and
     a bug in the filter would surface their content rather than nothing.
+
+    Args:
+        vector: a pre-computed embedding of `query`. A chat turn searches two
+            corpora with the same question, and embedding it twice is a second
+            network round trip to Google for a byte-identical result.
     """
     if not query.strip():
         return []
 
-    vector = embeddings.embed_query(query)
+    if vector is None:
+        vector = embeddings.embed_query(query)
     return list(
         db.execute(
             select(DocumentChunk)
+            .options(
+                # The embedding is 768 floats per row and nothing downstream
+                # reads it — only `content` reaches the prompt. Deferring
+                # keeps them out of the result set entirely.
+                defer(DocumentChunk.embedding),
+                # `build_context` and the chat's `sources` both read
+                # `chunk.document.kind`. Lazily that is one SELECT per chunk
+                # on the hot path of every chat turn; this makes it one for
+                # the whole set.
+                selectinload(DocumentChunk.document),
+            )
             .where(DocumentChunk.profile_id == profile_id)
             .order_by(DocumentChunk.embedding.cosine_distance(vector))
             .limit(k)

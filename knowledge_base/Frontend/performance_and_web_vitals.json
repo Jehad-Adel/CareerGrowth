@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Frontend",
+    "file_name": "performance_and_web_vitals.json",
+    "target_features": [
+      "Frontend_Analyzer",
+      "Performance_WebVitals_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Google Web.dev Core Web Vitals Guidelines",
+      "Vercel & Next.js Performance Engineering Architecture"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "FE-PER-001",
+      "rule_name": "Core Web Vitals Optimization (LCP, INP, CLS)",
+      "category": "Web Performance",
+      "severity": "Critical",
+      "explanation": "Poor Core Web Vitals scores lead to high bounce rates, poor user experience, and heavily penalized search engine rankings.",
+      "do": "Optimize LCP (Largest Contentful Paint < 2.5s), INP (Interaction to Next Paint < 200ms), and minimize CLS (Cumulative Layout Shift < 0.1) using explicit dimensions and optimized asset delivery.",
+      "dont": "Do not insert un-sized dynamic elements that cause layout shifts or load unoptimized massive media assets above the fold.",
+      "ats_keywords": [
+        "Core Web Vitals",
+        "LCP Optimization",
+        "INP Benchmark",
+        "CLS Prevention",
+        "Layout Stability"
+      ]
+    },
+    {
+      "rule_id": "FE-PER-002",
+      "rule_name": "Code Splitting and Route-Based Lazy Loading",
+      "category": "Bundle Optimization",
+      "severity": "High",
+      "explanation": "Shipping a single massive JavaScript bundle forces users to download unneeded code for hidden routes, causing slow initial page loads.",
+      "do": "Implement dynamic imports (e.g., React.lazy, dynamic import syntax) to split bundles along route boundaries and heavy UI widgets.",
+      "dont": "Do not import entire heavy libraries (e.g., lodash, moment) synchronously when sub-path imports or lighter alternatives exist.",
+      "ats_keywords": [
+        "Code Splitting",
+        "Lazy Loading",
+        "Dynamic Imports",
+        "Bundle Size Optimization",
+        "Tree Shaking"
+      ]
+    },
+    {
+      "rule_id": "FE-PER-003",
+      "rule_name": "Effective Asset Optimization and Caching",
+      "category": "Asset Delivery",
+      "severity": "High",
+      "explanation": "Uncompressed images and missing static asset caching headers consume unnecessary user bandwidth and slow render times.",
+      "do": "Serve modern image formats (AVIF/WebP) with responsive srcset attributes, utilize CDNs, and set aggressive Immutable Caching headers for static assets.",
+      "dont": "Do not serve raw, uncompressed PNG/JPEG files directly without responsive dimensions or caching strategies.",
+      "ats_keywords": [
+        "WebP / AVIF Format",
+        "Asset Caching",
+        "CDN Delivery",
+        "Responsive Images",
+        "Resource Hints"
+      ]
+    },
+    {
+      "rule_id": "FE-PER-004",
+      "rule_name": "DOM Node Efficiency and Virtualization",
+      "category": "Rendering Performance",
+      "severity": "Medium",
+      "explanation": "Rendering thousands of inactive DOM elements simultaneously consumes massive browser memory and causes UI jank during scrolling.",
+      "do": "Virtualize long data lists (e.g., tanstack-virtual, react-window) so only visible rows/items reside in the active DOM tree.",
+      "dont": "Do not render unbounded arrays directly into the DOM tree without list pagination or window virtualization.",
+      "ats_keywords": [
+        "DOM Virtualization",
+        "React Window",
+        "Scroll Performance",
+        "Memory Footprint",
+        "Render Optimization"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Artificial Intelligence",
+    "file_name": "model_finetuning_and_evaluation.json",
+    "target_features": [
+      "AI_Analyzer",
+      "FineTuning_Evaluation_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "LoRA Microsoft Research Paper",
+      "Hugging Face PEFT & Evaluation Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "AI-FIN-001",
+      "rule_name": "Parameter-Efficient Fine-Tuning (PEFT) via LoRA and QLoRA",
+      "category": "Model Training",
+      "severity": "Critical",
+      "explanation": "Full-parameter fine-tuning of large language models is computationally prohibitive, highly expensive, and prone to catastrophic forgetting of general capabilities.",
+      "do": "Implement Parameter-Efficient Fine-Tuning (PEFT) methods—such as Low-Rank Adaptation (LoRA) or Quantized LoRA (QLoRA)—freezing base weights and training small, low-rank adapter matrices.",
+      "dont": "Do not execute full-parameter fine-tuning for large models when hardware resources are limited or when preserving foundational multi-task capabilities is required.",
+      "ats_keywords": [
+        "Parameter-Efficient Fine-Tuning",
+        "PEFT",
+        "LoRA",
+        "QLoRA",
+        "Catastrophic Forgetting"
+      ]
+    },
+    {
+      "rule_id": "AI-FIN-002",
+      "rule_name": "Curated Dataset Preparation and Instruction Formatting",
+      "category": "Training Data",
+      "severity": "High",
+      "explanation": "Training models on noisy, unstructured, or poorly formatted instruction datasets leads to erratic generation behavior and formatting breakdown.",
+      "do": "Curate high-quality instruction-response pairs formatted consistently with standardized chat templates (e.g., ShareGPT, ChatML) incorporating diverse edge cases and clear separation tags.",
+      "dont": "Do not train models on raw, unvalidated text corpora when the target goal is precise instruction-following and task adaptation.",
+      "ats_keywords": [
+        "Instruction Formatting",
+        "Dataset Curation",
+        "ChatML ShareGPT",
+        "Task Adaptation",
+        "Data Quality"
+      ]
+    },
+    {
+      "rule_id": "AI-FIN-003",
+      "rule_name": "Quantitative Model Evaluation Benchmarks and Metrics",
+      "category": "Model Evaluation",
+      "severity": "High",
+      "explanation": "Relying purely on subjective manual inspection of a few sample prompts during fine-tuning fails to measure overall model degradation or generalization capability.",
+      "do": "Run automated evaluation suites and standardized academic benchmarks (e.g., MMLU, GSM8K, HumanEval) to quantitatively track performance metrics across reasoning, coding, and knowledge retrieval.",
+      "dont": "Do not deploy fine-tuned models to production based solely on low training loss without rigorous benchmark validation.",
+      "ats_keywords": [
+        "Model Evaluation",
+        "Benchmark Validation",
+        "MMLU GSM8K HumanEval",
+        "Quantitative Metrics",
+        "Generalization Capability"
+      ]
+    },
+    {
+      "rule_id": "AI-FIN-004",
+      "rule_name": "Overfitting Prevention and Hyperparameter Calibration",
+      "category": "Training Optimization",
+      "severity": "Medium",
+      "explanation": "Training adapters for excessive epochs or using uncalibrated learning rates leads to severe overfitting, causing the model to memorize training examples rather than generalizing.",
+      "do": "Monitor validation loss curves, implement early stopping, use appropriate learning rate warmups, and tune rank (r) and alpha hyperparameters carefully.",
+      "dont": "Do not train fine-tuning jobs for fixed high epoch counts without monitoring validation loss for signs of memorization.",
+      "ats_keywords": [
+        "Overfitting Prevention",
+        "Hyperparameter Calibration",
+        "Early Stopping",
+        "Learning Rate Warmup",
+        "Validation Loss"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "topic": "Docker",
+  "description": "Docker is an open-source containerization platform that packages applications, dependencies, and runtime environments into lightweight, portable containers. It enables developers to build, ship, and run applications consistently across different environments while simplifying deployment, scaling, and DevOps workflows.",
+  "roadmap": "https://roadmap.sh/docker",
+  "resources": [
+    {
+      "name": "Docker Official Documentation",
+      "url": "https://docs.docker.com/",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "Docker Getting Started",
+      "url": "https://docs.docker.com/get-started/",
+      "type": "official tutorial",
+      "level": "beginner"
+    },
+    {
+      "name": "Docker Samples",
+      "url": "https://github.com/docker/getting-started",
+      "type": "official examples",
+      "level": "beginner"
+    },
+    {
+      "name": "Play with Docker",
+      "url": "https://labs.play-with-docker.com/",
+      "type": "interactive lab",
+      "level": "beginner"
+    },
+    {
+      "name": "Docker Hub",
+      "url": "https://hub.docker.com/",
+      "type": "container registry",
+      "level": "all levels"
+    },
+    {
+      "name": "Docker Build Documentation",
+      "url": "https://docs.docker.com/build/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Docker Compose Documentation",
+      "url": "https://docs.docker.com/compose/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Docker Engine Documentation",
+      "url": "https://docs.docker.com/engine/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Docker Networking",
+      "url": "https://docs.docker.com/network/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Docker Volumes",
+      "url": "https://docs.docker.com/storage/volumes/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Docker Security",
+      "url": "https://docs.docker.com/engine/security/",
+      "type": "documentation",
+      "level": "advanced"
+    },
+    {
+      "name": "Docker Scout",
+      "url": "https://docs.docker.com/scout/",
+      "type": "documentation",
+      "level": "advanced"
+    }
+  ]
+}

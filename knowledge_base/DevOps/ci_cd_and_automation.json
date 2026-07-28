@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "DevOps",
+    "file_name": "ci_cd_and_automation.json",
+    "target_features": [
+      "DevOps_Analyzer",
+      "CICD_Automation_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "GitHub Actions & GitLab Enterprise CI/CD Guidelines",
+      "DORA Core Continuous Delivery Framework"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "DO-CICD-001",
+      "rule_name": "Automated Testing Gateways in Pipelines",
+      "category": "Continuous Integration",
+      "severity": "Critical",
+      "explanation": "Merging pull requests or building release artifacts without triggering automated test suites risks shipping critical regressions to production environments.",
+      "do": "Enforce mandatory automated unit, integration, and security scanning jobs on all pull request events before allowing branch merges.",
+      "dont": "Do not bypass automated CI pipeline test checks or approve production deployments with failing test steps.",
+      "ats_keywords": [
+        "CI/CD Pipeline",
+        "Automated Gateways",
+        "GitHub Actions",
+        "GitLab CI",
+        "Regression Protection"
+      ]
+    },
+    {
+      "rule_id": "DO-CICD-002",
+      "rule_name": "Secret Management and Environment Isolation",
+      "category": "Pipeline Security",
+      "severity": "Critical",
+      "explanation": "Hardcoding API keys or cloud credentials directly in source control or CI logs creates massive security compromises.",
+      "do": "Inject environment variables dynamically using dedicated secret management vaults (e.g., HashiCorp Vault, AWS Secrets Manager, GitHub Encrypted Secrets).",
+      "dont": "Do not commit plain-text credentials to configuration files or print sensitive token variables into pipeline stdout logs.",
+      "ats_keywords": [
+        "Secret Management",
+        "Vault Integration",
+        "Credential Insulation",
+        "Environment Variables",
+        "Pipeline Hardening"
+      ]
+    },
+    {
+      "rule_id": "DO-CICD-003",
+      "rule_name": "Zero-Downtime Deployment Strategies",
+      "category": "Continuous Delivery",
+      "severity": "High",
+      "explanation": "Directly replacing running production application instances without traffic redirection causes downtime and dropped client connections during updates.",
+      "do": "Implement zero-downtime deployment patterns such as Blue-Green, Rolling Updates, or Canary releases with health-check verification.",
+      "dont": "Do not perform in-place restarts on single active production server nodes during peak business hours.",
+      "ats_keywords": [
+        "Blue-Green Deployment",
+        "Canary Release",
+        "Rolling Update",
+        "Zero-Downtime",
+        "Traffic Redirection"
+      ]
+    },
+    {
+      "rule_id": "DO-CICD-004",
+      "rule_name": "Pipeline Artifact Caching and Build Efficiency",
+      "category": "Pipeline Performance",
+      "severity": "Medium",
+      "explanation": "Downloading large language dependencies and package archives on every CI execution wastes bandwidth and delays developer feedback loops.",
+      "do": "Configure intelligent layer and dependency caching (e.g., npm, pip, Docker layer caches) to optimize job execution times.",
+      "dont": "Do not run un-cached fresh package installations from scratch on every minor commit step.",
+      "ats_keywords": [
+        "Pipeline Caching",
+        "Build Optimization",
+        "Dependency Cache",
+        "Docker Layer Caching",
+        "Fast Feedback Loops"
+      ]
+    }
+  ]
+}

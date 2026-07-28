@@ -1,0 +1,82 @@
+{
+  "file_metadata": {
+    "category": "AI",
+    "file_name": "generative_ai_and_llms.json",
+    "target_features": [
+      "AI_Analyzer",
+      "LLM_Architecture_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "OpenAI Developer Documentation & Prompt Best Practices",
+      "Hugging Face Transformer & PEFT Engineering Framework"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "AI-LLM-001",
+      "rule_name": "Structured Output and JSON Schema Enforcement",
+      "category": "LLM Integration",
+      "severity": "Critical",
+      "explanation": "Relying on unstructured free-form text responses from LLMs makes downstream software parsing brittle and prone to runtime errors.",
+      "do": "Enforce strict output formats using JSON Mode, Function Calling, or Pydantic schema validation for predictable integration.",
+      "dont": "Do not parse free-text LLM completions using raw regular expressions without fallback error handling.",
+      "ats_keywords": [
+        "Structured Output",
+        "JSON Mode",
+        "Function Calling",
+        "Pydantic Validation",
+        "Schema Enforcement"
+      ]
+    },
+    {
+      "rule_id": "AI-LLM-002",
+      "rule_name": "Systemic Prompt Engineering and System Instructions",
+      "category": "Prompt Engineering",
+      "severity": "High",
+      "explanation": "Vague user-level prompts lead to inconsistent model outputs, hallucinations, and security vulnerabilities.",
+      "do": "Separate system instructions, domain context, constraints, and user input clearly using structured delimiters and system roles.",
+      "dont": "Do not concatenate untrusted user text directly into system instructions without clear isolation barriers.",
+      "ats_keywords": [
+        "System Instructions",
+        "Prompt Structure",
+        "Role Separation",
+        "Context Boundary",
+        "Delimiter Insulation"
+      ]
+    },
+    {
+      "rule_id": "AI-LLM-003",
+      "rule_name": "Parameter-Efficient Fine-Tuning (PEFT/LoRA) Application",
+      "category": "Model Adaptation",
+      "severity": "High",
+      "explanation": "Full fine-tuning of large models requires excessive GPU memory and compute. Parameter-efficient techniques achieve comparable domain performance at a fraction of the cost.",
+      "do": "Utilize LoRA, QLoRA, or adapter modules when adapting open-weights LLMs to specialized tasks.",
+      "dont": "Do not perform full parameter retrain on multi-billion parameter models when PEFT adapters suffice.",
+      "ats_keywords": [
+        "PEFT",
+        "LoRA",
+        "QLoRA",
+        "Model Adaptation",
+        "Quantization",
+        "GPU Optimization"
+      ]
+    },
+    {
+      "rule_id": "AI-LLM-004",
+      "rule_name": "Token Budget and Context Window Management",
+      "category": "Resource Management",
+      "severity": "Medium",
+      "explanation": "Exceeding token limits causes truncation errors, dropped conversation history, and exponentially higher API billing costs.",
+      "do": "Implement token counting, context sliding windows, or summarization pipelines to manage prompt payloads within model constraints.",
+      "dont": "Do not pass unchecked long documents directly into context windows without chunking or token counting.",
+      "ats_keywords": [
+        "Token Optimization",
+        "Context Window",
+        "Sliding Window",
+        "Conversation Truncation",
+        "Cost Efficiency"
+      ]
+    }
+  ]
+}

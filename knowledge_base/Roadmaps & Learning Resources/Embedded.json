@@ -1,0 +1,67 @@
+{
+  "topic": "Embedded Systems",
+  "description": "Embedded Systems Engineering focuses on designing, programming, and optimizing hardware-software integrated systems using microcontrollers, real-time operating systems, communication protocols, and low-level programming.",
+  "roadmap": "https://roadmap.sh/embedded",
+  "resources": [
+    {
+      "name": "roadmap.sh Embedded Systems Roadmap",
+      "url": "https://roadmap.sh/embedded",
+      "type": "roadmap",
+      "level": "all levels"
+    },
+    {
+      "name": "Embedded Artistry",
+      "url": "https://embeddedartistry.com/",
+      "type": "articles",
+      "level": "beginner to advanced"
+    },
+    {
+      "name": "ARM Developer Documentation",
+      "url": "https://developer.arm.com/documentation",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "STMicroelectronics Documentation",
+      "url": "https://www.st.com/en/development-tools/documentation.html",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Microchip Developer Help",
+      "url": "https://microchipdeveloper.com/",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "FreeRTOS Documentation",
+      "url": "https://www.freertos.org/Documentation/RTOS_book.html",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "PlatformIO Documentation",
+      "url": "https://docs.platformio.org/",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "ESP-IDF Programming Guide",
+      "url": "https://docs.espressif.com/projects/esp-idf/en/latest/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Arduino Documentation",
+      "url": "https://docs.arduino.cc/",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "Quantum Leaps Embedded Systems Tutorials",
+      "url": "https://www.state-machine.com/",
+      "type": "tutorials",
+      "level": "advanced"
+    }
+  ]
+}

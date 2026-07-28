@@ -1,0 +1,120 @@
+{
+  "topic": "Cloud Computing",
+  "description": "Cloud Computing is the delivery of computing services such as servers, storage, databases, networking, analytics, artificial intelligence, and software over the Internet, enabling scalable, reliable, and cost-effective application deployment.",
+
+  "roadmap": {
+    "name": "Cloud Computing Roadmap",
+    "url": "https://roadmap.sh/aws"
+  },
+
+  "learning_order": [
+    "Cloud Computing Fundamentals",
+    "Virtualization",
+    "Networking Basics",
+    "Linux Fundamentals",
+    "Cloud Service Models (IaaS, PaaS, SaaS)",
+    "Public, Private and Hybrid Cloud",
+    "Compute Services",
+    "Storage Services",
+    "Networking Services",
+    "Identity and Access Management (IAM)",
+    "Virtual Machines",
+    "Containers",
+    "Docker",
+    "Kubernetes",
+    "Serverless Computing",
+    "Infrastructure as Code",
+    "Cloud Databases",
+    "Monitoring and Logging",
+    "Security Best Practices",
+    "High Availability",
+    "Auto Scaling",
+    "Load Balancing",
+    "Cost Optimization",
+    "Cloud Architecture",
+    "Cloud Deployment"
+  ],
+
+  "resources": [
+    {
+      "name": "AWS Skill Builder",
+      "url": "https://explore.skillbuilder.aws/",
+      "type": "learning path",
+      "level": "beginner"
+    },
+    {
+      "name": "Microsoft Learn - Azure",
+      "url": "https://learn.microsoft.com/training/azure/",
+      "type": "learning path",
+      "level": "beginner"
+    },
+    {
+      "name": "Google Cloud Skills Boost",
+      "url": "https://www.cloudskillsboost.google/",
+      "type": "learning path",
+      "level": "beginner"
+    },
+    {
+      "name": "AWS Documentation",
+      "url": "https://docs.aws.amazon.com/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Microsoft Azure Documentation",
+      "url": "https://learn.microsoft.com/azure/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Google Cloud Documentation",
+      "url": "https://cloud.google.com/docs",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Docker Documentation",
+      "url": "https://docs.docker.com/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Kubernetes Documentation",
+      "url": "https://kubernetes.io/docs/home/",
+      "type": "documentation",
+      "level": "advanced"
+    },
+    {
+      "name": "Terraform Documentation",
+      "url": "https://developer.hashicorp.com/terraform/docs",
+      "type": "documentation",
+      "level": "advanced"
+    }
+  ],
+
+  "recommended_projects": [
+    "Deploy Static Website on AWS S3",
+    "Deploy REST API on AWS EC2",
+    "Deploy FastAPI Application on Azure",
+    "Dockerize a Web Application",
+    "Deploy Kubernetes Cluster",
+    "Build Serverless API using AWS Lambda",
+    "Cloud File Storage System",
+    "CI/CD Pipeline for Cloud Deployment",
+    "Infrastructure as Code using Terraform",
+    "Cloud Monitoring Dashboard"
+  ],
+
+  "career_paths": [
+    "Cloud Engineer",
+    "Cloud Developer",
+    "Cloud Architect",
+    "DevOps Engineer",
+    "Site Reliability Engineer (SRE)",
+    "Platform Engineer",
+    "Cloud Security Engineer",
+    "Solutions Architect",
+    "Infrastructure Engineer",
+    "Cloud Consultant"
+  ]
+}

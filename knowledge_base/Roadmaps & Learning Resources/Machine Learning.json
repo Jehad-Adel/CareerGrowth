@@ -1,0 +1,99 @@
+{
+  "topic": "Machine Learning",
+  "description": "Machine Learning is a branch of Artificial Intelligence that enables computers to learn patterns from data, make predictions, and improve performance without being explicitly programmed. It covers supervised, unsupervised, reinforcement learning, model evaluation, feature engineering, and deployment.",
+
+  "roadmap": "https://roadmap.sh/ai-data-scientist",
+
+  "resources": [
+    {
+      "name": "roadmap.sh AI & Data Scientist",
+      "url": "https://roadmap.sh/ai-data-scientist",
+      "type": "roadmap",
+      "level": "all levels"
+    },
+    {
+      "name": "Scikit-learn Documentation",
+      "url": "https://scikit-learn.org/stable/",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "Google Machine Learning Crash Course",
+      "url": "https://developers.google.com/machine-learning/crash-course",
+      "type": "interactive course",
+      "level": "beginner"
+    },
+    {
+      "name": "Andrew Ng Machine Learning Specialization",
+      "url": "https://www.coursera.org/specializations/machine-learning-introduction",
+      "type": "course",
+      "level": "beginner"
+    },
+    {
+      "name": "DeepLearning.AI",
+      "url": "https://www.deeplearning.ai/",
+      "type": "courses",
+      "level": "intermediate"
+    },
+    {
+      "name": "Kaggle Learn",
+      "url": "https://www.kaggle.com/learn",
+      "type": "interactive courses",
+      "level": "beginner"
+    },
+    {
+      "name": "TensorFlow Documentation",
+      "url": "https://www.tensorflow.org/learn",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "PyTorch Documentation",
+      "url": "https://pytorch.org/docs/stable/index.html",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Hugging Face Course",
+      "url": "https://huggingface.co/learn",
+      "type": "course",
+      "level": "intermediate"
+    },
+    {
+      "name": "Microsoft Learn - Machine Learning",
+      "url": "https://learn.microsoft.com/training/browse/?products=azure-machine-learning",
+      "type": "learning platform",
+      "level": "beginner"
+    },
+    {
+      "name": "AWS Machine Learning Learning Plan",
+      "url": "https://explore.skillbuilder.aws/learn/public/learning_plan/view/28/machine-learning-learning-plan",
+      "type": "learning platform",
+      "level": "intermediate"
+    },
+    {
+      "name": "Fast.ai",
+      "url": "https://course.fast.ai/",
+      "type": "course",
+      "level": "intermediate"
+    },
+    {
+      "name": "Papers with Code",
+      "url": "https://paperswithcode.com/",
+      "type": "research",
+      "level": "advanced"
+    },
+    {
+      "name": "OpenML",
+      "url": "https://www.openml.org/",
+      "type": "datasets",
+      "level": "all levels"
+    },
+    {
+      "name": "UCI Machine Learning Repository",
+      "url": "https://archive.ics.uci.edu/ml/index.php",
+      "type": "datasets",
+      "level": "all levels"
+    }
+  ]
+}

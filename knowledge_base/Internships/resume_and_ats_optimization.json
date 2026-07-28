@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Internships",
+    "file_name": "resume_and_ats_optimization.json",
+    "target_features": [
+      "Internship_Analyzer",
+      "ATS_Resume_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Google Technical Resume Writing Guidelines (X-Y-Z Formula)",
+      "Enterprise ATS Parsing Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "INT-RES-001",
+      "rule_name": "Quantifiable Accomplishment Framing (Google X-Y-Z Formula)",
+      "category": "Resume Writing",
+      "severity": "Critical",
+      "explanation": "Listing generic responsibilities without measurable impact fails to demonstrate competence to technical recruiters.",
+      "do": "Structure bullet points as: 'Accomplished [X], as measured by [Y], by doing [Z]' (e.g., 'Reduced API latency by 35% by implementing Redis caching').",
+      "dont": "Do not write passive task descriptions like 'Responsible for maintaining backend code' or 'Worked on a web project'.",
+      "ats_keywords": [
+        "Google X-Y-Z Formula",
+        "Quantifiable Metrics",
+        "Impact Metric",
+        "Technical Accomplishment",
+        "Action Verbs"
+      ]
+    },
+    {
+      "rule_id": "INT-RES-002",
+      "rule_name": "ATS-Parseable Single-Column Formatting",
+      "category": "Resume Formatting",
+      "severity": "Critical",
+      "explanation": "Complex multi-column templates, tables, custom graphics, or embedded icons scramble ATS parsing engines, leading to silent rejection.",
+      "do": "Use a clean, single-column layout, standard headers (Education, Experience, Projects, Skills), and standard fonts (Calibri, Arial, Helvetica).",
+      "dont": "Do not use two-column layouts, rating bars for skills (e.g., 4/5 in Python), text boxes, or non-parseable graphic elements.",
+      "ats_keywords": [
+        "ATS Compatibility",
+        "Single-Column Layout",
+        "Parseable Resume",
+        "Clean Hierarchy",
+        "Plain Text Readability"
+      ]
+    },
+    {
+      "rule_id": "INT-RES-003",
+      "rule_name": "Keyword Alignment and Technical Stack Targeting",
+      "category": "ATS Targeting",
+      "severity": "High",
+      "explanation": "Failing to match exact framework and technical tool keywords specified in job descriptions reduces automated keyword match scores.",
+      "do": "Incorporate target job description keywords explicitly in project descriptions and dedicated technical skill sections.",
+      "dont": "Do not flood resumes with irrelevant non-technical buzzwords or omit the core frameworks requested in the job requirements.",
+      "ats_keywords": [
+        "Job Keyword Matching",
+        "Technical Stack Alignment",
+        "Role Targeting",
+        "ATS Score Optimization",
+        "Skill Categorization"
+      ]
+    },
+    {
+      "rule_id": "INT-RES-004",
+      "rule_name": "Project Showcase and Repository Verification",
+      "category": "Portfolio Integrity",
+      "severity": "High",
+      "explanation": "Listing projects without accessible live demos, clean source code, or clear architectural write-ups diminishes technical credibility.",
+      "do": "Include direct, functional hyperlinked GitHub repo URLs and live deployment links for top featured engineering projects.",
+      "dont": "Do not list academic or personal projects without providing verifiable code repository links or architecture overviews.",
+      "ats_keywords": [
+        "GitHub Link Verification",
+        "Live Demo Integration",
+        "Portfolio Validation",
+        "Open Source Proof",
+        "Project Repository"
+      ]
+    }
+  ]
+}

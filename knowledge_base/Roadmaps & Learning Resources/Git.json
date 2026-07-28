@@ -1,0 +1,81 @@
+{
+  "topic": "Git",
+  "description": "Git is a distributed version control system used to track changes in source code, collaborate with teams, manage branches, resolve conflicts, and maintain project history. It is the industry standard for software development workflows.",
+
+  "roadmap": "https://roadmap.sh/git-github",
+
+  "resources": [
+    {
+      "name": "roadmap.sh Git & GitHub",
+      "url": "https://roadmap.sh/git-github",
+      "type": "roadmap",
+      "level": "all levels"
+    },
+    {
+      "name": "Git Official Documentation",
+      "url": "https://git-scm.com/doc",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "Pro Git Book",
+      "url": "https://git-scm.com/book/en/v2",
+      "type": "book",
+      "level": "beginner to advanced"
+    },
+    {
+      "name": "GitHub Skills",
+      "url": "https://skills.github.com/",
+      "type": "interactive tutorials",
+      "level": "beginner"
+    },
+    {
+      "name": "Atlassian Git Tutorials",
+      "url": "https://www.atlassian.com/git/tutorials",
+      "type": "tutorials",
+      "level": "beginner"
+    },
+    {
+      "name": "GitHub Docs",
+      "url": "https://docs.github.com/",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "GitLab Documentation",
+      "url": "https://docs.gitlab.com/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Microsoft Learn - Git",
+      "url": "https://learn.microsoft.com/training/paths/intro-to-vc-git/",
+      "type": "learning platform",
+      "level": "beginner"
+    },
+    {
+      "name": "freeCodeCamp Git & GitHub Course",
+      "url": "https://www.freecodecamp.org/news/learn-the-basics-of-git-in-under-10-minutes-da548267cc91/",
+      "type": "tutorial",
+      "level": "beginner"
+    },
+    {
+      "name": "Oh My Git!",
+      "url": "https://ohmygit.org/",
+      "type": "interactive game",
+      "level": "beginner"
+    },
+    {
+      "name": "Learn Git Branching",
+      "url": "https://learngitbranching.js.org/",
+      "type": "interactive simulator",
+      "level": "intermediate"
+    },
+    {
+      "name": "Git Cheat Sheet",
+      "url": "https://education.github.com/git-cheat-sheet-education.pdf",
+      "type": "cheat sheet",
+      "level": "all levels"
+    }
+  ]
+}

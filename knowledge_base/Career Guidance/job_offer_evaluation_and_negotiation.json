@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Career Guidance",
+    "file_name": "job_offer_evaluation_and_negotiation.json",
+    "target_features": [
+      "Career_Analyzer",
+      "Offer_Evaluation_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Tech Compensation & Career Growth Benchmarks",
+      "Professional Offer Negotiation & Evaluation Frameworks"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "CG-OFF-001",
+      "rule_name": "Holistic Internship and Job Offer Evaluation",
+      "category": "Offer Evaluation",
+      "severity": "Critical",
+      "explanation": "Evaluating offers based solely on short-term financial compensation while ignoring mentorship, tech stack quality, and growth potential harms long-term career trajectory.",
+      "do": "Evaluate offers holistically by weighting mentorship availability, engineering culture, tech stack modernity, learning velocity, and total compensation equally.",
+      "dont": "Do not accept or reject offers based purely on base salary numbers without assessing the engineering growth environment.",
+      "ats_keywords": [
+        "Offer Evaluation",
+        "Mentorship Quality",
+        "Engineering Culture",
+        "Total Compensation",
+        "Career Velocity"
+      ]
+    },
+    {
+      "rule_id": "CG-OFF-002",
+      "rule_name": "Data-Driven and Professional Offer Negotiation",
+      "category": "Negotiation Tactics",
+      "severity": "High",
+      "explanation": "Accepting initial offers without counter-proposing or negotiating respectfully leaves professional value and growth opportunities uncaptured.",
+      "do": "Conduct market research on standard entry-level compensation, articulate counter-proposals based on verified alternative offers or unique project skills, and maintain a collaborative tone.",
+      "dont": "Do not make aggressive ultimatums, issue demands without supporting market data, or burn professional bridges during negotiations.",
+      "ats_keywords": [
+        "Offer Negotiation",
+        "Market Research",
+        "Counter-Proposal",
+        "Professional Communication",
+        "Compensation Benchmarking"
+      ]
+    },
+    {
+      "rule_id": "CG-OFF-003",
+      "rule_name": "Contract and Legal Term Clarity",
+      "category": "Employment Terms",
+      "severity": "High",
+      "explanation": "Signing employment or internship agreements without reviewing clauses regarding intellectual property, working hours, and non-compete terms can create unexpected legal risks.",
+      "do": "Review all clauses in the employment contract thoroughly, clarifying expectations around working hours, NDA terms, and intellectual property rights before signing.",
+      "dont": "Do not sign legal employment agreements hurriedly without reading and clarifying ambiguous contract clauses.",
+      "ats_keywords": [
+        "Employment Contract",
+        "IP Rights",
+        "NDA Terms",
+        "Legal Clarity",
+        "Work Agreement"
+      ]
+    },
+    {
+      "rule_id": "CG-OFF-004",
+      "rule_name": "Graceful Offer Acceptance and Rejection Protocols",
+      "category": "Professional Etiquette",
+      "severity": "Medium",
+      "explanation": "Ghosting recruiters or abruptly declining offers after verbal commitments damages your professional reputation within the tight-knit tech community.",
+      "do": "Communicate decisions promptly and professionally to all interviewing companies, expressing gratitude for their time and keeping networks open.",
+      "dont": "Do not ghost hiring managers or renege on signed agreements without exceptional circumstances.",
+      "ats_keywords": [
+        "Professional Etiquette",
+        "Offer Rejection Protocol",
+        "Network Preservation",
+        "Recruiter Communication",
+        "Reputation Management"
+      ]
+    }
+  ]
+}

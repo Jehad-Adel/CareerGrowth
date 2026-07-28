@@ -1,0 +1,79 @@
+{
+  "file_metadata": {
+    "category": "LinkedIn",
+    "file_name": "skills_and_endorsements.json",
+    "target_features": [
+      "LinkedIn_Analyzer",
+      "Skills_Optimizer",
+      "Recruiter_Visibility_Scorer",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "LinkedIn Official Talent Solutions Guide",
+      "Jobscan Profile Keyword Indexing",
+      "Resume Worded Skills Framework"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "LKD-SKL-001",
+      "rule_name": "Strategic Top 5 Pinned Skills",
+      "category": "Skills Optimization",
+      "severity": "Critical",
+      "explanation": "LinkedIn allows users to add up to 50 skills, but recruiters heavily evaluate the top pinned skills displayed first. Having target hard skills pinned dramatically boosts search ranking.",
+      "do": "Pin your top 5 core technical and industry-specific hard skills directly aligned with your target role.",
+      "dont": "Do not pin generic soft skills (e.g., 'Hardworking', 'Communication') in your top displayed skills list.",
+      "ats_keywords": [
+        "Top Skills",
+        "Pinned Skills",
+        "Search Ranking",
+        "Hard Skills Priority"
+      ]
+    },
+    {
+      "rule_id": "LKD-SKL-002",
+      "rule_name": "Experience-Skill Mapping",
+      "category": "Skill Context",
+      "severity": "High",
+      "explanation": "LinkedIn's updated algorithm rewards profiles that link listed skills directly to specific work experience entries, education, or projects.",
+      "do": "Attach relevant skills to each specific employment or project entry under your Experience section.",
+      "dont": "Do not leave skills isolated strictly in the Skills section without associating them with proven experience.",
+      "ats_keywords": [
+        "Skill Mapping",
+        "Contextual Skills",
+        "Experience Association",
+        "Algorithm Relevance"
+      ]
+    },
+    {
+      "rule_id": "LKD-SKL-003",
+      "rule_name": "Professional Peer Endorsements",
+      "category": "Social Proof",
+      "severity": "Medium",
+      "explanation": "Endorsements on hard skills validate proficiencies to visiting recruiters and improve search relevance score.",
+      "do": "Secure endorsements for key technical skills from colleagues, team members, or supervisors.",
+      "dont": "Do not rely on unverified skills without endorsements from relevant peers or mentors.",
+      "ats_keywords": [
+        "Peer Endorsements",
+        "Social Proof",
+        "Verified Proficiencies",
+        "Recruiter Trust"
+      ]
+    },
+    {
+      "rule_id": "LKD-SKL-004",
+      "rule_name": "Written Recommendations from Supervisors or Peers",
+      "category": "Credibility",
+      "severity": "High",
+      "explanation": "Profiles with written recommendations carry significantly higher credibility and help candidates stand out during final recruiter evaluation.",
+      "do": "Obtain at least 2–3 detailed recommendations from managers, project leads, or collaborators detailing your impact.",
+      "dont": "Do not leave the Recommendations section completely empty or rely only on brief, vague one-liner endorsements.",
+      "ats_keywords": [
+        "Recommendations",
+        "Written Proof",
+        "Professional Credibility",
+        "Colleague Testimonials"
+      ]
+    }
+  ]
+}

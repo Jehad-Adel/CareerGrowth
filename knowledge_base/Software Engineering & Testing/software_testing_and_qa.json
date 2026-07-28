@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Software Engineering & Testing",
+    "file_name": "software_testing_and_qa.json",
+    "target_features": [
+      "Software_Engineering_Analyzer",
+      "Testing_QA_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Test-Driven Development by Kent Beck",
+      "ISTQB Software Testing Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "SWE-TST-001",
+      "rule_name": "Test-Driven Development (TDD) Red-Green-Refactor Cycle",
+      "category": "Testing Methodology",
+      "severity": "Critical",
+      "explanation": "Writing implementation code before tests often leads to untestable architecture, tight coupling, and missed edge cases.",
+      "do": "Practice Test-Driven Development: write a failing automated test first (Red), write the minimum production code to pass it (Green), and then refactor safely.",
+      "dont": "Do not write complex production codebases without accompanying automated test suites.",
+      "ats_keywords": [
+        "Test-Driven Development",
+        "TDD",
+        "Red Green Refactor",
+        "Automated Testing",
+        "Testable Code"
+      ]
+    },
+    {
+      "rule_id": "SWE-TST-002",
+      "rule_name": "Comprehensive Unit Testing and Mocking Isolations",
+      "category": "Unit Testing",
+      "severity": "High",
+      "explanation": "Coupling unit tests directly to external databases, live network APIs, or file systems makes tests slow, flaky, and unreliable.",
+      "do": "Isolate unit tests using mocks, stubs, and fakes to test individual components and business logic functions independently.",
+      "dont": "Do not make actual network requests or write to live production databases inside standard unit test suites.",
+      "ats_keywords": [
+        "Unit Testing",
+        "Mocking Frameworks",
+        "Test Isolation",
+        "Flaky Tests Prevention",
+        "Component Verification"
+      ]
+    },
+    {
+      "rule_id": "SWE-TST-003",
+      "rule_name": "Integration and End-to-End (E2E) Testing Coverage",
+      "category": "System Testing",
+      "severity": "High",
+      "explanation": "Verifying individual functions in isolation does not guarantee that different modules, services, or databases will integrate correctly together.",
+      "do": "Implement integration and E2E tests to validate cross-module communication, database transactions, and critical user interaction flows.",
+      "dont": "Do not rely exclusively on unit tests while neglecting full system integration points.",
+      "ats_keywords": [
+        "Integration Testing",
+        "End-to-End Testing",
+        "E2E Coverage",
+        "System Interaction",
+        "Workflow Verification"
+      ]
+    },
+    {
+      "rule_id": "SWE-TST-004",
+      "rule_name": "High Test Code Coverage and Quality Metrics",
+      "category": "Quality Assurance",
+      "severity": "Medium",
+      "explanation": "Releasing code with low test coverage metrics leaves critical code branches vulnerable to undetected edge-case bugs.",
+      "do": "Monitor and maintain high code test coverage thresholds (e.g., aiming for 80%+ line and branch coverage) within CI/CD quality gates.",
+      "dont": "Do not merge code changes that introduce untested business logic paths or degrade overall repository test coverage.",
+      "ats_keywords": [
+        "Test Coverage",
+        "Code Quality Metrics",
+        "Branch Coverage",
+        "Quality Gates",
+        "QA Standards"
+      ]
+    }
+  ]
+}

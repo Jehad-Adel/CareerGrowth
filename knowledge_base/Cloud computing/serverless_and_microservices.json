@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Cloud Computing",
+    "file_name": "serverless_and_microservices.json",
+    "target_features": [
+      "Cloud_Analyzer",
+      "Serverless_Microservices_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "AWS Serverless Best Practices & Lambda Guidelines",
+      "Microservices Patterns & Distributed Systems Design"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "CLD-SRV-001",
+      "rule_name": "Asynchronous Event-Driven Microservices Communication",
+      "category": "Microservices Architecture",
+      "severity": "Critical",
+      "explanation": "Tying microservices together using synchronous HTTP REST calls creates cascading failures and tight service coupling during partial outages.",
+      "do": "Implement asynchronous, event-driven communication using message brokers and event buses (e.g., AWS SQS, SNS, Kafka) for decoupled service interactions.",
+      "dont": "Do not build complex chains of synchronous HTTP service dependencies that cause system-wide downtime if a single downstream service fails.",
+      "ats_keywords": [
+        "Event-Driven Architecture",
+        "Asynchronous Messaging",
+        "Service Decoupling",
+        "Message Queues",
+        "Cascading Failure Prevention"
+      ]
+    },
+    {
+      "rule_id": "CLD-SRV-002",
+      "rule_name": "Serverless Cold Start Optimization and Function Granularity",
+      "category": "Serverless Computing",
+      "severity": "High",
+      "explanation": "Packing heavy monolithic codebases into serverless function handlers drastically increases cold start latency and resource over-provisioning.",
+      "do": "Keep serverless functions lightweight, single-purpose (Single Responsibility Principle), and optimize package sizes to minimize cold start delays.",
+      "dont": "Do not deploy monolithic applications inside serverless function runtimes or bundle unnecessary dependencies into function deployment packages.",
+      "ats_keywords": [
+        "Serverless Cold Start",
+        "Function Granularity",
+        "AWS Lambda Optimization",
+        "Single Responsibility",
+        "FaaS Performance"
+      ]
+    },
+    {
+      "rule_id": "CLD-SRV-003",
+      "rule_name": "Distributed Tracing and Centralized Observability",
+      "category": "Distributed Systems",
+      "severity": "High",
+      "explanation": "Debugging requests flowing across dozens of distributed serverless functions or microservices without unified tracing is extremely difficult.",
+      "do": "Integrate distributed tracing frameworks (e.g., AWS X-Ray, OpenTelemetry) and centralized log aggregation across all service boundaries.",
+      "dont": "Do not rely on isolated local log files scattered across independent microservice instances for debugging production errors.",
+      "ats_keywords": [
+        "Distributed Tracing",
+        "OpenTelemetry",
+        "Centralized Logging",
+        "Observability",
+        "Request Correlation"
+      ]
+    },
+    {
+      "rule_id": "CLD-SRV-004",
+      "rule_name": "Idempotent Event Processing and Failure Retries",
+      "category": "Reliability",
+      "severity": "Medium",
+      "explanation": "Failing to design event handlers to be idempotent leads to duplicate data processing and corrupted database states during automatic retry storms.",
+      "do": "Ensure all serverless and microservice event consumers implement idempotent processing logic using unique transaction IDs or state tracking.",
+      "dont": "Do not assume message brokers will deliver events strictly once without accounting for duplicate retries.",
+      "ats_keywords": [
+        "Idempotent Processing",
+        "Event Retries",
+        "Duplicate Prevention",
+        "Transaction Integrity",
+        "Fault Tolerant Consumer"
+      ]
+    }
+  ]
+}

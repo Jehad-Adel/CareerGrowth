@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Career Guidance",
+    "file_name": "networking_and_personal_branding.json",
+    "target_features": [
+      "Career_Analyzer",
+      "Personal_Branding_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "GitHub Open Source Documentation Standards",
+      "Tech Community Networking & Outreach Frameworks"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "CG-NET-001",
+      "rule_name": "Professional GitHub Profile and Repository Documentation",
+      "category": "Personal Branding",
+      "severity": "Critical",
+      "explanation": "Incomplete repositories with default README files or missing setup guides alienate technical reviewers and obscure project quality.",
+      "do": "Maintain detailed README.md files containing architectural diagrams, setup instructions, technical stack badges, features, and live demo links.",
+      "dont": "Do not leave public repositories empty, without documentation, or with hardcoded local file paths in committed code.",
+      "ats_keywords": [
+        "GitHub Documentation",
+        "README Optimization",
+        "Architectural Diagrams",
+        "Open Source Proof",
+        "Repository Presentation"
+      ]
+    },
+    {
+      "rule_id": "CG-NET-002",
+      "rule_name": "Targeted LinkedIn Optimization and Thought Leadership",
+      "category": "Professional Visibility",
+      "severity": "High",
+      "explanation": "Having a passive, outdated LinkedIn profile limits recruiter inbound discovery and masks active engineering milestones.",
+      "do": "Optimize headline with core technical domains and role keywords, showcase validated achievements, and post technical write-ups of completed projects.",
+      "dont": "Do not post generic buzzwords or leave experience and project summary sections blank without technical context.",
+      "ats_keywords": [
+        "LinkedIn Optimization",
+        "Technical Visibility",
+        "Inbound Recruitment",
+        "Professional Network",
+        "Headline Targeting"
+      ]
+    },
+    {
+      "rule_id": "CG-NET-003",
+      "rule_name": "Value-First Cold Outreach and Connection Protocols",
+      "category": "Networking",
+      "severity": "High",
+      "explanation": "Sending generic 'Hi/Hello' messages or immediate requests for referrals without context leads to high rejection and response rates.",
+      "do": "Draft concise, personalized outreach messages highlighting specific mutual interests, concise technical background, and a clear, respectful request.",
+      "dont": "Do not send un-personalized template connection requests or ask senior engineers for immediate job referrals without prior rapport.",
+      "ats_keywords": [
+        "Cold Outreach Protocol",
+        "Professional Communication",
+        "Value-First Networking",
+        "Referral Request Strategy",
+        "Rapport Building"
+      ]
+    },
+    {
+      "rule_id": "CG-NET-004",
+      "rule_name": "Active Tech Community and Hackathon Participation",
+      "category": "Community Engagement",
+      "severity": "Medium",
+      "explanation": "Developing skills in complete isolation misses opportunities for mentorship, peer review, and community-driven career paths.",
+      "do": "Engage actively in developer communities, student branches, open-source projects, and technical competitions or hackathons.",
+      "dont": "Do not isolate technical development solely to private projects without seeking external feedback or peer collaboration.",
+      "ats_keywords": [
+        "Community Leadership",
+        "Hackathon Participation",
+        "Peer Collaboration",
+        "Open Source Contribution",
+        "Technical Mentorship"
+      ]
+    }
+  ]
+}

@@ -10,6 +10,8 @@ Read [docs/superpowers/plans/2026-07-27-ship-roadmap.md](docs/superpowers/plans/
 backend/    FastAPI service (uv, SQLAlchemy 2 sync, Alembic). LangChain chains live in app/ai/
 frontend/   Next.js 16 App Router  — see frontend/AGENTS.md, it has its own traps
 docs/       Living docs + plans. Update architecture.md and decisions.md as you go
+knowledge_base/  Curated JSON corpus (ATS, CV writing, roadmaps). Editorial content,
+            committed. Edit a file, then re-run the ingest command below.
 .env        Single env file for BOTH apps. Gitignored. Never commit.
 ```
 
@@ -18,6 +20,7 @@ docs/       Living docs + plans. Update architecture.md and decisions.md as you 
 ```bash
 cd backend  && uv run pytest -q          # full suite
 cd backend  && uv run alembic upgrade head
+cd backend  && uv run python -m app.cli.ingest_knowledge   # sync knowledge_base/ into pgvector
 cd frontend && npm run dev               # loads ../.env via dotenv-cli
 cd frontend && npm run build && npm run lint && npx tsc --noEmit
 ```
@@ -45,6 +48,7 @@ Project ref `jumsfxzsqvczdevquokk`, region `eu-north-1`.
 - **Email confirmation is on** (`mailer_autoconfirm: false`). Signup returns a user with **no session** — never redirect as if logged in. Only the `email` provider is enabled; do not add social buttons.
 - **RLS is deny-by-default with zero policies**, and `anon`/`authenticated` grants are revoked. The API connects as `postgres`, the table owner, which **bypasses RLS** — so RLS protects the browser's public key, not the API path. Authorization is the service layer's job.
 - **Never use `FORCE ROW LEVEL SECURITY`** while the app connects as the table owner: it would lock the backend out of its own tables.
+- **`anon` and `authenticated` are Supabase's roles, not ours.** Every migration from 0003 on revokes their grants, and `REVOKE ... FROM anon` against a role that does not exist is a hard error — so the whole chain used to be unrunnable on a plain Postgres, including CI's own reversibility job. `0001_baseline` now creates both if missing (a no-op on Supabase). Never drop them in a downgrade: on a real project that breaks Auth.
 
 ## Backend architecture traps
 
@@ -63,4 +67,4 @@ Project ref `jumsfxzsqvczdevquokk`, region `eu-north-1`.
 
 ## Known, accepted issues
 
-- `npm audit` reports 6 vulnerabilities (3 high) in `postcss` and `sharp`, both transitive under `next@16.2.11`. `npm audit fix --force` downgrades to `next@9` — do not run it. Track the Next patch release.
+- `npm audit` reports 5 vulnerabilities (3 high, 2 moderate) in `sharp`/libvips, transitive under `next@16.2.11`. `npm audit fix --force` downgrades to `next@9` — do not run it. Track the Next patch release. (Was 6; the `postcss` finding has since been resolved upstream.)

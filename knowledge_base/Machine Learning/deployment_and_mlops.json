@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Machine Learning",
+    "file_name": "deployment_and_mlops.json",
+    "target_features": [
+      "ML_Analyzer",
+      "MLOps_Deployment_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Google MLOps Continuous Delivery & Architecture Framework",
+      "MLflow & FastAPI Production Deployment Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "ML-DEP-001",
+      "rule_name": "Model Serialization and Versioning",
+      "category": "Model Lifecycle",
+      "severity": "Critical",
+      "explanation": "Saving unversioned models or using unsafe serialization formats makes deployment brittle and exposes security risks.",
+      "do": "Serialize models using standardized formats (e.g., ONNX, SafeTensors, joblib) and track model versions explicitly.",
+      "dont": "Do not rely on unsafe raw pickle files for untrusted production inference or overwrite model files without version tags.",
+      "ats_keywords": [
+        "Model Serialization",
+        "ONNX Format",
+        "Model Versioning",
+        "SafeTensors",
+        "Artifact Registry"
+      ]
+    },
+    {
+      "rule_id": "ML-DEP-002",
+      "rule_name": "Inference API Wrapper (REST/gRPC)",
+      "category": "Serving Architecture",
+      "severity": "Critical",
+      "explanation": "Machine learning models must be wrapped in lightweight, high-performance web frameworks to serve inference requests reliably.",
+      "do": "Expose models via production-ready microservice endpoints (e.g., FastAPI, TorchServe, Triton) with input schema validation.",
+      "dont": "Do not execute model inference directly inside blocking desktop GUI threads or unvalidated raw HTTP request handlers.",
+      "ats_keywords": [
+        "FastAPI Inference",
+        "Model Serving",
+        "REST Endpoint",
+        "Schema Validation",
+        "Microservice Architecture"
+      ]
+    },
+    {
+      "rule_id": "ML-DEP-003",
+      "rule_name": "Experiment Tracking and Reproducibility",
+      "category": "MLOps",
+      "severity": "High",
+      "explanation": "Without tracking training runs, metrics, and parameters, ML experiments cannot be audited or reliably reproduced.",
+      "do": "Integrate experiment tracking tools (e.g., MLflow, Weights & Biases, DVC) to log hyperparameter runs, dataset versions, and artifacts.",
+      "dont": "Do not track experiment metrics manually in unversioned text logs or spreadsheet files.",
+      "ats_keywords": [
+        "MLflow Tracking",
+        "Weights & Biases",
+        "DVC",
+        "Experiment Reproducibility",
+        "Artifact Tracking"
+      ]
+    },
+    {
+      "rule_id": "ML-DEP-004",
+      "rule_name": "Data Drift and Model Performance Monitoring",
+      "category": "Production Monitoring",
+      "severity": "Medium",
+      "explanation": "Real-world data distribution changes over time (concept drift/data drift), leading to silent degradation of model accuracy in production.",
+      "do": "Implement monitoring mechanisms (e.g., Evidently AI, Prometheus) to detect feature distribution shifts and trigger retraining alerts.",
+      "dont": "Do not deploy models into production without monitoring live inference latency, throughput, and distribution drift.",
+      "ats_keywords": [
+        "Data Drift Monitoring",
+        "Concept Drift",
+        "Evidently AI",
+        "Production Monitoring",
+        "Retraining Pipelines"
+      ]
+    }
+  ]
+}

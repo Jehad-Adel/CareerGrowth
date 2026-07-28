@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Career Guidance",
+    "file_name": "how_to_choose_career.json",
+    "target_features": [
+      "Career_Analyzer",
+      "Career_Choice_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Ikigai Framework for Professional Alignment",
+      "Tech Domain Selection & Career Choice Methodologies"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "CG-CHO-001",
+      "rule_name": "Ikigai-Based Alignment (Intersection of Passion, Skill, and Market Demand)",
+      "category": "Career Exploration",
+      "severity": "Critical",
+      "explanation": "Choosing a career path purely based on short-term monetary trends without evaluating personal strengths and genuine interest leads to burnout and career stagnation.",
+      "do": "Evaluate potential engineering domains (e.g., Embedded Systems, AI, Web, Mobile) by finding the intersection of what you love doing, what you excel at, and what the market actively values.",
+      "dont": "Do not choose a career path solely because it is trendy if it completely misaligns with your natural aptitudes and long-term interests.",
+      "ats_keywords": [
+        "Ikigai Framework",
+        "Career Alignment",
+        "Passion and Skill Intersection",
+        "Market Demand",
+        "Long-Term Viability"
+      ]
+    },
+    {
+      "rule_id": "CG-CHO-002",
+      "rule_name": "Exploratory Mini-Projects and Prototype Validation",
+      "category": "Path Validation",
+      "severity": "High",
+      "explanation": "Committing to a multi-year career track without testing small prototypes or introductory projects in that domain risks investing time in a mismatched path.",
+      "do": "Build a small, self-contained proof-of-concept project or complete a foundational module in a target domain before fully committing to its career roadmap.",
+      "dont": "Do not select a major career path based purely on theoretical course descriptions or high-level overviews without hands-on testing.",
+      "ats_keywords": [
+        "Prototype Validation",
+        "Exploratory Projects",
+        "Domain Testing",
+        "Proof of Concept",
+        "Informed Decision"
+      ]
+    },
+    {
+      "rule_id": "CG-CHO-003",
+      "rule_name": "Industry Trend and Future-Proofing Analysis",
+      "category": "Market Analysis",
+      "severity": "High",
+      "explanation": "Ignoring macroeconomic trends, automation risks, and emerging industrial shifts can lead an engineer into declining legacy domains.",
+      "do": "Analyze industry growth reports, job board demands, and technological shifts (e.g., AI integration, cloud-native transformation) when selecting a specialization.",
+      "dont": "Do not choose declining technical stacks or isolated specializations that lack cross-industry applicability.",
+      "ats_keywords": [
+        "Future-Proofing",
+        "Industry Trends",
+        "Macroeconomic Analysis",
+        "Specialization Viability",
+        "Job Market Demand"
+      ]
+    },
+    {
+      "rule_id": "CG-CHO-004",
+      "rule_name": "Core Values and Lifestyle Preference Integration",
+      "category": "Lifestyle Fit",
+      "severity": "Medium",
+      "explanation": "Disregarding personal lifestyle constraints, remote work preferences, or geographical market dynamics creates friction between your job and personal well-being.",
+      "do": "Factor in your preferred working environment (e.g., remote vs. on-site hardware labs, fast-paced startups vs. stable enterprises) when finalizing your career direction.",
+      "dont": "Do not ignore your personal work-style preferences and environmental requirements during the career selection process.",
+      "ats_keywords": [
+        "Lifestyle Preference",
+        "Work Environment Fit",
+        "Remote vs On-site",
+        "Career Values",
+        "Well-being Integration"
+      ]
+    }
+  ]
+}

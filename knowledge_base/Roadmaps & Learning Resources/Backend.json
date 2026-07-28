@@ -1,0 +1,149 @@
+{
+  "topic": "Backend Development",
+  "description": "Backend Development focuses on building the server-side logic of applications, managing databases, designing APIs, implementing authentication, handling business logic, and ensuring scalability, security, and performance.",
+
+  "roadmap": {
+    "name": "Backend Developer Roadmap",
+    "url": "https://roadmap.sh/backend"
+  },
+
+  "learning_order": [
+    "Internet Fundamentals",
+    "HTTP & HTTPS",
+    "DNS",
+    "Web Servers",
+    "Operating Systems Basics",
+    "Linux Fundamentals",
+    "Version Control (Git & GitHub)",
+    "Programming Language (Python, Java, Node.js, Go, C#, etc.)",
+    "REST APIs",
+    "Authentication & Authorization",
+    "JWT",
+    "OAuth 2.0",
+    "Relational Databases (PostgreSQL, MySQL)",
+    "SQL",
+    "Database Design",
+    "NoSQL Databases (MongoDB, Redis)",
+    "Caching",
+    "Message Queues",
+    "Background Jobs",
+    "ORM",
+    "FastAPI",
+    "Testing",
+    "Logging",
+    "Docker",
+    "CI/CD",
+    "Kubernetes",
+    "Cloud Deployment",
+    "Microservices",
+    "System Design",
+    "Monitoring & Observability"
+  ],
+
+  "resources": [
+    {
+      "name": "roadmap.sh Backend",
+      "url": "https://roadmap.sh/backend",
+      "type": "roadmap",
+      "level": "all"
+    },
+    {
+      "name": "MDN Web Docs - HTTP",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "MDN Web Docs - Web APIs",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn/Server-side",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "FastAPI Documentation",
+      "url": "https://fastapi.tiangolo.com/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Python Documentation",
+      "url": "https://docs.python.org/3/",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "PostgreSQL Documentation",
+      "url": "https://www.postgresql.org/docs/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Redis Documentation",
+      "url": "https://redis.io/docs/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Docker Documentation",
+      "url": "https://docs.docker.com/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Kubernetes Documentation",
+      "url": "https://kubernetes.io/docs/home/",
+      "type": "documentation",
+      "level": "advanced"
+    },
+    {
+      "name": "AWS Skill Builder",
+      "url": "https://explore.skillbuilder.aws/",
+      "type": "learning path",
+      "level": "intermediate"
+    },
+    {
+      "name": "Microsoft Learn",
+      "url": "https://learn.microsoft.com/",
+      "type": "learning path",
+      "level": "beginner"
+    },
+    {
+      "name": "Postman Learning Center",
+      "url": "https://learning.postman.com/",
+      "type": "tutorial",
+      "level": "beginner"
+    }
+  ],
+
+  "recommended_projects": [
+    "Todo REST API",
+    "Authentication System with JWT",
+    "Blog API",
+    "E-Commerce Backend",
+    "Chat Application Backend",
+    "URL Shortener",
+    "Task Management API",
+    "Library Management System",
+    "Hospital Management Backend",
+    "Online Learning Platform Backend",
+    "Microservices-based E-Commerce",
+    "Dockerized Backend Application",
+    "Backend with CI/CD Pipeline",
+    "Cloud-deployed FastAPI Project"
+  ],
+
+  "career_paths": [
+    "Backend Developer",
+    "Python Backend Engineer",
+    "Java Backend Engineer",
+    "Node.js Backend Engineer",
+    "API Developer",
+    "Software Engineer",
+    "Cloud Backend Engineer",
+    "Microservices Engineer",
+    "Platform Engineer",
+    "Senior Backend Engineer",
+    "Tech Lead",
+    "Software Architect"
+  ]
+}

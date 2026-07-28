@@ -1,0 +1,79 @@
+{
+  "file_metadata": {
+    "category": "Embedded",
+    "file_name": "microcontroller_and_peripherals.json",
+    "target_features": [
+      "Embedded_Analyzer",
+      "Peripheral_Driver_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "ARM Cortex-M Architecture Reference Manuals",
+      "Embedded Communication Protocols Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "EMB-PER-001",
+      "rule_name": "Communication Protocol Standardization",
+      "category": "Peripherals",
+      "severity": "Critical",
+      "explanation": "Professional embedded applications require robust handling of standard hardware communication buses (UART, SPI, I2C, CAN) with error detection.",
+      "do": "Implement explicit configuration, clock speed setup, and error handling for communication peripherals (e.g., CRC checks, timeout handling).",
+      "dont": "Do not use blocking polling loops indefinitely without hardware/software timeout mechanisms for peripheral responses.",
+      "ats_keywords": [
+        "UART",
+        "SPI",
+        "I2C",
+        "CAN Bus",
+        "Hardware Protocols",
+        "Timeout Handling"
+      ]
+    },
+    {
+      "rule_id": "EMB-PER-002",
+      "rule_name": "Direct Register Access and Bare-Metal Proficiency",
+      "category": "Hardware Abstraction",
+      "severity": "High",
+      "explanation": "Demonstrating register-level configuration shows a deep hardware understanding beyond high-level vendor libraries.",
+      "do": "Document register manipulation (bit-masking, bit-shifting) and register structures for microcontrollers like STM32/AVR.",
+      "dont": "Do not rely exclusively on auto-generated code tools without understanding the underlying hardware register operations.",
+      "ats_keywords": [
+        "Bare-Metal C",
+        "Register Access",
+        "Bit Masking",
+        "Direct Memory Mapping"
+      ]
+    },
+    {
+      "rule_id": "EMB-PER-003",
+      "rule_name": "Direct Memory Access (DMA) Utilization",
+      "category": "Performance",
+      "severity": "Medium",
+      "explanation": "Offloading high-bandwidth data transfers from CPU to DMA improves real-time responsiveness and reduces power consumption.",
+      "do": "Utilize DMA for serial data transfers and peripheral-to-memory operations where continuous CPU polling is inefficient.",
+      "dont": "Do not tie up CPU cycles in heavy data transfer loops when hardware DMA channels are available.",
+      "ats_keywords": [
+        "DMA Transfer",
+        "Direct Memory Access",
+        "CPU Offloading",
+        "High-Throughput I/O"
+      ]
+    },
+    {
+      "rule_id": "EMB-PER-004",
+      "rule_name": "Hardware Timers and Pulse Width Modulation (PWM)",
+      "category": "Timers & Control",
+      "severity": "High",
+      "explanation": "Accurate timing, signal generation, and motor control depend on hardware timers rather than software delay routines.",
+      "do": "Use hardware timer interrupts and hardware PWM generation for precise delays, sampling rates, and actuator control.",
+      "dont": "Do not use software delay loops (like delay_ms()) for critical timing in multitasking or real-time embedded software.",
+      "ats_keywords": [
+        "Hardware Timers",
+        "PWM Signals",
+        "Hardware Interrupts",
+        "Precise Timing"
+      ]
+    }
+  ]
+}

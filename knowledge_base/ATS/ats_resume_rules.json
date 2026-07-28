@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "ATS (Applicant Tracking Systems)",
+    "file_name": "ats_resume_rules.json",
+    "target_features": [
+      "ATS_Analyzer",
+      "Resume_Formatting_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Workday & Greenhouse ATS Parsing Guidelines",
+      "Professional Resume Formatting Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "ATS-RUL-001",
+      "rule_name": "Single-Column Layout and Clean Document Architecture",
+      "category": "Layout & Formatting",
+      "severity": "Critical",
+      "explanation": "Multi-column layouts, text boxes, and complex tables confuse ATS parsers, causing text to be scrambled, skipped, or read out of chronological order.",
+      "do": "Design resumes using a clean, single-column linear layout with standard section headings (Education, Experience, Skills) and clear visual hierarchy.",
+      "dont": "Do not use multi-column sidebars, floating text boxes, multi-level tables, or complex graphic side panels.",
+      "ats_keywords": [
+        "Single-Column Layout",
+        "ATS Parser Compatibility",
+        "Document Architecture",
+        "Linear Parsing",
+        "Layout Structure"
+      ]
+    },
+    {
+      "rule_id": "ATS-RUL-002",
+      "rule_name": "Standard Font Families and Text-Based Formatting",
+      "category": "Typography",
+      "severity": "High",
+      "explanation": "Using custom decorative fonts, embedded symbols, or rasterized text images prevents optical character recognition and automated text extraction.",
+      "do": "Use standard, web-safe, ATS-friendly system fonts (e.g., Arial, Calibri, Helvetica, Times New Roman) in standard sizes (10-12pt) with real selectable text.",
+      "dont": "Do not use non-standard decorative typography, icon graphics in place of bullet points, or convert text sections into image files.",
+      "ats_keywords": [
+        "Web-Safe Fonts",
+        "Selectable Text",
+        "Typography Standards",
+        "OCR Compatibility",
+        "Font Readability"
+      ]
+    },
+    {
+      "rule_id": "ATS-RUL-003",
+      "rule_name": "Standard Section Headings and Semantic Ordering",
+      "category": "Section Structure",
+      "severity": "High",
+      "explanation": "Non-standard or creative section titles (e.g., 'My Journey', 'What I Do') prevent ATS parsers from correctly categorizing candidate data.",
+      "do": "Use industry-standard section headings ('Professional Summary', 'Work Experience', 'Education', 'Technical Skills') recognized universally by parsing algorithms.",
+      "dont": "Do not use obscure, cryptic, or overly creative headers that fail standard categorization dictionaries.",
+      "ats_keywords": [
+        "Standard Section Headings",
+        "Semantic Ordering",
+        "Category Mapping",
+        "Resume Parsing",
+        "Information Architecture"
+      ]
+    },
+    {
+      "rule_id": "ATS-RUL-004",
+      "rule_name": "File Format Compatibility and Clean Extension Standards",
+      "category": "File Export",
+      "severity": "Medium",
+      "explanation": "Submitting resumes in image-heavy formats or non-standard file extensions can result in complete rejection or unreadable binary garbage during upload.",
+      "do": "Export and submit resumes strictly in clean text-layer PDF format or standard Microsoft Word (.docx) documents as requested by the portal.",
+      "dont": "Do not upload image-based PDFs, password-protected files, or obscure file extensions that lack raw text streams.",
+      "ats_keywords": [
+        "File Format Compatibility",
+        "PDF Export",
+        "DOCX Standard",
+        "Text Layer",
+        "Portal Upload"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "AI",
+    "file_name": "agentic_systems_and_safety.json",
+    "target_features": [
+      "AI_Analyzer",
+      "Agentic_Systems_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "OWASP Top 10 for Large Language Model Applications",
+      "LangGraph & AutoGen Multi-Agent Design Guidelines"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "AI-AGT-001",
+      "rule_name": "Tool Execution Sandboxing and Human-in-the-Loop",
+      "category": "Agent Execution",
+      "severity": "Critical",
+      "explanation": "Giving AI agents unrestricted code execution or write permissions to databases without approval can lead to severe data loss or system corruption.",
+      "do": "Execute autonomous tools inside isolated sandboxes (e.g., Docker, E2B) and enforce Human-in-the-Loop (HITL) approval for destructive actions.",
+      "dont": "Do not give LLM agents direct, unmonitored execution access to production databases or host shell environments.",
+      "ats_keywords": [
+        "Agentic Sandbox",
+        "Human-in-the-Loop",
+        "Tool Calling Safety",
+        "Isolated Execution",
+        "Privilege Boundaries"
+      ]
+    },
+    {
+      "rule_id": "AI-AGT-002",
+      "rule_name": "Prompt Injection and Input Sanitization",
+      "category": "AI Security",
+      "severity": "Critical",
+      "explanation": "Malicious user input or untrusted third-party data can hijack system instructions (Direct/Indirect Prompt Injection) and leak system prompts or sensitive data.",
+      "do": "Implement defensive input validation, output sanitization, and safety guardrails (e.g., NeMo Guardrails, Llama Guard).",
+      "dont": "Do not pass raw, unvalidated external web scraping outputs or untrusted inputs directly into privileged system prompts.",
+      "ats_keywords": [
+        "Prompt Injection Protection",
+        "NeMo Guardrails",
+        "Input Sanitization",
+        "OWASP LLM Security",
+        "Output Filtering"
+      ]
+    },
+    {
+      "rule_id": "AI-AGT-003",
+      "rule_name": "Multi-Agent State Management and Loop Prevention",
+      "category": "Agent Architecture",
+      "severity": "High",
+      "explanation": "In multi-agent systems, cyclic reasoning loops between agents can cause infinite token consumption and system deadlocks.",
+      "do": "Define explicit state graphs (e.g., LangGraph state schemas) with maximum step limits and termination conditions.",
+      "dont": "Do not deploy multi-agent communication networks without hard recursion limits and explicit cycle termination triggers.",
+      "ats_keywords": [
+        "State Graphs",
+        "LangGraph",
+        "Recursion Limit",
+        "Multi-Agent Coordination",
+        "Infinite Loop Prevention"
+      ]
+    },
+    {
+      "rule_id": "AI-AGT-004",
+      "rule_name": "Hallucination Monitoring and Factuality Guardrails",
+      "category": "Safety & Integrity",
+      "severity": "High",
+      "explanation": "Unchecked generative outputs can present fabricated facts or incorrect references as truth, eroding trust in production systems.",
+      "do": "Incorporate automated factuality checking, grounding metrics, and fallback disclosures when confidence scores drop below thresholds.",
+      "dont": "Do not allow models to present authoritative claims without verifying grounding against retrieved context or deterministic logic.",
+      "ats_keywords": [
+        "Hallucination Detection",
+        "Factuality Verification",
+        "Output Guardrails",
+        "Confidence Scoring",
+        "Groundedness Verification"
+      ]
+    }
+  ]
+}

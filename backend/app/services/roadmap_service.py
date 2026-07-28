@@ -103,9 +103,14 @@ def generate(
                 position=index,
                 title=step.title,
                 description=step.description,
+                reason=step.reason,
+                difficulty=step.difficulty,
                 skills_to_acquire=list(step.skills_to_acquire),
                 prerequisite_skills=list(step.prerequisite_skills),
+                recommended_resources=list(step.recommended_resources),
+                project_to_practice=step.project_to_practice,
                 estimated_months=step.estimated_duration_months,
+                estimated_weekly_hours=step.estimated_weekly_hours,
             )
         )
 
@@ -123,8 +128,8 @@ def generate(
     # Best-effort corpus update: never lose a roadmap over a RAG failure.
     try:
         steps_text = "\n".join(
-            f"{i + 1}. {s.title} ({s.estimated_duration_months} months): "
-            f"{s.description}"
+            f"{i + 1}. {s.title} ({s.estimated_duration_months} months, "
+            f"{s.difficulty}): {s.description} {s.reason}".rstrip()
             for i, s in enumerate(result.steps)
         )
         rag_service.ingest(

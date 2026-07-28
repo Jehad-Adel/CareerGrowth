@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Cloud Computing",
+    "file_name": "cloud_security_and_cost_optimization.json",
+    "target_features": [
+      "Cloud_Analyzer",
+      "Cloud_Security_FinOps_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "AWS Well-Architected Security & Cost Pillars",
+      "FinOps Foundation Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "CLD-SEC-001",
+      "rule_name": "Data Encryption at Rest and in Transit",
+      "category": "Cloud Security",
+      "severity": "Critical",
+      "explanation": "Storing sensitive databases, object storage buckets, or transmitting traffic without strict encryption exposes data to interception and compliance breaches.",
+      "do": "Enforce TLS/HTTPS for all data in transit and configure automated server-side encryption (e.g., using AWS KMS or customer-managed keys) for all data at rest.",
+      "dont": "Do not leave public-facing cloud storage buckets unencrypted or allow unencrypted HTTP traffic to backend workloads.",
+      "ats_keywords": [
+        "Data Encryption",
+        "Encryption at Rest",
+        "Encryption in Transit",
+        "AWS KMS",
+        "Cloud Compliance"
+      ]
+    },
+    {
+      "rule_id": "CLD-SEC-002",
+      "rule_name": "Automated Cloud Security Posture Management and Auditing",
+      "category": "Security Auditing",
+      "severity": "High",
+      "explanation": "Failing to continuously monitor cloud resource configurations leads to undetected permission leaks, open security groups, and compliance drift.",
+      "do": "Enable automated cloud audit logging (e.g., AWS CloudTrail), configuration compliance rules (e.g., AWS Config), and regular vulnerability scans.",
+      "dont": "Do not rely on manual security checkups or leave cloud audit trails disabled on production accounts.",
+      "ats_keywords": [
+        "CloudTrail Auditing",
+        "AWS Config",
+        "Posture Management",
+        "Compliance Monitoring",
+        "Security Scanning"
+      ]
+    },
+    {
+      "rule_id": "CLD-SEC-003",
+      "rule_name": "Proactive FinOps and Cloud Cost Optimization",
+      "category": "Cost Management",
+      "severity": "High",
+      "explanation": "Leaving idle compute instances, unattached storage volumes, and over-provisioned resources running indefinitely results in massive financial waste.",
+      "do": "Implement FinOps practices: set up budget alerts, automate resource shutdown schedules for non-production environments, and clean up unattached EBS volumes and elastic IPs.",
+      "dont": "Do not provision oversized cloud instances without reviewing actual CPU/memory metrics or leave non-production environments running 24/7.",
+      "ats_keywords": [
+        "FinOps Practices",
+        "Cloud Cost Optimization",
+        "Resource Rightsizing",
+        "Budget Alerts",
+        "Waste Elimination"
+      ]
+    },
+    {
+      "rule_id": "CLD-SEC-004",
+      "rule_name": "Lifecycle Tagging and Resource Cost Allocation",
+      "category": "Governance",
+      "severity": "Medium",
+      "explanation": "Deploying untagged cloud resources makes it impossible to attribute cloud expenditures accurately across teams, projects, or environments.",
+      "do": "Enforce mandatory tagging policies (e.g., Owner, Environment, Project) on all cloud resources created via IaC or console.",
+      "dont": "Do not deploy untagged infrastructure resources that obscure cost attribution and resource ownership.",
+      "ats_keywords": [
+        "Resource Tagging",
+        "Cost Allocation",
+        "Cloud Governance",
+        "Ownership Tracking",
+        "FinOps Tagging"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "file_metadata": {
+    "category": "CV_Writing",
+    "file_name": "common_mistakes.json",
+    "target_features": [
+      "CV_Analyzer",
+      "Grammar_Checker",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Harvard College Guide to Creating a Strong Resume (Top Mistakes & DON'Ts)"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "CV-ERR-001",
+      "rule_name": "Zero Tolerance for Spelling and Grammar Errors",
+      "category": "Quality Control",
+      "severity": "Critical",
+      "explanation": "Spelling and typographical errors signal a lack of attention to detail and are cited by Harvard Career Services as a top reason for instant resume rejection.",
+      "do": "Proofread thoroughly and use automated grammar verification tools before submission.",
+      "dont": "Do not submit a resume with typos, incorrect verb conjugations, or improper punctuation.",
+      "ats_keywords": [
+        "Spelling Precision",
+        "Grammar Polish",
+        "Attention to Detail",
+        "Zero Typos"
+      ]
+    },
+    {
+      "rule_id": "CV-ERR-002",
+      "rule_name": "Eliminate Unexplained Timeline Gaps",
+      "category": "Timeline Continuity",
+      "severity": "High",
+      "explanation": "Missing dates or large unexplained gaps between summer experiences, education, or employment create uncertainty for recruiters and automated parsers.",
+      "do": "Ensure every year/season is accounted for chronologically using continuous month/year ranges.",
+      "dont": "Do not leave missing summers or unexplained multi-month gaps in your employment or academic history.",
+      "ats_keywords": [
+        "Timeline Continuity",
+        "Date Consistency",
+        "No Gaps",
+        "Chronological History"
+      ]
+    },
+    {
+      "rule_id": "CV-ERR-003",
+      "rule_name": "Strict Prohibition of Slang and Colloquialisms",
+      "category": "Tone and Style",
+      "severity": "High",
+      "explanation": "Using informal language, slang, buzzwords, or flowery narratives degrades the professional tone expected in industry resumes.",
+      "do": "Use concise, articulate, and industry-standard technical vocabulary.",
+      "dont": "Do not use informal slang, conversational expressions, or fluffy/flowery descriptions.",
+      "ats_keywords": [
+        "Professional Tone",
+        "Formal Style",
+        "No Slang",
+        "Articulate Language"
+      ]
+    },
+    {
+      "rule_id": "CV-ERR-004",
+      "rule_name": "Enforce Consistent Visual Layout and Spacing",
+      "category": "Visual Formatting",
+      "severity": "Medium",
+      "explanation": "Inconsistent spacing, irregular margins, or mixed font capitalization makes the document difficult to scan for human reviewers and confuses ATS layout parsers.",
+      "do": "Maintain strict uniform spacing, bullet alignment, font sizing, and capitalization rules across all sections.",
+      "dont": "Do not mix different bullet styles, font families, or inconsistent indentation across sections.",
+      "ats_keywords": [
+        "Visual Consistency",
+        "Uniform Spacing",
+        "Clean Formatting",
+        "Layout Symmetry"
+      ]
+    }
+  ]
+}

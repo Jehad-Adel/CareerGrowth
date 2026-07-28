@@ -1,0 +1,77 @@
+{
+  "file_metadata": {
+    "category": "Portfolio",
+    "file_name": "interactive_and_ux_features.json",
+    "target_features": [
+      "Portfolio_Analyzer",
+      "UX_Accessibility_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Web.dev Accessibility & Performance Standards",
+      "Modern Developer Portfolio UX Best Practices"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "PTF-UX-001",
+      "rule_name": "Accessible Navigation and Theme Toggle",
+      "category": "User Experience",
+      "severity": "Medium",
+      "explanation": "Providing dark/light theme options and clear sticky navigation enhances user experience across different screen conditions.",
+      "do": "Include a visible, working Dark/Light mode toggle and persistent header navigation for key sections.",
+      "dont": "Do not use fixed low-contrast colors that fail WCAG accessibility guidelines or hide main menu links.",
+      "ats_keywords": [
+        "Theme Toggle",
+        "Dark Mode",
+        "Accessibility",
+        "WCAG Compliance"
+      ]
+    },
+    {
+      "rule_id": "PTF-UX-002",
+      "rule_name": "One-Click Resume Asset Access",
+      "category": "Conversion & UX",
+      "severity": "High",
+      "explanation": "Recruiters often want to grab a copy of your CV immediately without opening multiple tabs.",
+      "do": "Provide a direct, high-visibility download button for your PDF resume in both the top navigation and contact sections.",
+      "dont": "Do not redirect users to external drive links requiring permissions or multi-step downloads.",
+      "ats_keywords": [
+        "One-Click Download",
+        "Resume Button",
+        "Seamless Access",
+        "PDF Link"
+      ]
+    },
+    {
+      "rule_id": "PTF-UX-003",
+      "rule_name": "Interactive Filtering by Tech Stack",
+      "category": "Interactivity",
+      "severity": "Medium",
+      "explanation": "Allowing reviewers to filter showcased projects by specific technology (e.g., Python, C++, Machine Learning, Embedded) speeds up targeted evaluation.",
+      "do": "Implement category tag filters on the project grid for rapid sorting by skill/language.",
+      "dont": "Do not force reviewers to manually scroll through irrelevant projects to find specific tech stack examples.",
+      "ats_keywords": [
+        "Project Filtering",
+        "Tag Searching",
+        "Interactive UI",
+        "Skill Sorting"
+      ]
+    },
+    {
+      "rule_id": "PTF-UX-004",
+      "rule_name": "Analytics and Visitor Tracking Integration",
+      "category": "Optimization",
+      "severity": "Low",
+      "explanation": "Integrating lightweight analytics allows candidates to track portfolio traffic, recruiter visits, and geographic interest.",
+      "do": "Add privacy-friendly analytics (e.g., Google Analytics or Vercel Analytics) to monitor profile reach.",
+      "dont": "Do not overload the page with heavy third-party tracking scripts that degrade page performance.",
+      "ats_keywords": [
+        "Portfolio Analytics",
+        "Traffic Tracking",
+        "Performance Monitoring",
+        "Insights"
+      ]
+    }
+  ]
+}

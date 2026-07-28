@@ -1,0 +1,78 @@
+{
+  "file_metadata": {
+    "category": "LinkedIn",
+    "file_name": "headline_and_about.json",
+    "target_features": [
+      "LinkedIn_Analyzer",
+      "Headline_Generator",
+      "About_Optimizer",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "LinkedIn Talent Solutions Search Optimization",
+      "Resume Worded Headline & Summary Framework"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "LKD-HDL-001",
+      "rule_name": "Keyword-Rich Headline Formula",
+      "category": "Headline Optimization",
+      "severity": "Critical",
+      "explanation": "The headline is heavily weighted by LinkedIn's search algorithm. Recruiters search by specific target job titles and hard skills, not generic enthusiasm phrases.",
+      "do": "Use the formula: 'Target Job Title | Key Skills/Tools | Value Proposition or Top Achievement' (e.g., 'Embedded Systems Engineer | C++, RTOS, ARM | 1st Place National Robotics Winner').",
+      "dont": "Do not write vague phrases like 'Unemployed', 'Seeking Opportunities', or 'Hardworking Student' as your main headline.",
+      "ats_keywords": [
+        "Headline Formula",
+        "Target Title",
+        "Search Keywords",
+        "Value Proposition"
+      ]
+    },
+    {
+      "rule_id": "LKD-HDL-002",
+      "rule_name": "First Two Lines Hook in About Section",
+      "category": "Summary Engagement",
+      "severity": "High",
+      "explanation": "Users and recruiters only see the first two lines (~200 characters) of the About section before clicking 'See More'. Those lines must capture interest immediately.",
+      "do": "Start with a strong summary statement outlining your specialization, passion, and primary technical domain.",
+      "dont": "Do not start the About section with passive introductions, contact info, or dry administrative details.",
+      "ats_keywords": [
+        "Above the Fold",
+        "Summary Hook",
+        "First Impression",
+        "Engagement"
+      ]
+    },
+    {
+      "rule_id": "LKD-HDL-003",
+      "rule_name": "Dedicated Tech Stack List in Summary",
+      "category": "Keyword Indexing",
+      "severity": "High",
+      "explanation": "Adding a clearly grouped list of core competencies and tools at the end of the About section increases keyword indexing for recruiter searches.",
+      "do": "Include a bulleted section labeled 'Core Competencies' or 'Technical Stack' with exact tools and methodologies.",
+      "dont": "Do not bury skills exclusively inside narrative paragraphs without a scannable summary list.",
+      "ats_keywords": [
+        "Technical Stack",
+        "Core Competencies",
+        "Scannable List",
+        "Keyword Indexing"
+      ]
+    },
+    {
+      "rule_id": "LKD-HDL-004",
+      "rule_name": "First-Person Professional Narrative",
+      "category": "Tone and Voice",
+      "severity": "Medium",
+      "explanation": "Unlike a traditional CV, a LinkedIn About section performs best when written in a professional first-person voice ('I'), building direct rapport with visitors.",
+      "do": "Write in first person ('I specialize in...', 'My focus is...') maintaining a clean and professional tone.",
+      "dont": "Do not write your LinkedIn About section in third person ('Jehad is a software engineer...'), as it feels detached.",
+      "ats_keywords": [
+        "First Person Narrative",
+        "Authentic Tone",
+        "Professional Voice",
+        "Personal Branding"
+      ]
+    }
+  ]
+}

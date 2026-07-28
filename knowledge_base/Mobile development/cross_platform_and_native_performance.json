@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Mobile Development",
+    "file_name": "cross_platform_and_native_performance.json",
+    "target_features": [
+      "Mobile_Analyzer",
+      "Performance_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Cross-Platform Performance Optimization Guidelines",
+      "Mobile Rendering & UI Performance Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "MOB-PER-001",
+      "rule_name": "UI Rendering Frame Rate Optimization (60/120 FPS)",
+      "category": "UI Performance",
+      "severity": "Critical",
+      "explanation": "Performing heavy computations, JSON parsing, or complex layout calculations on the main UI thread causes dropped frames and stuttering animations.",
+      "do": "Offload heavy computations, data parsing, and disk I/O to background isolates or worker threads, keeping the main UI thread strictly focused on rendering.",
+      "dont": "Do not execute blocking synchronous operations, large loops, or database queries directly on the main UI thread.",
+      "ats_keywords": [
+        "Frame Rate Optimization",
+        "Main Thread Protection",
+        "Background Isolates",
+        "UI Jank Prevention",
+        "Smooth Rendering"
+      ]
+    },
+    {
+      "rule_id": "MOB-PER-002",
+      "rule_name": "Efficient List Rendering and Lazy Loading (Virtualization)",
+      "category": "Memory & Rendering",
+      "severity": "High",
+      "explanation": "Rendering long lists by instantiating all item widgets simultaneously consumes excessive memory and causes severe scrolling lag.",
+      "do": "Use lazy-loading, virtualized list components (e.g., `ListView.builder` in Flutter, `FlatList` in React Native) that recycle views dynamically as the user scrolls.",
+      "dont": "Do not render entire long datasets or thousands of list items at once in a static, non-lazy container.",
+      "ats_keywords": [
+        "Lazy Loading",
+        "Virtualized Lists",
+        "View Recycling",
+        "Memory Efficiency",
+        "Scrolling Performance"
+      ]
+    },
+    {
+      "rule_id": "MOB-PER-003",
+      "rule_name": "Optimized Asset Management and Image Caching",
+      "category": "Resource Management",
+      "severity": "High",
+      "explanation": "Loading oversized raw images directly from network or disk without downsampling or caching exhausts device RAM and triggers out-of-memory crashes.",
+      "do": "Implement efficient image caching, automatic downsampling to target display dimensions, and modern compressed formats (e.g., WebP).",
+      "dont": "Do not load high-resolution raw images directly into memory without caching or compression layers.",
+      "ats_keywords": [
+        "Image Caching",
+        "Asset Optimization",
+        "Downsampling",
+        "Memory Management",
+        "WebP Compression"
+      ]
+    },
+    {
+      "rule_id": "MOB-PER-004",
+      "rule_name": "Cross-Platform Bridge Overhead Minimization",
+      "category": "Cross-Platform Optimization",
+      "severity": "Medium",
+      "explanation": "Passing excessive, rapid messages across the JavaScript-to-Native bridge in cross-platform frameworks introduces bottlenecks and latency.",
+      "do": "Batch bridge communications, cache native results locally, and minimize frequent cross-bridge method calls in performance-critical loops.",
+      "dont": "Do not make continuous, high-frequency synchronous calls across the platform bridge inside animation or gesture listeners.",
+      "ats_keywords": [
+        "Bridge Overhead",
+        "Cross-Platform Optimization",
+        "Native Communication",
+        "Batch Processing",
+        "Latency Reduction"
+      ]
+    }
+  ]
+}

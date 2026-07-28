@@ -4,6 +4,7 @@ Kept isolated from the chains layer so future formats (DOCX, TXT, OCR) can be
 added as sibling loaders without touching any chain.
 """
 
+import re
 from pathlib import Path
 from typing import BinaryIO
 
@@ -13,6 +14,35 @@ from pypdf import PdfReader
 # work an attacker can make one request do.
 DEFAULT_MAX_PAGES = 20
 
+# Non-printable bytes that survive extraction from a badly generated PDF. They
+# carry no meaning and cost tokens.
+_CONTROL_CHARS = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
+# Dot leaders and rule lines ("Experience.........", "-------"). Three or more
+# of the same punctuation mark, collapsed to one. The three-repeat floor is
+# what keeps "C++" and "--flag" intact.
+_REPEATED_PUNCTUATION = re.compile(r"([^\w\s])\1{2,}")
+_REPEATED_SPACING = re.compile(r"[ \t]{2,}")
+_REPEATED_BLANK_LINES = re.compile(r"\n{3,}")
+
+
+def clean_extracted_text(text: str) -> str:
+    """Strip extraction artifacts without touching real content.
+
+    Two-column CVs and table-based templates come out of pypdf padded with
+    long runs of spaces, dot leaders, and blank lines. That noise reaches the
+    model as tokens, and the model reads some of it back as skills, which is
+    what the schema's debris filter then has to undo.
+
+    Formatting only: no word is altered, dropped, or reordered.
+    """
+    text = _CONTROL_CHARS.sub("", text)
+    text = _REPEATED_PUNCTUATION.sub(r"\1", text)
+    text = _REPEATED_SPACING.sub(" ", text)
+    # Strip per line before collapsing blank runs, so a line of pure padding
+    # becomes empty and is then collapsed rather than surviving as a "blank".
+    text = "\n".join(line.strip() for line in text.splitlines())
+    return _REPEATED_BLANK_LINES.sub("\n\n", text).strip()
+
 
 def _extract(reader: PdfReader, max_pages: int, label: str) -> str:
     if len(reader.pages) > max_pages:
@@ -21,8 +51,10 @@ def _extract(reader: PdfReader, max_pages: int, label: str) -> str:
         )
 
     pages_text = [page.extract_text() or "" for page in reader.pages]
-    full_text = "\n".join(pages_text).strip()
+    full_text = clean_extracted_text("\n".join(pages_text))
 
+    # Checked after cleaning: a PDF whose only "text" is control characters is
+    # as unreadable as an empty one, and must fail the same way.
     if not full_text:
         raise ValueError(
             f"No extractable text found in {label}. If it is a scan, it needs OCR."

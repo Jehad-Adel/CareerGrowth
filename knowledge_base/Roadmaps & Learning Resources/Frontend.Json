@@ -1,0 +1,99 @@
+{
+  "topic": "Frontend Development",
+  "description": "Frontend Development focuses on building the user interface and user experience of web applications using HTML, CSS, JavaScript, modern frameworks, responsive design principles, accessibility standards, and performance optimization.",
+
+  "roadmap": "https://roadmap.sh/frontend",
+
+  "resources": [
+    {
+      "name": "roadmap.sh Frontend",
+      "url": "https://roadmap.sh/frontend",
+      "type": "roadmap",
+      "level": "all levels"
+    },
+    {
+      "name": "MDN Web Docs",
+      "url": "https://developer.mozilla.org/en-US/",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "HTML Living Standard",
+      "url": "https://html.spec.whatwg.org/",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "CSS Documentation (MDN)",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "JavaScript Guide (MDN)",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "React Documentation",
+      "url": "https://react.dev/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Next.js Documentation",
+      "url": "https://nextjs.org/docs",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Vue.js Documentation",
+      "url": "https://vuejs.org/guide/introduction.html",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Angular Documentation",
+      "url": "https://angular.dev/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "TypeScript Documentation",
+      "url": "https://www.typescriptlang.org/docs/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Tailwind CSS Documentation",
+      "url": "https://tailwindcss.com/docs",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Web.dev",
+      "url": "https://web.dev/",
+      "type": "best practices",
+      "level": "intermediate"
+    },
+    {
+      "name": "Google Chrome Developers",
+      "url": "https://developer.chrome.com/",
+      "type": "documentation",
+      "level": "advanced"
+    },
+    {
+      "name": "W3C Web Accessibility Initiative",
+      "url": "https://www.w3.org/WAI/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Microsoft Learn - Frontend Developer",
+      "url": "https://learn.microsoft.com/training/browse/",
+      "type": "learning platform",
+      "level": "beginner"
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Career Guidance",
+    "file_name": "career_roadmap_and_skill_gap.json",
+    "target_features": [
+      "Career_Analyzer",
+      "SkillGap_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Roadmap.sh Developer Competency Architecture",
+      "SFIA Global ICT Skill Taxonomy"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "CG-MAP-001",
+      "rule_name": "Systematic Skill-Gap Analysis and Prioritization",
+      "category": "Career Planning",
+      "severity": "Critical",
+      "explanation": "Learning technologies randomly without identifying core prerequisites leads to surface-level knowledge and slow career progression.",
+      "do": "Audit current technical competencies against target role roadmaps, prioritizing foundational skills before advanced domain frameworks.",
+      "dont": "Do not jump into high-level abstractions or advanced tools without solid mastery of core computer science fundamentals.",
+      "ats_keywords": [
+        "Skill Gap Analysis",
+        "Competency Mapping",
+        "Foundational Mastery",
+        "Learning Roadmap",
+        "Career Benchmarking"
+      ]
+    },
+    {
+      "rule_id": "CG-MAP-002",
+      "rule_name": "T-Shaped Professional Skill Profile Development",
+      "category": "Skill Architecture",
+      "severity": "High",
+      "explanation": "Being an absolute generalist with no depth or a narrow specialist who cannot collaborate across domains limits long-term career growth.",
+      "do": "Cultivate a 'T-Shaped' profile: deep expertise in one primary discipline (vertical) with broad working knowledge of related fields (horizontal).",
+      "dont": "Do not remain purely superficial across dozens of tools without achieving production-grade depth in at least one core domain.",
+      "ats_keywords": [
+        "T-Shaped Profile",
+        "Domain Depth",
+        "Cross-Functional Awareness",
+        "Specialization",
+        "Versatile Engineer"
+      ]
+    },
+    {
+      "rule_id": "CG-MAP-003",
+      "rule_name": "Continuous Milestone Tracking and Evidence-Based Learning",
+      "category": "Goal Execution",
+      "severity": "High",
+      "explanation": "Setting vague learning targets ('learn cloud') without concrete milestone outcomes results in lack of accountability and lost momentum.",
+      "do": "Set SMART learning goals linked directly to verifiable proof-of-work output (e.g., build and deploy a microservice by end of month).",
+      "dont": "Do not measure learning progress merely by tutorial consumption hours rather than functional project execution.",
+      "ats_keywords": [
+        "SMART Goals",
+        "Proof of Work",
+        "Milestone Tracking",
+        "Project-Based Learning",
+        "Accountability Framework"
+      ]
+    },
+    {
+      "rule_id": "CG-MAP-004",
+      "rule_name": "Adaptability to Industry Shifts and Emerging Stacks",
+      "category": "Market Alignment",
+      "severity": "Medium",
+      "explanation": "Rigid adherence to declining legacy tools without tracking market shifts leads to technical obsolescence and reduced career mobility.",
+      "do": "Monitor quarterly industry demand trends and proactively integrate high-value emerging standards (e.g., GenAI APIs, Cloud Native) into your stack.",
+      "dont": "Do not ignore market shifts or resist adopting modern industry standard tools within your core domain.",
+      "ats_keywords": [
+        "Market Alignment",
+        "Industry Trends",
+        "Technology Adoption",
+        "Career Mobility",
+        "Future-Proofing"
+      ]
+    }
+  ]
+}

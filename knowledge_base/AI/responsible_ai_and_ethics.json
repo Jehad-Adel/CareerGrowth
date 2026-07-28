@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Artificial Intelligence",
+    "file_name": "responsible_ai_and_ethics.json",
+    "target_features": [
+      "AI_Analyzer",
+      "Responsible_AI_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "EU AI Act Governance Framework",
+      "NIST AI Risk Management Framework"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "AI-RES-001",
+      "rule_name": "Algorithmic Bias Mitigation and Fairness Auditing",
+      "category": "AI Ethics & Fairness",
+      "severity": "Critical",
+      "explanation": "Deploying models trained on unvetted, skewed data perpetuates systemic biases, resulting in discriminatory outcomes across protected demographic groups.",
+      "do": "Audit training datasets and model outputs regularly for disparate impact, implement bias mitigation algorithms, and ensure diverse representation across data subsets.",
+      "dont": "Do not deploy high-impact AI models to production without rigorous fairness evaluations across diverse demographic segments.",
+      "ats_keywords": [
+        "Algorithmic Bias",
+        "Fairness Auditing",
+        "Disparate Impact",
+        "Bias Mitigation",
+        "Responsible AI"
+      ]
+    },
+    {
+      "rule_id": "AI-RES-002",
+      "rule_name": "Data Privacy, PII Protection, and Consent Enforcement",
+      "category": "Privacy & Security",
+      "severity": "Critical",
+      "explanation": "Ingesting sensitive personally identifiable information (PII) or confidential proprietary data into public or unencrypted LLM pipelines creates severe legal and security liabilities.",
+      "do": "Implement automated PII masking, token anonymization, and strict data governance policies before transmitting data to model endpoints or vector databases.",
+      "dont": "Do not pass unredacted user credentials, financial records, or private personal data directly into external commercial APIs without sanitization.",
+      "ats_keywords": [
+        "Data Privacy",
+        "PII Masking",
+        "Anonymization",
+        "Data Governance",
+        "Confidentiality"
+      ]
+    },
+    {
+      "rule_id": "AI-RES-003",
+      "rule_name": "Model Explainability, Transparency, and Auditability (XAI)",
+      "category": "Transparency",
+      "severity": "High",
+      "explanation": "Treating complex deep learning models as unscrutable 'black boxes' prevents users and stakeholders from understanding how critical automated decisions are made.",
+      "do": "Incorporate Explainable AI (XAI) techniques, maintain detailed model cards documenting training limitations, and ensure decision outputs are traceable and auditable.",
+      "dont": "Do not deploy opaque automated decision systems in sensitive domains (e.g., finance, hiring) without documentation or interpretability layers.",
+      "ats_keywords": [
+        "Explainable AI",
+        "XAI",
+        "Model Transparency",
+        "Model Cards",
+        "Auditability"
+      ]
+    },
+    {
+      "rule_id": "AI-RES-004",
+      "rule_name": "Robustness, Safety Guardrails, and Prompt Injection Defense",
+      "category": "AI Safety",
+      "severity": "High",
+      "explanation": "Failing to secure model inputs against adversarial attacks leaves applications vulnerable to jailbreaking, prompt injection, and malicious abuse.",
+      "do": "Deploy robust input/output guardrails (e.g., Llama Guard, NeMo Guardrails) to filter toxic content, block prompt injection vectors, and prevent unsafe code or policy violations.",
+      "dont": "Do not expose raw, unmonitored model endpoints directly to public users without adversarial filtering and safety wrappers.",
+      "ats_keywords": [
+        "AI Safety",
+        "Guardrails",
+        "Prompt Injection Defense",
+        "Jailbreak Prevention",
+        "Adversarial Robustness"
+      ]
+    }
+  ]
+}

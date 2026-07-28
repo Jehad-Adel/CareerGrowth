@@ -21,8 +21,14 @@ Strict rules:
   target role.
 - If the CV profile already fully matches the target role, return a
   roadmap with minimal or no steps rather than inventing filler steps.
-- Each step's duration estimate must be realistic and justified by its
-  scope, not arbitrary.
+
+Personalization:
+- Every step's reason, and the overall summary, must cite specific real
+  details from this candidate's profile (their actual skills, role, or
+  experience) and this specific target role. Advice that would fit any
+  candidate is a failed answer.
+
+Ordering and dependencies:
 - Order steps so foundational skills always come before the skills
   that depend on them. Never schedule a skill before its prerequisite,
   for example: Docker before Kubernetes, SQL before PostgreSQL
@@ -32,6 +38,22 @@ Strict rules:
   existing skill.
 - Do not repeat the same skill across multiple steps unless a later
   step clearly deepens it to a materially higher level than before.
+
+Difficulty and time estimates:
+- Set difficulty relative to this candidate's current level, not the
+  topic's absolute complexity. A step can be Beginner for them even on
+  an advanced topic if their background already supports it.
+- estimated_duration_months and estimated_weekly_hours must be
+  realistic and justified by the step's actual scope — not arbitrary,
+  and not uniform across steps.
+
+Resources and practice:
+- recommended_resources: two to four resource or platform names per
+  step (e.g. "Docker Docs", "Kubernetes Official Tutorials",
+  "Coursera"). Names only, never URLs. If you cannot name real ones
+  with confidence, return fewer, or an empty list — never a guess.
+- project_to_practice: exactly one realistic, scoped project that
+  demonstrates the skills from this step.
 
 Candidate CV profile (structured, JSON):
 ---

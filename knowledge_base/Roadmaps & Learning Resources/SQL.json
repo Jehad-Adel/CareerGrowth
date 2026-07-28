@@ -1,0 +1,99 @@
+{
+  "topic": "SQL (Structured Query Language)",
+  "description": "SQL is the standard language for managing and querying relational databases. It is used to create, read, update, delete, and analyze data while supporting database design, indexing, transactions, optimization, and performance tuning.",
+
+  "roadmap": "https://roadmap.sh/sql",
+
+  "resources": [
+    {
+      "name": "roadmap.sh SQL Roadmap",
+      "url": "https://roadmap.sh/sql",
+      "type": "roadmap",
+      "level": "all levels"
+    },
+    {
+      "name": "PostgreSQL Documentation",
+      "url": "https://www.postgresql.org/docs/",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "MySQL Documentation",
+      "url": "https://dev.mysql.com/doc/",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "Microsoft SQL Server Documentation",
+      "url": "https://learn.microsoft.com/sql/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Oracle Database Documentation",
+      "url": "https://docs.oracle.com/en/database/",
+      "type": "documentation",
+      "level": "advanced"
+    },
+    {
+      "name": "SQLBolt",
+      "url": "https://sqlbolt.com/",
+      "type": "interactive tutorials",
+      "level": "beginner"
+    },
+    {
+      "name": "Mode SQL Tutorial",
+      "url": "https://mode.com/sql-tutorial/",
+      "type": "tutorial",
+      "level": "beginner"
+    },
+    {
+      "name": "W3Schools SQL Tutorial",
+      "url": "https://www.w3schools.com/sql/",
+      "type": "tutorial",
+      "level": "beginner"
+    },
+    {
+      "name": "LeetCode Database",
+      "url": "https://leetcode.com/problemset/database/",
+      "type": "practice",
+      "level": "intermediate"
+    },
+    {
+      "name": "HackerRank SQL",
+      "url": "https://www.hackerrank.com/domains/sql",
+      "type": "practice",
+      "level": "beginner"
+    },
+    {
+      "name": "StrataScratch",
+      "url": "https://www.stratascratch.com/",
+      "type": "interview practice",
+      "level": "intermediate"
+    },
+    {
+      "name": "Use The Index, Luke!",
+      "url": "https://use-the-index-luke.com/",
+      "type": "performance guide",
+      "level": "advanced"
+    },
+    {
+      "name": "SQLZoo",
+      "url": "https://sqlzoo.net/",
+      "type": "interactive tutorials",
+      "level": "beginner"
+    },
+    {
+      "name": "Kaggle SQL Courses",
+      "url": "https://www.kaggle.com/learn/intro-to-sql",
+      "type": "interactive course",
+      "level": "beginner"
+    },
+    {
+      "name": "Microsoft Learn - SQL",
+      "url": "https://learn.microsoft.com/training/browse/?products=sql-server",
+      "type": "learning platform",
+      "level": "beginner"
+    }
+  ]
+}

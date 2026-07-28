@@ -1,0 +1,77 @@
+{
+  "file_metadata": {
+    "category": "GitHub",
+    "file_name": "repository_structure.json",
+    "target_features": [
+      "GitHub_Analyzer",
+      "Repo_Cleanliness_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "GitHub Official Open Source Best Practices",
+      "Git Version Control Clean Architecture Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "GHB-STR-001",
+      "rule_name": "Mandatory .gitignore Implementation",
+      "category": "Repository Hygiene",
+      "severity": "Critical",
+      "explanation": "Commiting build artifacts, API keys, cache files, or virtual environments clutter the repository and expose severe security vulnerabilities.",
+      "do": "Include a language-specific .gitignore file (e.g., ignoring .env, __pycache__, node_modules, .vscode, build/ bin/ files).",
+      "dont": "Do not push secret API keys, virtual environment folders (.venv), or compiled binaries directly to GitHub.",
+      "ats_keywords": [
+        "Gitignore Usage",
+        "Repository Hygiene",
+        "No Secrets",
+        "Clean Commits"
+      ]
+    },
+    {
+      "rule_id": "GHB-STR-002",
+      "rule_name": "Standard Directory Hierarchy",
+      "category": "Code Architecture",
+      "severity": "High",
+      "explanation": "A clean directory structure separates source code, tests, documentation, and configuration files, demonstrating software architecture maturity.",
+      "do": "Organize code logically into distinct folders (e.g., /src, /tests, /docs, /assets, /config).",
+      "dont": "Do not dump dozens of loose source files, images, and config scripts directly into the root directory.",
+      "ats_keywords": [
+        "Directory Hierarchy",
+        "Source Separation",
+        "Clean Architecture",
+        "Modular Code"
+      ]
+    },
+    {
+      "rule_id": "GHB-STR-003",
+      "rule_name": "Dependency File Manifest Requirement",
+      "category": "Environment Management",
+      "severity": "Critical",
+      "explanation": "Without an explicit dependency manifest, other developers or automated pipelines cannot install the required packages to build or execute the project.",
+      "do": "Include exact dependency files (e.g., requirements.txt / environment.yml for Python, package.json for JS, CMakeLists.txt for C++).",
+      "dont": "Do not publish repositories without defining the external libraries and version requirements.",
+      "ats_keywords": [
+        "Requirements Manifest",
+        "Package Management",
+        "Dependency Locking",
+        "Environment Reproducibility"
+      ]
+    },
+    {
+      "rule_id": "GHB-STR-004",
+      "rule_name": "Atomic Commits and Meaningful Messages",
+      "category": "Version Control Quality",
+      "severity": "Medium",
+      "explanation": "A clean git log with descriptive commit messages reflects disciplined software engineering practices.",
+      "do": "Write active imperative commit messages (e.g., 'Add RAG retrieval pipeline', 'Fix memory leak in buffer') for focused atomic changes.",
+      "dont": "Do not use lazy, vague messages like 'update', 'fix bug', 'test', or push 5,000 lines of code in a single initial commit.",
+      "ats_keywords": [
+        "Atomic Commits",
+        "Git History Quality",
+        "Meaningful Messages",
+        "Version Control Discipline"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Career Guidance",
+    "file_name": "workplace_success_and_mentorship.json",
+    "target_features": [
+      "Career_Analyzer",
+      "Workplace_Success_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "The Effective Engineer Framework by Edmond Lau",
+      "Tech Industry Internship & Mentorship Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "CG-WRK-001",
+      "rule_name": "High-Impact Onboarding and Early Execution",
+      "category": "Workplace Integration",
+      "severity": "Critical",
+      "explanation": "Spending initial weeks passively waiting for instructions without proactive environment setup or code exploration delays tangible contributions.",
+      "do": "Master the development environment, review existing codebase documentation independently, and deliver small bug fixes or features within the first two weeks.",
+      "dont": "Do not remain entirely passive during onboarding or hesitate to ask clarifying questions when blocked.",
+      "ats_keywords": [
+        "Engineering Onboarding",
+        "Early Execution",
+        "Codebase Exploration",
+        "Proactive Contribution",
+        "Ramp-up Velocity"
+      ]
+    },
+    {
+      "rule_id": "CG-WRK-002",
+      "rule_name": "Proactive Seeking of Mentorship and Feedback",
+      "category": "Professional Growth",
+      "severity": "High",
+      "explanation": "Working in isolation for days without seeking guidance when stuck wastes team resources and slows personal technical growth.",
+      "do": "Establish regular syncs with assigned mentors, come prepared with specific technical blockers tried independently, and actively request constructive code reviews.",
+      "dont": "Do not suffer in silence on technical blocks for hours without attempting structured debugging or reaching out to senior engineers.",
+      "ats_keywords": [
+        "Mentorship Integration",
+        "Constructive Feedback",
+        "Technical Guidance",
+        "Code Review Process",
+        "Peer Collaboration"
+      ]
+    },
+    {
+      "rule_id": "CG-WRK-003",
+      "rule_name": "Effective Communication of Technical Progress and Blockers",
+      "category": "Professional Communication",
+      "severity": "High",
+      "explanation": "Failing to communicate project delays or technical roadblocks until deadlines arrive destroys team trust and project planning.",
+      "do": "Provide clear, transparent updates on task progress, proactively flag potential roadblocks early, and propose alternative solutions.",
+      "dont": "Do not hide missed deadlines or unexpected technical hurdles until the final hour of delivery.",
+      "ats_keywords": [
+        "Progress Transparency",
+        "Blocker Escalation",
+        "Team Communication",
+        "Deadline Management",
+        "Accountability"
+      ]
+    },
+    {
+      "rule_id": "CG-WRK-004",
+      "rule_name": "Continuous Documentation and Knowledge Sharing",
+      "category": "Knowledge Management",
+      "severity": "Medium",
+      "explanation": "Keeping solved setup hurdles or system discoveries strictly to oneself misses opportunities to elevate team knowledge and demonstrate ownership.",
+      "do": "Document newly learned troubleshooting steps, setup quirks, and architectural insights into the team wiki or project documentation for future engineers.",
+      "dont": "Do not hoard troubleshooting knowledge or leave team documentation outdated after resolving complex system issues.",
+      "ats_keywords": [
+        "Knowledge Sharing",
+        "Technical Documentation",
+        "Team Contribution",
+        "Engineering Ownership",
+        "Wiki Maintenance"
+      ]
+    }
+  ]
+}

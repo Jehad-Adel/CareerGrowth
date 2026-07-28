@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Software Engineering & Testing",
+    "file_name": "clean_code_and_design_patterns.json",
+    "target_features": [
+      "Software_Engineering_Analyzer",
+      "Clean_Code_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Clean Code by Robert C. Martin",
+      "Gang of Four Design Patterns Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "SWE-CLN-001",
+      "rule_name": "Meaningful Names and Small Single-Responsibility Functions",
+      "category": "Code Quality",
+      "severity": "Critical",
+      "explanation": "Writing monolithic functions with cryptic variable names makes codebases unreadable, fragile, and difficult to maintain.",
+      "do": "Use intention-revealing, searchable names for variables and functions, and keep functions small with a single, well-defined responsibility.",
+      "dont": "Do not write multi-page functions that perform multiple unrelated tasks or use single-letter variable names outside of standard loop counters.",
+      "ats_keywords": [
+        "Clean Code",
+        "Single Responsibility Principle",
+        "Meaningful Naming",
+        "Maintainability",
+        "Function Refactoring"
+      ]
+    },
+    {
+      "rule_id": "SWE-CLN-002",
+      "rule_name": "SOLID Principles of Object-Oriented and Component Design",
+      "category": "Architecture Principles",
+      "severity": "Critical",
+      "explanation": "Tight coupling and rigid class hierarchies violate architectural scalability, making every small feature addition break existing modules.",
+      "do": "Enforce SOLID principles (Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion) across all software components.",
+      "dont": "Do not tightly couple high-level business logic directly to low-level implementation details or concrete drivers.",
+      "ats_keywords": [
+        "SOLID Principles",
+        "Dependency Inversion",
+        "Loose Coupling",
+        "Component Design",
+        "Scalable Architecture"
+      ]
+    },
+    {
+      "rule_id": "SWE-CLN-003",
+      "rule_name": "Appropriate Design Patterns Implementation (GoF)",
+      "category": "Design Patterns",
+      "severity": "High",
+      "explanation": "Reinventing custom architectural solutions for standard software problems leads to messy, inconsistent code structures.",
+      "do": "Apply established Gang of Four (GoF) design patterns (e.g., Factory, Singleton, Strategy, Observer) where appropriate to solve recurring architectural challenges.",
+      "dont": "Do not overuse or force complex design patterns where simple, straightforward code structures are more effective.",
+      "ats_keywords": [
+        "Design Patterns",
+        "Gang of Four",
+        "Factory Pattern",
+        "Strategy Pattern",
+        "Architectural Solutions"
+      ]
+    },
+    {
+      "rule_id": "SWE-CLN-004",
+      "rule_name": "Boy Scout Rule and Continuous Code Refactoring",
+      "category": "Code Maintenance",
+      "severity": "Medium",
+      "explanation": "Leaving messy code untouched ('technical debt accumulation') progressively degrades code quality until the entire system requires a rewrite.",
+      "do": "Apply the Boy Scout Rule: leave the code cleaner than you found it by continuously refactoring small structural smells during regular feature development.",
+      "dont": "Do not ignore code smells, duplicated code blocks, or dead commented-out sections in files you modify.",
+      "ats_keywords": [
+        "Boy Scout Rule",
+        "Code Refactoring",
+        "Technical Debt",
+        "Code Smells",
+        "Continuous Improvement"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "file_metadata": {
+    "category": "CV_Writing",
+    "file_name": "action_verbs_and_impact.json",
+    "target_features": [
+      "CV_Analyzer",
+      "Bullet_Point_Optimizer",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Harvard College Guide to Creating a Strong Resume",
+      "The Muse - How to Write Resume Bullets That Pay Attention"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "CV-IMP-001",
+      "rule_name": "Lead With Scope Before Nitty-Gritty Details",
+      "category": "Bullet Order",
+      "severity": "Critical",
+      "explanation": "Hiring managers skim downwards quickly. The top bullet under a role should lead with the broad overview, scope of operations, team size, or overall context before delving into narrower tactical duties.",
+      "do": "Place broad, high-impact overview bullets at the top of an experience entry (e.g., 'Oversaw commercial operations serving 15,000 customers annually').",
+      "dont": "Do not dive into narrow, specific tasks before establishing the overall scope and context of the role.",
+      "ats_keywords": [
+        "Bullet Prioritization",
+        "Role Scope",
+        "Broad Context",
+        "Scannability"
+      ]
+    },
+    {
+      "rule_id": "CV-IMP-002",
+      "rule_name": "Explain Who, What, Why, and How (Fact-Based Quantification)",
+      "category": "Content Depth",
+      "severity": "Critical",
+      "explanation": "A bullet point must demonstrate clear results and explain why a task was important, who was impacted, and how it was accomplished rather than just listing assigned duties.",
+      "do": "Structure bullets with specific, fact-based evidence and metrics (e.g., 'Directly oversaw integration of operations during acquisition, leading a three-year initiative impacting 1,000+ users').",
+      "dont": "Do not present passive, task-only lists without results or explanation of impact (e.g., 'Responsible for project management and software deployment').",
+      "ats_keywords": [
+        "Measurable Results",
+        "Business Impact",
+        "Fact-Based",
+        "Quantified Accomplishments"
+      ]
+    },
+    {
+      "rule_id": "CV-IMP-003",
+      "rule_name": "Avoid Excess Details and Overly Long Lists",
+      "category": "Conciseness",
+      "severity": "High",
+      "explanation": "Adding too many granular details, mentioning every single cross-functional team, or listing more than 3 examples in a single bullet point dilutes impact and bores the reader.",
+      "do": "Keep bullet points concise and limit lists of examples or stakeholder titles to a maximum of 3 items.",
+      "dont": "Do not list exhaustive enumerations of departments, tools, or executive titles in a single bullet.",
+      "ats_keywords": [
+        "Conciseness",
+        "Clutter Elimination",
+        "Trimmed Bullets",
+        "Core Findings"
+      ]
+    },
+    {
+      "rule_id": "CV-IMP-004",
+      "rule_name": "Prohibit Passive Lead-Ins and Personal Pronouns",
+      "category": "Language Precision",
+      "severity": "Critical",
+      "explanation": "Resume language must be active rather than passive, articulate, and completely free of personal pronouns ('I', 'We') or narrative/flowery style.",
+      "do": "Start every bullet point immediately with an active power verb categorized by domain (e.g., 'Spearheaded', 'Engineered', 'Orchestrated').",
+      "dont": "Do not use 'I', 'We', or passive lead-in phrases like 'Helped with', 'Responsible for', or 'Tasked with'.",
+      "ats_keywords": [
+        "Action Verbs",
+        "Active Voice",
+        "No First Person",
+        "Direct Lead-in"
+      ]
+    }
+  ],
+  "action_verbs_taxonomy": {
+    "leadership": ["Accomplished", "Administered", "Chaired", "Consolidated", "Coordinated", "Delegated", "Directed", "Executed", "Headed", "Orchestrated", "Organized", "Oversaw", "Spearheaded", "Supervised"],
+    "technical": ["Assembled", "Built", "Calculated", "Computed", "Designed", "Devised", "Engineered", "Fabricated", "Installed", "Maintained", "Operated", "Optimized", "Overhauled", "Programmed", "Remodeled", "Repaired", "Solved", "Standardized", "Streamlined", "Upgraded"],
+    "quantitative": ["Administered", "Allocated", "Analyzed", "Appraised", "Audited", "Balanced", "Budgeted", "Calculated", "Computed", "Forecasted", "Managed", "Maximized", "Minimized", "Projected"],
+    "research_and_analysis": ["Clarified", "Collected", "Conducted", "Constructed", "Critiqued", "Derived", "Determined", "Diagnosed", "Discovered", "Evaluated", "Examined", "Extracted", "Identified", "Inspected", "Modeled", "Systematized", "Tested"]
+  }
+}

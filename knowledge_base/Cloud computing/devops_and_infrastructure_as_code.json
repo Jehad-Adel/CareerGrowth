@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Cloud Computing",
+    "file_name": "devops_and_infrastructure_as_code.json",
+    "target_features": [
+      "Cloud_Analyzer",
+      "DevOps_IaC_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "The DevOps Handbook Standards",
+      "AWS DevOps & Infrastructure as Code Best Practices"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "CLD-DEV-001",
+      "rule_name": "Infrastructure as Code (IaC) Version Control and Reproducibility",
+      "category": "Infrastructure Automation",
+      "severity": "Critical",
+      "explanation": "Configuring cloud infrastructure manually through web consoles (ClickOps) leads to undocumented drift, configuration errors, and non-reproducible environments.",
+      "do": "Define and provision all cloud infrastructure using declarative Infrastructure as Code tools (e.g., Terraform, AWS CloudFormation) stored in version-controlled repositories.",
+      "dont": "Do not provision production infrastructure manually via cloud provider web consoles without code representation.",
+      "ats_keywords": [
+        "Infrastructure as Code",
+        "Terraform",
+        "CloudFormation",
+        "Configuration Drift",
+        "Environment Reproducibility"
+      ]
+    },
+    {
+      "rule_id": "CLD-DEV-002",
+      "rule_name": "Automated CI/CD Pipeline Gates and Quality Checks",
+      "category": "Continuous Integration",
+      "severity": "High",
+      "explanation": "Deploying code updates manually or bypassing automated verification gates introduces syntax bugs and regressions directly into production.",
+      "do": "Implement automated CI/CD pipelines (e.g., GitHub Actions, GitLab CI) that run automated tests, security scans, and code linters before build artifacts are generated.",
+      "dont": "Do not push code updates directly to production branches or bypass automated testing gates.",
+      "ats_keywords": [
+        "CI/CD Pipeline",
+        "Automated Deployment",
+        "Quality Gates",
+        "GitHub Actions",
+        "Regression Prevention"
+      ]
+    },
+    {
+      "rule_id": "CLD-DEV-003",
+      "rule_name": "Immutable Infrastructure and Automated Rollbacks",
+      "category": "Deployment Reliability",
+      "severity": "High",
+      "explanation": "Patching live servers in place during updates creates inconsistent system states and makes failing back to stable versions extremely risky.",
+      "do": "Adopt immutable infrastructure patterns where servers are replaced rather than modified, paired with automated rollback strategies upon deployment failure.",
+      "dont": "Do not SSH into production servers to patch packages or modify configuration files live.",
+      "ats_keywords": [
+        "Immutable Infrastructure",
+        "Automated Rollback",
+        "Zero-Downtime Deployment",
+        "System State Consistency",
+        "Deployment Safety"
+      ]
+    },
+    {
+      "rule_id": "CLD-DEV-004",
+      "rule_name": "Centralized Monitoring, Metrics, and Proactive Alerting",
+      "category": "Observability",
+      "severity": "Medium",
+      "explanation": "Waiting for users to report system crashes or performance degradation due to a lack of active metric tracking damages system reliability.",
+      "do": "Configure centralized logging, performance metrics tracking (e.g., Prometheus, Grafana), and proactive alerting thresholds for error rates and CPU/memory spikes.",
+      "dont": "Do not operate production infrastructure without active, automated alerts for critical system failures.",
+      "ats_keywords": [
+        "Centralized Monitoring",
+        "Prometheus Grafana",
+        "Proactive Alerting",
+        "System Metrics",
+        "Operational Observability"
+      ]
+    }
+  ]
+}

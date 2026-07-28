@@ -1,0 +1,90 @@
+{
+  "file_metadata": {
+    "category": "ATS",
+    "file_name": "ats_keyword_optimization.json",
+    "target_features": [
+      "CV_Analyzer",
+      "ATS_Score",
+      "Resume_Optimizer",
+      "Hybrid_RAG"
+    ],
+    "source": "Jobscan Keyword Guide"
+  },
+  "rules": [
+    {
+      "rule_id": "ATS-KEY-001",
+      "rule_name": "Mirror Exact Phrasing and Avoid Synonyms",
+      "category": "Keyword Matching",
+      "severity": "Critical",
+      "explanation": "Applicant tracking systems do not always recognize synonyms, abbreviations, or alternative phrase variations. For instance, a system searching for 'Adobe Creative Suite' might fail to match a resume listing 'Adobe Creative Cloud'. Matching exact language is crucial for discovery.",
+      "do": "Mirror the exact wording and specific terms used directly in the job description whenever they match your real experience.",
+      "dont": "Do not rely on software synonyms, alternative industry terms, or varied spellings that differ from the target job posting.",
+      "ats_keywords": [
+        "Exact Matching",
+        "Synonym Error",
+        "Phrasing Precision",
+        "Job Description Mirroring"
+      ]
+    },
+    {
+      "rule_id": "ATS-KEY-002",
+      "rule_name": "Include the Job Title Promptly",
+      "category": "Keyword Targeting",
+      "severity": "Critical",
+      "explanation": "Job titles are among the first parameters recruiters filter by in ATS systems. Candidates including the exact job title on their resume are 10.6 times more likely to get an interview.",
+      "do": "Include the target job title prominently near the top of the resume (e.g., in the headline or summary).",
+      "dont": "Do not omit the specific job title or use vague, custom titles that deviate from standard role names.",
+      "ats_keywords": [
+        "Job Title Match",
+        "Headline Optimization",
+        "Recruiter Filter",
+        "Target Role"
+      ]
+    },
+    {
+      "rule_id": "ATS-KEY-003",
+      "rule_name": "Balance Hard Skills and Soft Skills",
+      "category": "Skill Categorization",
+      "severity": "High",
+      "explanation": "ATS keyword filters prioritize measurable hard skills (e.g., software, frameworks, tools) over soft skills. Recruiters most frequently filter by technical skills (76.4%), education (59.7%), titles (55.3%), and certifications (50.6%).",
+      "do": "Prioritize quantifiable hard skills, tools, and methodologies while listing essential soft traits contextually.",
+      "dont": "Do not overload the resume with generic soft skills while missing critical technical tools and hard requirements.",
+      "ats_keywords": [
+        "Hard Skills",
+        "Technical Proficiencies",
+        "Soft Skills Balance",
+        "Measurable Experience"
+      ]
+    },
+    {
+      "rule_id": "ATS-KEY-004",
+      "rule_name": "Combine Keywords with Action Verbs and Measurable Outcomes",
+      "category": "Content Optimization",
+      "severity": "High",
+      "explanation": "Keywords integrated into bullet points carry maximum impact when combined with action verbs and concrete, quantifiable results.",
+      "do": "Follow the 'Action Verb + Keyword/Hard Skill + Quantifiable Result' formula in work experience bullets.",
+      "dont": "Do not just list keywords as isolated words without showing context, application, or business impact.",
+      "ats_keywords": [
+        "Action Verbs",
+        "Quantifiable Impact",
+        "Contextual Keywords",
+        "Experience Bullets"
+      ]
+    },
+    {
+      "rule_id": "ATS-KEY-005",
+      "rule_name": "Embed Keywords Naturally to Prevent Keyword Stuffing",
+      "category": "Keyword Distribution",
+      "severity": "High",
+      "explanation": "Keyword stuffing forces keywords out of context. While it might pass an automated filter, it fails human recruiter evaluation if sentences become nonsensical or unreadable.",
+      "do": "Distribute priority keywords naturally across the professional summary, dedicated skills section, and employment bullet points.",
+      "dont": "Do not repeat keywords excessively or paste hidden lists of words solely to trick ATS scanners.",
+      "ats_keywords": [
+        "Keyword Stuffing",
+        "Natural Distribution",
+        "Recruiter Readiness",
+        "Readable Context"
+      ]
+    }
+  ]
+}

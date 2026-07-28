@@ -54,16 +54,32 @@ export const getProfile = cache(
 
 // --- CV Studio ---
 
+export type EmploymentPeriod = {
+  title: string | null;
+  company: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  is_current: boolean;
+};
+
+/**
+ * Fields added on 2026-07-28 are optional here, not because the API omits
+ * them but because `result` is stored verbatim: a row written before they
+ * existed still renders, and typing them as required would be a lie the
+ * compiler cannot catch.
+ */
 export type CvProfileResult = {
   full_name: string | null;
   current_role: string | null;
   years_of_experience: number | null;
+  employment_periods?: EmploymentPeriod[];
   seniority_level: string;
   skills: string[];
   strengths: string[];
   weaknesses: string[];
   summary: string;
   improvement_suggestions: string[];
+  extraction_confidence?: number;
 };
 
 export type CvAnalysisRecord = {
@@ -100,8 +116,22 @@ export type AnalysisRecord<T> = {
   result: T;
 };
 
+export type SkillMatchResult = {
+  job_skill: string;
+  requirement_level: "Required" | "Preferred";
+  matched: boolean;
+  matched_via: string | null;
+  is_transferable_match: boolean;
+  severity_if_missing: "Blocking" | "Significant" | "Minor" | null;
+};
+
 export type JobMatchResult = {
   match_score: number;
+  /** A screen-pass estimate, deliberately not the same number as the score. */
+  hiring_probability?: number;
+  hiring_probability_reasoning?: string;
+  skill_matches?: SkillMatchResult[];
+  /** Derived from skill_matches server-side, so present on every row, old or new. */
   matched_skills: string[];
   missing_skills: string[];
   strengths: string[];
@@ -177,9 +207,17 @@ export type RoadmapStepRecord = {
   position: number;
   title: string;
   description: string;
+  /** Why this step, here, for this person. Empty string on older roadmaps. */
+  reason: string;
+  difficulty: "Beginner" | "Intermediate" | "Advanced";
   skills_to_acquire: string[];
   prerequisite_skills: string[];
+  /** Resource names, never URLs — the model cannot be trusted with links. */
+  recommended_resources: string[];
+  project_to_practice: string;
   estimated_months: number;
+  /** Zero when the generation did not estimate it. */
+  estimated_weekly_hours: number;
   status: "todo" | "done";
 };
 
@@ -271,11 +309,28 @@ export const getLatestInterview = (): Promise<InterviewSessionRecord | null> =>
 
 // --- Career Chat ---
 
+/**
+ * What grounded an assistant reply.
+ *
+ * Everything past `kind` is optional because these rows are stored verbatim:
+ * messages written before curated guidance was attributed carry only
+ * `{kind, chunk}`, and still have to render.
+ */
+export type ChatSource = {
+  /** "document" is the person's own material; "guide" is CareerFarm's. */
+  origin?: "document" | "guide";
+  kind: string;
+  /** Display name. Falls back to `kind` on older rows. */
+  label?: string;
+  chunk?: number;
+  title?: string;
+};
+
 export type ChatMessageRecord = {
   id: string;
   role: "user" | "assistant";
   content: string;
-  sources: { kind: string; chunk: number }[] | null;
+  sources: ChatSource[] | null;
   created_at: string;
 };
 

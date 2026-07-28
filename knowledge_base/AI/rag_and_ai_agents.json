@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Artificial Intelligence",
+    "file_name": "rag_and_ai_agents.json",
+    "target_features": [
+      "AI_Analyzer",
+      "RAG_Agent_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Meta AI RAG Research Papers",
+      "LangChain & LlamaIndex Architectural Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "AI-RAG-001",
+      "rule_name": "Optimized Document Chunking and Semantic Overlap Strategies",
+      "category": "RAG Data Ingestion",
+      "severity": "Critical",
+      "explanation": "Splitting documents using arbitrary character lengths without regard for semantic boundaries tears sentences apart, destroys context, and corrupts vector embeddings.",
+      "do": "Implement semantic-aware and recursive character chunking with controlled overlap (e.g., 500-1000 chunk size with 10-15% overlap) to preserve contextual continuity across chunk boundaries.",
+      "dont": "Do not use rigid, naive text slicing that cuts off mid-sentence or splits cohesive paragraphs across separate database records.",
+      "ats_keywords": [
+        "Document Chunking",
+        "Semantic Overlap",
+        "Recursive Character Text Splitter",
+        "Context Preservation",
+        "Vector Ingestion"
+      ]
+    },
+    {
+      "rule_id": "AI-RAG-002",
+      "rule_name": "Hybrid Search and Cross-Encoder Re-ranking Pipeline",
+      "category": "Information Retrieval",
+      "severity": "High",
+      "explanation": "Relying exclusively on dense vector similarity (embeddings) often misses exact keyword matches, acronyms, or specific technical identifiers present in source documents.",
+      "do": "Deploy a robust hybrid search pipeline combining dense vector retrieval (semantic) with sparse keyword search (BM25), followed by a neural cross-encoder re-ranker to maximize relevance precision.",
+      "dont": "Do not pass top-k vector search results directly to the LLM without re-ranking or filtering for semantic relevance.",
+      "ats_keywords": [
+        "Hybrid Search",
+        "BM25 Sparse Retrieval",
+        "Cross-Encoder Re-ranking",
+        "Vector Similarity",
+        "Information Precision"
+      ]
+    },
+    {
+      "rule_id": "AI-RAG-003",
+      "rule_name": "Autonomous Agentic Loops (Reasoning and Acting - ReAct Framework)",
+      "category": "AI Agents",
+      "severity": "High",
+      "explanation": "Static generation pipelines fail when tasks require multi-step tool execution, live data fetching, or dynamic decision-making based on intermediate tool outputs.",
+      "do": "Implement autonomous agent architectures using the ReAct (Reasoning and Acting) loop, allowing agents to iteratively reason, invoke external APIs/tools, observe results, and synthesize final responses.",
+      "dont": "Do not hardcode linear execution flows for complex tasks that require dynamic tool selection and error correction.",
+      "ats_keywords": [
+        "AI Agents",
+        "ReAct Framework",
+        "Reasoning and Acting",
+        "Tool Execution",
+        "Dynamic Workflows"
+      ]
+    },
+    {
+      "rule_id": "AI-RAG-004",
+      "rule_name": "Hallucination Guardrails and Source Grounding Verification",
+      "category": "Output Reliability",
+      "severity": "Medium",
+      "explanation": "Allowing LLMs to generate answers unsupported by retrieved reference text leads to confident hallucinations and factual fabrication in RAG systems.",
+      "do": "Enforce strict source grounding guardrails, requiring the model to cite retrieved document IDs and explicitly output 'I cannot find this information in the provided sources' when context is insufficient.",
+      "dont": "Do not permit the model to extrapolate or use external parametric memory when answering queries restricted to private knowledge bases.",
+      "ats_keywords": [
+        "Hallucination Guardrails",
+        "Source Grounding",
+        "Faithfulness Evaluation",
+        "Citation Enforcement",
+        "Private Knowledge Base"
+      ]
+    }
+  ]
+}

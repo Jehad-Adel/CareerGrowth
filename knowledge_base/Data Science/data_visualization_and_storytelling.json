@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Data Science",
+    "file_name": "data_visualization_and_storytelling.json",
+    "target_features": [
+      "DataScience_Analyzer",
+      "Visualization_Storytelling_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Storytelling with Data Framework by Cole Nussbaumer Knaflic",
+      "Edward Tufte Information Design & Data-Ink Ratio Principles"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "DS-VIS-001",
+      "rule_name": "Maximizing Data-to-Ink Ratio and De-cluttering",
+      "category": "Chart Aesthetics",
+      "severity": "High",
+      "explanation": "Visual clutter (excessive grid lines, heavy borders, redundant 3D effects) distracts stakeholders from core analytical insights.",
+      "do": "Remove non-essential visual elements, reduce grid contrast, and highlight key data points using intentional focal colors.",
+      "dont": "Do not use 3D charts, decorative background gradients, or unnecessary visual elements that obscure exact data values.",
+      "ats_keywords": [
+        "Data-Ink Ratio",
+        "Visual De-cluttering",
+        "Minimalist Design",
+        "Chart Clarity",
+        "Information Hierarchy"
+      ]
+    },
+    {
+      "rule_id": "DS-VIS-002",
+      "rule_name": "Domain-Appropriate Chart Selection",
+      "category": "Visual Mapping",
+      "severity": "Critical",
+      "explanation": "Using inappropriate visualization types (e.g., pie charts with 10+ slices, continuous lines for unordered nominal categories) distorts data relationships.",
+      "do": "Select chart types aligned with data geometry (e.g., Line charts for temporal trends, Bar charts for discrete comparisons, Scatter plots for relationships).",
+      "dont": "Do not use pie charts for multi-category comparisons or truncated Y-axis bar charts that misrepresent metric scale differences.",
+      "ats_keywords": [
+        "Chart Selection",
+        "Scatter Plot",
+        "Temporal Trends",
+        "Axis Integrity",
+        "Visual Mapping"
+      ]
+    },
+    {
+      "rule_id": "DS-VIS-003",
+      "rule_name": "Actionable Titles and Executive Storytelling",
+      "category": "Insight Delivery",
+      "severity": "High",
+      "explanation": "Generic chart titles (e.g., 'Revenue vs Time') force readers to parse raw charts without guiding them toward key business conclusions.",
+      "do": "Write action-oriented takeaway titles (e.g., 'Q3 Revenue Dropped 15% Due to Supply Chain Delays') and annotate significant data anomalies.",
+      "dont": "Do not leave charts without clear, informative axis labels, units, and insight-driven headline titles.",
+      "ats_keywords": [
+        "Executive Storytelling",
+        "Actionable Insights",
+        "Chart Annotations",
+        "Data Communication",
+        "Narrative Framing"
+      ]
+    },
+    {
+      "rule_id": "DS-VIS-004",
+      "rule_name": "Accessible and Inclusive Color Palettes",
+      "category": "Accessibility",
+      "severity": "Medium",
+      "explanation": "Relying strictly on red-green color encoding makes charts illegible to color-blind users and leads to poor contrast when printed.",
+      "do": "Use colorblind-safe palettes (e.g., Viridis, ColorBrewer) and ensure sufficient visual contrast between adjacent chart marks.",
+      "dont": "Do not rely exclusively on hue (like red vs green) to differentiate binary outcomes without using markers, patterns, or direct labels.",
+      "ats_keywords": [
+        "Colorblind Safe",
+        "Accessible Visualization",
+        "Visual Contrast",
+        "WCAG Color Standards",
+        "Sequential Palettes"
+      ]
+    }
+  ]
+}

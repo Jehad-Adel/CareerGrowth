@@ -1,0 +1,127 @@
+{
+  "topic": "Cyber Security",
+  "description": "Cyber Security is the practice of protecting computer systems, networks, applications, and data from cyber attacks, unauthorized access, malware, and other digital threats while ensuring confidentiality, integrity, and availability.",
+
+  "roadmap": {
+    "name": "Cyber Security Roadmap",
+    "url": "https://roadmap.sh/cyber-security"
+  },
+
+  "learning_order": [
+    "Computer Fundamentals",
+    "Operating Systems (Windows & Linux)",
+    "Networking Fundamentals",
+    "TCP/IP",
+    "DNS",
+    "HTTP & HTTPS",
+    "Firewalls",
+    "Cryptography Basics",
+    "Authentication & Authorization",
+    "Linux Security",
+    "Web Security",
+    "OWASP Top 10",
+    "Application Security",
+    "Network Security",
+    "Identity & Access Management (IAM)",
+    "Cloud Security",
+    "Incident Response",
+    "Digital Forensics",
+    "Penetration Testing",
+    "Vulnerability Assessment",
+    "Security Monitoring (SIEM)",
+    "Threat Intelligence",
+    "Security Automation",
+    "Security Compliance"
+  ],
+
+  "resources": [
+    {
+      "name": "roadmap.sh Cyber Security",
+      "url": "https://roadmap.sh/cyber-security",
+      "type": "roadmap",
+      "level": "all"
+    },
+    {
+      "name": "OWASP Top 10",
+      "url": "https://owasp.org/www-project-top-ten/",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "OWASP Web Security Testing Guide",
+      "url": "https://owasp.org/www-project-web-security-testing-guide/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "NIST Cybersecurity Framework",
+      "url": "https://www.nist.gov/cyberframework",
+      "type": "framework",
+      "level": "intermediate"
+    },
+    {
+      "name": "Microsoft Learn Security",
+      "url": "https://learn.microsoft.com/training/browse/?products=azure-security",
+      "type": "learning path",
+      "level": "beginner"
+    },
+    {
+      "name": "Google Cybersecurity Certificate",
+      "url": "https://grow.google/certificates/cybersecurity/",
+      "type": "course",
+      "level": "beginner"
+    },
+    {
+      "name": "Cisco Skills for All",
+      "url": "https://skillsforall.com/",
+      "type": "learning platform",
+      "level": "beginner"
+    },
+    {
+      "name": "TryHackMe",
+      "url": "https://tryhackme.com/",
+      "type": "interactive labs",
+      "level": "beginner"
+    },
+    {
+      "name": "Hack The Box",
+      "url": "https://www.hackthebox.com/",
+      "type": "interactive labs",
+      "level": "advanced"
+    },
+    {
+      "name": "PortSwigger Web Security Academy",
+      "url": "https://portswigger.net/web-security",
+      "type": "interactive labs",
+      "level": "intermediate"
+    }
+  ],
+
+  "recommended_projects": [
+    "Network Vulnerability Scanner",
+    "Password Strength Analyzer",
+    "Port Scanner",
+    "Log Monitoring Dashboard",
+    "Web Application Security Audit",
+    "OWASP Top 10 Demo Lab",
+    "Simple SIEM Dashboard",
+    "Phishing Detection System",
+    "Secure Authentication API",
+    "Cloud Security Assessment"
+  ],
+
+  "career_paths": [
+    "Cyber Security Analyst",
+    "SOC Analyst",
+    "Security Engineer",
+    "Penetration Tester",
+    "Ethical Hacker",
+    "Application Security Engineer",
+    "Cloud Security Engineer",
+    "Incident Response Analyst",
+    "Digital Forensics Analyst",
+    "Security Architect",
+    "Threat Intelligence Analyst",
+    "Chief Information Security Officer (CISO)"
+  ]
+}

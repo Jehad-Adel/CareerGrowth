@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Backend",
+    "file_name": "security_and_system_design.json",
+    "target_features": [
+      "Backend_Analyzer",
+      "Security_SystemDesign_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "OWASP API Security Top 10 Standards",
+      "Distributed System Design Best Practices"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "BE-SEC-001",
+      "rule_name": "Secure Authentication and Stateless Authorization",
+      "category": "Backend Security",
+      "severity": "Critical",
+      "explanation": "Storing plain text passwords, using weak JWT signing algorithms, or omitting token expiration mechanisms exposes identity servers to total compromise.",
+      "do": "Hash passwords using robust memory-hard algorithms (e.g., Argon2, bcrypt) and implement stateless JWT access/refresh token rotation with TLS.",
+      "dont": "Do not store unhashed passwords, encode sensitive PII inside JWT payloads, or rely on weak MD5/SHA1 algorithms.",
+      "ats_keywords": [
+        "Argon2 / bcrypt",
+        "JWT Rotation",
+        "Stateless Auth",
+        "OAuth2 / OIDC",
+        "Identity Protection"
+      ]
+    },
+    {
+      "rule_id": "BE-SEC-002",
+      "rule_name": "Rate Limiting and DDoS Mitigation",
+      "category": "System Design & Security",
+      "severity": "High",
+      "explanation": "Exposing backend endpoints without throughput restrictions allows brute-force attacks and resource exhaustion (Denial of Service).",
+      "do": "Implement API rate limiting per IP or client token (e.g., Leaky Bucket / Token Bucket algorithms via Redis or Reverse Proxies).",
+      "dont": "Do not leave authentication, registration, or computational API endpoints unprotected against unbounded request bursts.",
+      "ats_keywords": [
+        "Rate Limiting",
+        "Token Bucket Algorithm",
+        "DDoS Prevention",
+        "Redis Rate Limiter",
+        "Throttling Middleware"
+      ]
+    },
+    {
+      "rule_id": "BE-SEC-003",
+      "rule_name": "Asynchronous Task Offloading and Message Queues",
+      "category": "System Scalability",
+      "severity": "High",
+      "explanation": "Executing long-running tasks (e.g., video processing, email dispatch) synchronously inside HTTP request cycles causes gateway timeouts and server unresponsiveness.",
+      "do": "Offload heavy background execution to asynchronous message brokers and task queues (e.g., RabbitMQ, Kafka, Celery).",
+      "dont": "Do not block HTTP request handler execution threads with heavy I/O or long-running synchronous batch operations.",
+      "ats_keywords": [
+        "Asynchronous Processing",
+        "Message Queue",
+        "RabbitMQ / Kafka",
+        "Celery Workers",
+        "Decoupled Architecture"
+      ]
+    },
+    {
+      "rule_id": "BE-SEC-004",
+      "rule_name": "Strict CORS and Input Injection Defense",
+      "category": "Application Hardening",
+      "severity": "Critical",
+      "explanation": "Permissive CORS policies (Access-Control-Allow-Origin: *) combined with unsanitized parameters expose backends to Cross-Site Hijacking and SQL/Command Injection.",
+      "do": "Restrict CORS policies strictly to trusted origins, utilize parameterized ORM queries, and sanitize all headers/inputs.",
+      "dont": "Do not use wildcard '*' CORS configurations in production or construct SQL queries via raw string concatenation.",
+      "ats_keywords": [
+        "CORS Policy",
+        "SQL Injection Guard",
+        "Parameterized Queries",
+        "Input Sanitization",
+        "OWASP API Protection"
+      ]
+    }
+  ]
+}

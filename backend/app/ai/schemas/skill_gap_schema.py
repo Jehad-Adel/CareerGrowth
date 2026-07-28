@@ -35,9 +35,12 @@ class SkillGapItem(BaseModel):
         ),
     )
     recommended_resources: list[str] = Field(
-        min_length=2,
+        default_factory=list,
         max_length=4,
-        description="2-4 resource names to learn this skill. Names only, never URLs.",
+        description=(
+            "Two to four resource names to learn this skill. Names only, never URLs. "
+            "Return fewer, or none, rather than inventing one."
+        ),
     )
     project_to_practice: str = Field(
         description="One realistic project idea to practice and demonstrate this skill."

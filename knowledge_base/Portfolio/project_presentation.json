@@ -1,0 +1,77 @@
+{
+  "file_metadata": {
+    "category": "Portfolio",
+    "file_name": "project_presentation.json",
+    "target_features": [
+      "Portfolio_Analyzer",
+      "Case_Study_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Software Engineering Portfolio Case Study Standards",
+      "freeCodeCamp Technical Showcase Guidelines"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "PTF-PRJ-001",
+      "rule_name": "Problem-Solution Case Study Format",
+      "category": "Project Description",
+      "severity": "Critical",
+      "explanation": "Rather than presenting projects as simple code dumps, present them as case studies detailing the problem solved, the solution approach, and technical decisions made.",
+      "do": "Structure each project with: Problem Statement, Technical Approach, System Architecture, and Final Outcome.",
+      "dont": "Do not present projects with just a title and a list of technologies without explaining why or how it was built.",
+      "ats_keywords": [
+        "Case Study",
+        "Problem Statement",
+        "Technical Approach",
+        "Engineering Decision"
+      ]
+    },
+    {
+      "rule_id": "PTF-PRJ-002",
+      "rule_name": "Visual Architecture and Proof of Work",
+      "category": "Media & Proof",
+      "severity": "High",
+      "explanation": "Technical reviewers quickly grasp engineering complexity through block diagrams, system flows, and video/GIF demonstrations.",
+      "do": "Include system architecture schematics, flowcharts, or a short demo GIF/video showcasing the system operating live.",
+      "dont": "Do not rely exclusively on text descriptions without visual proof of execution or hardware/software diagrams.",
+      "ats_keywords": [
+        "Architecture Diagram",
+        "Visual Proof",
+        "Demo GIF",
+        "System Flow"
+      ]
+    },
+    {
+      "rule_id": "PTF-PRJ-003",
+      "rule_name": "Explicit Tech Stack and Role Clarification",
+      "category": "Technical Details",
+      "severity": "High",
+      "explanation": "Evaluators need to know your exact contribution in team projects and the precise tools utilized.",
+      "do": "Explicitly list the tech stack (e.g., C++, RTOS, Streamlit, Python) and state your individual role if built with a team.",
+      "dont": "Do not claim team projects as purely individual work or hide the specific frameworks used.",
+      "ats_keywords": [
+        "Tech Stack Explicit",
+        "Role Definition",
+        "Individual Contribution",
+        "Framework Transparency"
+      ]
+    },
+    {
+      "rule_id": "PTF-PRJ-004",
+      "rule_name": "Working Repository and Live Deployment Links",
+      "category": "Accessibility",
+      "severity": "Critical",
+      "explanation": "Broken links or private repositories reduce trust instantly. Projects must have clickable access to source code and hosted demos.",
+      "do": "Provide verified, active links to the GitHub repository and deployed web app or hardware demo link.",
+      "dont": "Do not link to private repos or dead end '404' deployment pages.",
+      "ats_keywords": [
+        "Working Links",
+        "Live Demo",
+        "Source Code Link",
+        "Verified Repos"
+      ]
+    }
+  ]
+}

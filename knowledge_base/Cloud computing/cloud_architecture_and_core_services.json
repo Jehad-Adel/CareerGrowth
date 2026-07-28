@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Cloud Computing",
+    "file_name": "cloud_architecture_and_core_services.json",
+    "target_features": [
+      "Cloud_Analyzer",
+      "Architecture_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "AWS Well-Architected Framework Standards",
+      "Enterprise Cloud Design Patterns"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "CLD-ARC-001",
+      "rule_name": "Multi-Availability Zone High Availability Architecture",
+      "category": "Cloud Reliability",
+      "severity": "Critical",
+      "explanation": "Deploying cloud infrastructure within a single availability zone creates a single point of failure prone to regional outages.",
+      "do": "Architect production workloads across multiple Availability Zones (AZs) with automated load balancing and failover mechanisms.",
+      "dont": "Do not host critical production databases or compute instances inside a single, non-redundant availability zone.",
+      "ats_keywords": [
+        "High Availability",
+        "Multi-AZ Deployment",
+        "Fault Tolerance",
+        "Load Balancing",
+        "Disaster Recovery"
+      ]
+    },
+    {
+      "rule_id": "CLD-ARC-002",
+      "rule_name": "Network Segmentation and VPC Isolation",
+      "category": "Cloud Networking",
+      "severity": "Critical",
+      "explanation": "Placing database servers and internal microservices directly on public-facing subnets exposes them to external internet attacks.",
+      "do": "Implement Virtual Private Cloud (VPC) isolation with distinct public subnets (for load balancers) and private subnets (for application and database tiers).",
+      "dont": "Do not expose backend databases or internal application nodes directly to public internet gateways.",
+      "ats_keywords": [
+        "VPC Isolation",
+        "Public and Private Subnets",
+        "Network Segmentation",
+        "Cloud Security Perimeter",
+        "Security Groups"
+      ]
+    },
+    {
+      "rule_id": "CLD-ARC-003",
+      "rule_name": "Stateless Application Design and Auto-Scaling",
+      "category": "Scalability",
+      "severity": "High",
+      "explanation": "Storing session state locally on compute instances prevents horizontal scaling and causes user data loss during node replacements.",
+      "do": "Design application nodes to be completely stateless, offloading session data and states to distributed caches (e.g., Redis) or managed databases.",
+      "dont": "Do not store persistent user session state or uploaded files on local ephemeral instance storage.",
+      "ats_keywords": [
+        "Stateless Architecture",
+        "Horizontal Auto-Scaling",
+        "Distributed Caching",
+        "Ephemeral Storage",
+        "Elastic Compute"
+      ]
+    },
+    {
+      "rule_id": "CLD-ARC-004",
+      "rule_name": "Managed Storage Lifecycle and Backups",
+      "category": "Data Management",
+      "severity": "High",
+      "explanation": "Failing to configure automated snapshots, point-in-time recovery, and storage tiering leads to permanent data loss and bloated operational costs.",
+      "do": "Configure automated database backups, cross-region replication for critical data, and cost-effective object storage lifecycle policies (e.g., S3 Glacier).",
+      "dont": "Do not rely on manual backups or store infrequently accessed archival data in high-performance storage tiers indefinitely.",
+      "ats_keywords": [
+        "Storage Lifecycle",
+        "Automated Backups",
+        "Disaster Recovery",
+        "Object Storage Tiering",
+        "Data Replication"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "DevOps",
+    "file_name": "iac_and_cloud_infrastructure.json",
+    "target_features": [
+      "DevOps_Analyzer",
+      "IaC_Cloud_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "HashiCorp Terraform Production Engineering Guidelines",
+      "AWS Well-Architected Framework Security Pillar"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "DO-IAC-001",
+      "rule_name": "Remote State Management and Locking",
+      "category": "Infrastructure as Code",
+      "severity": "Critical",
+      "explanation": "Storing Terraform state files locally or committing them to source control risks exposing unencrypted secrets and causes state corruption during concurrent team deployments.",
+      "do": "Store state files remotely in encrypted storage buckets (e.g., AWS S3, GCS) with active state locking mechanisms (e.g., DynamoDB locking).",
+      "dont": "Do not store local `terraform.tfstate` files inside version control repositories or execute un-locked concurrent plan applies.",
+      "ats_keywords": [
+        "Terraform Remote State",
+        "State Locking",
+        "S3 Backend",
+        "Infrastructure Consistency",
+        "Secrets Exposure Guard"
+      ]
+    },
+    {
+      "rule_id": "DO-IAC-002",
+      "rule_name": "Principle of Least Privilege for Cloud IAM",
+      "category": "Cloud Security",
+      "severity": "Critical",
+      "explanation": "Assigning overly permissive IAM wildcards (`*:*`) grants infrastructure entities unnecessary permissions, enabling massive account-level breaches if compromised.",
+      "do": "Scope Cloud IAM roles and policy actions strictly to the minimum specific resource identifiers and API operations required.",
+      "dont": "Do not attach administrator policies (`AdministratorAccess`) or wildcard resource permissions to runtime workloads.",
+      "ats_keywords": [
+        "Least Privilege IAM",
+        "Role-Based Access Control",
+        "Scoped Policy",
+        "Cloud Security Hardening",
+        "IAM Wildcard Removal"
+      ]
+    },
+    {
+      "rule_id": "DO-IAC-003",
+      "rule_name": "Modular and Immutable Infrastructure Architecture",
+      "category": "IaC Architecture",
+      "severity": "High",
+      "explanation": "Monolithic single-file IaC manifests make changes unpredictable, risky to validate, and prone to widespread blast radiuses.",
+      "do": "Break infrastructure into reusable version-controlled modules, separating networks, databases, and compute tiers into distinct environments.",
+      "dont": "Do not manage production, staging, and development resources inside a single unstructured monolithic Terraform state file.",
+      "ats_keywords": [
+        "Modular Terraform",
+        "Blast Radius Reduction",
+        "Immutable Infrastructure",
+        "Environment Isolation",
+        "Reusable IaC Modules"
+      ]
+    },
+    {
+      "rule_id": "DO-IAC-004",
+      "rule_name": "Automated Infrastructure Drift and Security Compliance Scanning",
+      "category": "Compliance & Security",
+      "severity": "High",
+      "explanation": "Manual changes made directly in cloud consoles cause infrastructure drift, creating unknown security vulnerabilities and un-reproducible states.",
+      "do": "Integrate automated static security code analyzers (e.g., Checkov, tfsec) and schedule automated drift detection scans in continuous pipelines.",
+      "dont": "Do not perform manual console modifications on infrastructure resources managed by IaC code bases.",
+      "ats_keywords": [
+        "Infrastructure Drift",
+        "Checkov Security Scan",
+        "tfsec Static Analysis",
+        "Policy as Code",
+        "Cloud Compliance"
+      ]
+    }
+  ]
+}

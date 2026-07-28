@@ -1,0 +1,99 @@
+{
+  "topic": "Mobile Development",
+  "description": "Mobile Development focuses on building applications for smartphones and tablets using native or cross-platform technologies. It covers UI/UX, mobile architecture, state management, networking, local storage, security, performance optimization, testing, deployment, and publishing apps on Google Play and the Apple App Store.",
+
+  "roadmap": "https://roadmap.sh/android",
+
+  "resources": [
+    {
+      "name": "roadmap.sh Android Roadmap",
+      "url": "https://roadmap.sh/android",
+      "type": "roadmap",
+      "level": "all levels"
+    },
+    {
+      "name": "Android Developers",
+      "url": "https://developer.android.com/",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "Flutter Documentation",
+      "url": "https://docs.flutter.dev/",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "React Native Documentation",
+      "url": "https://reactnative.dev/docs/getting-started",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Jetpack Compose Documentation",
+      "url": "https://developer.android.com/jetpack/compose",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Kotlin Documentation",
+      "url": "https://kotlinlang.org/docs/home.html",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "Swift Documentation",
+      "url": "https://docs.swift.org/swift-book/",
+      "type": "documentation",
+      "level": "beginner"
+    },
+    {
+      "name": "Apple Developer Documentation",
+      "url": "https://developer.apple.com/documentation/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Firebase Documentation",
+      "url": "https://firebase.google.com/docs",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Microsoft Learn - Mobile Development",
+      "url": "https://learn.microsoft.com/training/",
+      "type": "learning platform",
+      "level": "beginner"
+    },
+    {
+      "name": "Google Codelabs",
+      "url": "https://codelabs.developers.google.com/",
+      "type": "hands-on labs",
+      "level": "beginner"
+    },
+    {
+      "name": "Flutter Codelabs",
+      "url": "https://docs.flutter.dev/codelabs",
+      "type": "hands-on labs",
+      "level": "beginner"
+    },
+    {
+      "name": "Expo Documentation",
+      "url": "https://docs.expo.dev/",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "Google Play Console Help",
+      "url": "https://support.google.com/googleplay/android-developer",
+      "type": "documentation",
+      "level": "intermediate"
+    },
+    {
+      "name": "App Store Connect Help",
+      "url": "https://developer.apple.com/help/app-store-connect/",
+      "type": "documentation",
+      "level": "intermediate"
+    }
+  ]
+}

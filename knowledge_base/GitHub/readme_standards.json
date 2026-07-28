@@ -1,0 +1,77 @@
+{
+  "file_metadata": {
+    "category": "GitHub",
+    "file_name": "readme_standards.json",
+    "target_features": [
+      "GitHub_Analyzer",
+      "README_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "GitHub Official Documentation on READMEs",
+      "Awesome README Community Guidelines"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "GHB-RDM-001",
+      "rule_name": "Comprehensive README Anatomy Requirement",
+      "category": "Documentation Completeness",
+      "severity": "Critical",
+      "explanation": "A high-quality repository must have a README detailing what the project does, why it was built, how to install it, and how to run it.",
+      "do": "Include Project Title, Overview, Tech Stack, Architecture/Circuit Diagram, Installation Steps, Usage Guide, and License.",
+      "dont": "Do not leave the README blank, or contain only default auto-generated CLI templates (e.g., 'Create React App' default README).",
+      "ats_keywords": [
+        "README Anatomy",
+        "Installation Steps",
+        "Usage Guide",
+        "Documentation Completeness"
+      ]
+    },
+    {
+      "rule_id": "GHB-RDM-002",
+      "rule_name": "Visual Demonstration in Documentation",
+      "category": "Visual Proof",
+      "severity": "High",
+      "explanation": "Technical reviewers scan READMEs quickly. Including GIF demonstrations, UI screenshots, or hardware wiring schematics increases engagement.",
+      "do": "Embed at least one high-quality diagram, demo GIF, or UI screenshot near the top of the README.",
+      "dont": "Do not present raw text documentation without any visual architectural or execution proof.",
+      "ats_keywords": [
+        "Visual Demonstration",
+        "Demo GIF",
+        "Embedded Diagrams",
+        "Markdown Media"
+      ]
+    },
+    {
+      "rule_id": "GHB-RDM-003",
+      "rule_name": "Explicit Prerequisites and Setup Commands",
+      "category": "Reproducibility",
+      "severity": "High",
+      "explanation": "A reviewer or developer should be able to clone the repository and run the code without guessing environment dependencies.",
+      "do": "List required runtime environments (e.g., Python 3.10+, C++17, Node v18) and exact step-by-step CLI setup commands.",
+      "dont": "Do not assume the reader knows hidden environment variables or missing setup flags.",
+      "ats_keywords": [
+        "Setup Instructions",
+        "Prerequisites",
+        "Environment Dependencies",
+        "Reproducibility"
+      ]
+    },
+    {
+      "rule_id": "GHB-RDM-004",
+      "rule_name": "Standard Open Source License Inclusion",
+      "category": "Repository Governance",
+      "severity": "Medium",
+      "explanation": "Adding an open-source license (such as MIT, Apache 2.0, or GPLv3) signifies professional software governance.",
+      "do": "Include an explicit LICENSE file and reference it clearly in the README footer.",
+      "dont": "Do not publish public repositories without clarifying code usage permissions.",
+      "ats_keywords": [
+        "Open Source License",
+        "MIT License",
+        "Software Governance",
+        "Legal Clarity"
+      ]
+    }
+  ]
+}

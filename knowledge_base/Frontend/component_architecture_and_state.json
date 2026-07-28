@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Frontend",
+    "file_name": "component_architecture_and_state.json",
+    "target_features": [
+      "Frontend_Analyzer",
+      "Component_Architecture_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "React Official Architecture & Hooks Standards",
+      "Atomic Design Framework by Brad Frost"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "FE-ARC-001",
+      "rule_name": "Separation of Presentation and Business Logic",
+      "category": "Component Architecture",
+      "severity": "Critical",
+      "explanation": "Embedding API fetching, complex transformations, and global state management directly inside visual presentation components degrades reusability and testability.",
+      "do": "Separate components into Presentational (UI-only) and Container/Custom Hooks (logic/state handlers) or use feature-based folder organization.",
+      "dont": "Do not write complex side-effects, async API calls, or heavy business logic directly inside atomic rendering components.",
+      "ats_keywords": [
+        "Component Architecture",
+        "Custom Hooks",
+        "Separation of Concerns",
+        "Atomic Design",
+        "Container Presentational Pattern"
+      ]
+    },
+    {
+      "rule_id": "FE-ARC-002",
+      "rule_name": "Predictable State Management and Prop Drilling Avoidance",
+      "category": "State Management",
+      "severity": "High",
+      "explanation": "Passing state down through multiple intermediate component levels (prop drilling) creates tight component coupling and fragile interfaces.",
+      "do": "Utilize context providers or dedicated global state managers (e.g., Redux Toolkit, Zustand, Pinia) for cross-cutting state, keeping local state near where it is consumed.",
+      "dont": "Do not pass state props through more than 2-3 container levels or duplicate server-side state in global client stores without synchronization.",
+      "ats_keywords": [
+        "State Management",
+        "Prop Drilling Mitigation",
+        "Zustand / Redux Toolkit",
+        "Context API",
+        "Unidirectional Data Flow"
+      ]
+    },
+    {
+      "rule_id": "FE-ARC-003",
+      "rule_name": "Declarative Error Boundaries and Fallback UI",
+      "category": "Error Resiliency",
+      "severity": "High",
+      "explanation": "An unhandled Javascript runtime error in a single component unmounts the entire React/Vue DOM tree, breaking the app for the user.",
+      "do": "Wrap component trees with Error Boundaries to catch UI runtime exceptions and render graceful fallback states.",
+      "dont": "Do not allow unhandled rendering errors to crash the entire application screen into a blank white viewport.",
+      "ats_keywords": [
+        "Error Boundaries",
+        "Graceful Degradation",
+        "Fallback UI",
+        "Runtime Resiliency",
+        "UI Crash Prevention"
+      ]
+    },
+    {
+      "rule_id": "FE-ARC-004",
+      "rule_name": "Type Safety and Explicit Prop Validation",
+      "category": "Code Robustness",
+      "severity": "Medium",
+      "explanation": "Passing untyped props leads to silent runtime type errors, broken UI states, and difficult refactoring.",
+      "do": "Enforce strict TypeScript interfaces/types or runtime prop validation (PropTypes/Zod) for every component contract.",
+      "dont": "Do not use 'any' types or pass unvalidated loose objects as primary component props.",
+      "ats_keywords": [
+        "TypeScript Interfaces",
+        "Prop Validation",
+        "Strict Type Checking",
+        "Component Contract",
+        "Type-Safe UI"
+      ]
+    }
+  ]
+}

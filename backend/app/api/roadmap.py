@@ -20,10 +20,33 @@ class StepOut(BaseModel):
     position: int
     title: str
     description: str
+    reason: str
+    difficulty: str
     skills_to_acquire: list[str]
     prerequisite_skills: list[str]
+    recommended_resources: list[str]
+    project_to_practice: str
     estimated_months: float
+    estimated_weekly_hours: float
     status: str
+
+
+def _step_out(step) -> StepOut:
+    return StepOut(
+        id=step.id,
+        position=step.position,
+        title=step.title,
+        description=step.description,
+        reason=step.reason,
+        difficulty=step.difficulty,
+        skills_to_acquire=list(step.skills_to_acquire),
+        prerequisite_skills=list(step.prerequisite_skills),
+        recommended_resources=list(step.recommended_resources),
+        project_to_practice=step.project_to_practice,
+        estimated_months=float(step.estimated_months),
+        estimated_weekly_hours=float(step.estimated_weekly_hours),
+        status=step.status,
+    )
 
 
 class RoadmapOut(BaseModel):
@@ -42,19 +65,7 @@ def _to_out(roadmap) -> RoadmapOut:
         target_role=roadmap.target_role,
         summary=roadmap.summary,
         total_estimated_months=float(roadmap.total_estimated_months),
-        steps=[
-            StepOut(
-                id=s.id,
-                position=s.position,
-                title=s.title,
-                description=s.description,
-                skills_to_acquire=list(s.skills_to_acquire),
-                prerequisite_skills=list(s.prerequisite_skills),
-                estimated_months=float(s.estimated_months),
-                status=s.status,
-            )
-            for s in roadmap.steps
-        ],
+        steps=[_step_out(s) for s in roadmap.steps],
     )
 
 
@@ -81,16 +92,7 @@ def complete_step(
     step_id: uuid.UUID, profile: CurrentProfile, db: DbSession
 ) -> StepOut:
     step = roadmap_service.complete_step(db, profile.id, step_id)
-    return StepOut(
-        id=step.id,
-        position=step.position,
-        title=step.title,
-        description=step.description,
-        skills_to_acquire=list(step.skills_to_acquire),
-        prerequisite_skills=list(step.prerequisite_skills),
-        estimated_months=float(step.estimated_months),
-        status=step.status,
-    )
+    return _step_out(step)
 
 
 @router.get("/farm")

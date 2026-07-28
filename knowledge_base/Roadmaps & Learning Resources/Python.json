@@ -1,0 +1,67 @@
+{
+  "topic": "Python",
+  "description": "Python is a high-level programming language used in backend development, automation, AI, machine learning, data science, scripting, and software engineering.",
+
+  "roadmap": {
+    "name": "Python Roadmap",
+    "url": "https://roadmap.sh/python"
+  },
+
+  "learning_order": [
+    "Python Basics",
+    "Control Flow",
+    "Functions",
+    "Object-Oriented Programming",
+    "File Handling",
+    "Modules and Packages",
+    "Virtual Environments",
+    "Error Handling",
+    "Advanced Python",
+    "Async Programming",
+    "Testing",
+    "Packaging"
+  ],
+
+  "resources": [
+    {
+      "name": "Python Official Documentation",
+      "url": "https://docs.python.org/3/",
+      "type": "documentation",
+      "level": "all"
+    },
+    {
+      "name": "Python Tutorial",
+      "url": "https://docs.python.org/3/tutorial/",
+      "type": "tutorial",
+      "level": "beginner"
+    },
+    {
+      "name": "Real Python",
+      "url": "https://realpython.com/",
+      "type": "articles",
+      "level": "intermediate"
+    },
+    {
+      "name": "freeCodeCamp Python Course",
+      "url": "https://www.freecodecamp.org/learn/scientific-computing-with-python/",
+      "type": "course",
+      "level": "beginner"
+    }
+  ],
+
+  "recommended_projects": [
+    "Calculator",
+    "Todo App",
+    "File Organizer",
+    "REST API using FastAPI",
+    "CLI Application"
+  ],
+
+  "career_paths": [
+    "Backend Engineer",
+    "AI Engineer",
+    "Machine Learning Engineer",
+    "Data Scientist",
+    "Automation Engineer"
+  ]
+}

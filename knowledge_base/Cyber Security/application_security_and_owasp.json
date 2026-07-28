@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Cybersecurity",
+    "file_name": "application_security_and_owasp.json",
+    "target_features": [
+      "Cybersecurity_Analyzer",
+      "OWASP_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "OWASP Top 10 Web Application Security Risks",
+      "NIST Secure Software Development Framework"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "SEC-OWS-001",
+      "rule_name": "Prevention of Injection Vulnerabilities (SQL/Command Injection)",
+      "category": "Application Security",
+      "severity": "Critical",
+      "explanation": "Concatenating raw user input directly into database queries or system commands allows attackers to execute arbitrary malicious code.",
+      "do": "Use parameterized queries, prepared statements, and ORM frameworks for all database interactions, and avoid executing raw shell commands with user input.",
+      "dont": "Do not build SQL queries or command strings by directly concatenating user-supplied variables.",
+      "ats_keywords": [
+        "SQL Injection Prevention",
+        "Parameterized Queries",
+        "Prepared Statements",
+        "Input Sanitization",
+        "OWASP Injection"
+      ]
+    },
+    {
+      "rule_id": "SEC-OWS-002",
+      "rule_name": "Robust Authentication and Session Management",
+      "category": "Access Control",
+      "severity": "Critical",
+      "explanation": "Weak password policies, predictable session tokens, and missing multi-factor options lead to account takeover attacks.",
+      "do": "Implement strong password hashing (e.g., bcrypt, Argon2), secure session management with short-lived tokens, and HttpOnly/Secure cookie attributes.",
+      "dont": "Do not store plaintext passwords in databases or expose session identifiers in URL parameters.",
+      "ats_keywords": [
+        "Password Hashing",
+        "Session Management",
+        "HttpOnly Cookies",
+        "Account Security",
+        "Authentication Controls"
+      ]
+    },
+    {
+      "rule_id": "SEC-OWS-003",
+      "rule_name": "Enforcing Principle of Least Privilege (PoLP)",
+      "category": "Authorization",
+      "severity": "High",
+      "explanation": "Granting applications, database users, or system accounts administrative permissions by default increases the blast radius of a breach.",
+      "do": "Restrict service accounts, database roles, and API access permissions strictly to the minimum required operational functions.",
+      "dont": "Do not run applications or database connections using root or full administrative privileges.",
+      "ats_keywords": [
+        "Least Privilege",
+        "Access Control Lists",
+        "Role-Based Permissions",
+        "Privilege Minimization",
+        "Authorization Security"
+      ]
+    },
+    {
+      "rule_id": "SEC-OWS-004",
+      "rule_name": "Comprehensive Input Validation and Output Encoding",
+      "category": "Data Validation",
+      "severity": "High",
+      "explanation": "Failing to validate incoming data formats or encode output data allows Cross-Site Scripting (XSS) and malformed payload injection.",
+      "do": "Validate all incoming inputs against strict whitelists (type, length, format) and contextually encode output data before rendering it in browsers.",
+      "dont": "Do not trust user input blindly or render unescaped user-generated content directly in UI views.",
+      "ats_keywords": [
+        "Input Validation",
+        "Output Encoding",
+        "XSS Prevention",
+        "Data Whitelisting",
+        "Sanitization"
+      ]
+    }
+  ]
+}

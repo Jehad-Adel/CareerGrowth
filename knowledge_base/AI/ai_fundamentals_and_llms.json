@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Artificial Intelligence",
+    "file_name": "ai_fundamentals_and_llms.json",
+    "target_features": [
+      "AI_Analyzer",
+      "LLM_Architecture_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Attention Is All You Need Transformer Architecture",
+      "OpenAI & Anthropic LLM Technical Guidelines"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "AI-LLM-001",
+      "rule_name": "Transformer Architecture and Self-Attention Mechanism",
+      "category": "Core Architecture",
+      "severity": "Critical",
+      "explanation": "Relying on legacy recurrent neural networks (RNNs) or LSTMs for modern natural language tasks creates severe sequential bottlenecks and limits long-range context handling.",
+      "do": "Implement transformer-based architectures utilizing multi-head self-attention mechanisms to process input tokens in parallel and capture complex contextual relationships across long sequences.",
+      "dont": "Do not build large-scale language generation pipelines on outdated sequential recurrent architectures that fail to scale with modern hardware.",
+      "ats_keywords": [
+        "Transformer Architecture",
+        "Self-Attention Mechanism",
+        "Multi-Head Attention",
+        "Parallel Token Processing",
+        "Long-Range Context"
+      ]
+    },
+    {
+      "rule_id": "AI-LLM-002",
+      "rule_name": "Tokenization Optimization and Vocabulary Efficiency",
+      "category": "Data Preprocessing",
+      "severity": "High",
+      "explanation": "Inefficient tokenization algorithms (such as naive word or character splitting) inflate sequence lengths, waste computational tokens, and degrade cross-lingual performance.",
+      "do": "Utilize subword tokenization algorithms (e.g., Byte-Pair Encoding [BPE], WordPiece) optimized to balance vocabulary size, token compression ratios, and rare word handling.",
+      "dont": "Do not use unoptimized raw-string splitting or excessively large, sparse vocabularies that degrade inference memory efficiency.",
+      "ats_keywords": [
+        "Subword Tokenization",
+        "Byte-Pair Encoding",
+        "WordPiece",
+        "Token Efficiency",
+        "Vocabulary Optimization"
+      ]
+    },
+    {
+      "rule_id": "AI-LLM-003",
+      "rule_name": "Context Window Management and KV Cache Optimization",
+      "category": "Inference Performance",
+      "severity": "High",
+      "explanation": "Failing to manage token context windows and Key-Value (KV) cache memory leads to out-of-memory errors and excessive latency during long text generation.",
+      "do": "Optimize context window allocation, implement sliding-window attention or efficient KV caching strategies, and prune redundant conversational history before feeding prompts to LLMs.",
+      "dont": "Do not dump unbounded historical message logs directly into model context limits without truncation or summarization wrappers.",
+      "ats_keywords": [
+        "Context Window",
+        "KV Cache Optimization",
+        "Sliding-Window Attention",
+        "Inference Latency",
+        "Memory Management"
+      ]
+    },
+    {
+      "rule_id": "AI-LLM-004",
+      "rule_name": "Model Decoding Parameters and Temperature Tuning",
+      "category": "Inference Configuration",
+      "severity": "Medium",
+      "explanation": "Using arbitrary or uncalibrated decoding hyperparameters (Temperature, Top-p, Top-k) results in either overly repetitive, robotic text or highly hallucinatory, erratic outputs.",
+      "do": "Tune decoding parameters systematically based on use case requirements: low temperature (0.0 - 0.2) for deterministic tasks (code, extraction) and moderate temperature (0.7 - 0.9) for creative synthesis.",
+      "dont": "Do not leave LLM generation parameters at uncalibrated default values across diverse production use cases.",
+      "ats_keywords": [
+        "Decoding Parameters",
+        "Temperature Tuning",
+        "Top-p Top-k Sampling",
+        "Deterministic Generation",
+        "Hallucination Control"
+      ]
+    }
+  ]
+}

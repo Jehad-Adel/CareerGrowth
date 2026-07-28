@@ -51,6 +51,8 @@ Recommended resources:
 - Return resource or platform names only (e.g. "FastAPI Official
   Docs", "SQLBolt", "Docker Docs", "Kaggle", "Coursera").
 - Never return URLs.
+- If you cannot name real ones with confidence, return fewer, or an
+  empty list. Never invent a resource to reach the count.
 
 Project to practice:
 - Generate exactly one realistic, scoped project idea per skill (e.g.

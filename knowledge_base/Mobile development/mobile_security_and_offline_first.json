@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Mobile Development",
+    "file_name": "mobile_security_and_offline_first.json",
+    "target_features": [
+      "Mobile_Analyzer",
+      "Security_Offline_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "OWASP Mobile Application Security Verification Standard",
+      "Offline-First Architecture & Local Persistence Patterns"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "MOB-SEC-001",
+      "rule_name": "Secure Local Storage and Sensitive Data Encryption",
+      "category": "Mobile Security",
+      "severity": "Critical",
+      "explanation": "Storing authentication tokens, passwords, or sensitive user PII in plaintext SharedPreferences or unencrypted SQLite databases exposes data to device compromise.",
+      "do": "Store sensitive tokens and credentials securely using encrypted key-value stores (e.g., EncryptedSharedPreferences, iOS Keychain) and encrypt local databases using SQLCipher.",
+      "dont": "Do not store plaintext sensitive credentials or encryption keys in standard, unencrypted local storage files.",
+      "ats_keywords": [
+        "Encrypted Storage",
+        "iOS Keychain",
+        "EncryptedSharedPreferences",
+        "SQLCipher",
+        "OWASP MASVS"
+      ]
+    },
+    {
+      "rule_id": "MOB-SEC-002",
+      "rule_name": "Offline-First Data Persistence and Synchronization",
+      "category": "Offline Architecture",
+      "severity": "High",
+      "explanation": "Designing mobile apps that break or crash immediately when the device loses network connectivity degrades user experience severely.",
+      "do": "Implement an offline-first architecture using local databases (e.g., SQLite, Room, Hive) for persistent caching, paired with background synchronization queues when connectivity returns.",
+      "dont": "Do not rely exclusively on direct, synchronous network calls for core app features without local data fallback.",
+      "ats_keywords": [
+        "Offline-First",
+        "Local Persistence",
+        "Background Synchronization",
+        "Data Caching",
+        "Resilient Architecture"
+      ]
+    },
+    {
+      "rule_id": "MOB-SEC-003",
+      "rule_name": "Certificate Pinning and Secure Network Transport",
+      "category": "Network Security",
+      "severity": "High",
+      "explanation": "Failing to validate SSL certificates or implement certificate pinning allows attackers to execute Man-in-the-Middle (MitM) attacks and intercept API traffic.",
+      "do": "Enforce HTTPS for all network requests and implement certificate pinning to verify the server's cryptographic certificate directly inside the mobile app.",
+      "dont": "Do not accept self-signed certificates in production or disable TLS certificate validation checks.",
+      "ats_keywords": [
+        "Certificate Pinning",
+        "MitM Prevention",
+        "Secure Transport",
+        "SSL Validation",
+        "API Security"
+      ]
+    },
+    {
+      "rule_id": "MOB-SEC-004",
+      "rule_name": "API Key and Secrets Obfuscation in Mobile Binaries",
+      "category": "Binary Protection",
+      "severity": "Medium",
+      "explanation": "Embedding raw API keys or client secrets directly inside compiled mobile app binaries allows easy extraction via reverse engineering.",
+      "do": "Obfuscate release builds (e.g., ProGuard/R8 for Android), avoid hardcoding master backend secrets on client devices, and route sensitive operations through secure backend proxies.",
+      "dont": "Do not embed high-privilege master administrative API keys or database secrets directly into client-side source code.",
+      "ats_keywords": [
+        "Binary Obfuscation",
+        "ProGuard R8",
+        "Reverse Engineering Protection",
+        "Secret Obfuscation",
+        "Client Security"
+      ]
+    }
+  ]
+}

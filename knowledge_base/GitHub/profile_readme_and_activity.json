@@ -1,0 +1,77 @@
+{
+  "file_metadata": {
+    "category": "GitHub",
+    "file_name": "profile_readme_and_activity.json",
+    "target_features": [
+      "GitHub_Analyzer",
+      "Profile_README_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "GitHub Official Profile README Documentation",
+      "Developer Personal Branding Optimization Frameworks"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "GHB-PRF-001",
+      "rule_name": "Special Profile README Customization",
+      "category": "Personal Branding",
+      "severity": "High",
+      "explanation": "Creating a repository matching your username activates a special Profile README that acts as a developer landing page for visiting tech leads and recruiters.",
+      "do": "Include a brief intro, technical stack badges, current project focus, contact links, and dynamic GitHub stats widgets.",
+      "dont": "Do not leave the special profile repository uncreated or filled only with default template placeholders.",
+      "ats_keywords": [
+        "Profile README",
+        "Landing Page",
+        "Tech Stack Badges",
+        "Developer Branding"
+      ]
+    },
+    {
+      "rule_id": "GHB-PRF-002",
+      "rule_name": "Strategic Pinned Repositories Selection",
+      "category": "Portfolio Highlight",
+      "severity": "Critical",
+      "explanation": "GitHub allows pinning up to 6 key repositories on your main profile. These represent your highest engineering standards to anyone visiting your account.",
+      "do": "Pin your 4 to 6 best repositories that have full documentation, clean code, tests, and active commits.",
+      "dont": "Do not pin empty repositories, old high school hello-world tests, or fork-only repositories with no original code.",
+      "ats_keywords": [
+        "Pinned Repositories",
+        "Showcase Repos",
+        "Best Work Focus",
+        "First Impression"
+      ]
+    },
+    {
+      "rule_id": "GHB-PRF-003",
+      "rule_name": "Consistent Commit Activity and Green Graph",
+      "category": "Engineering Discipline",
+      "severity": "Medium",
+      "explanation": "A steady contribution graph signals continuous learning, discipline, and regular engagement with version control systems.",
+      "do": "Maintain steady, authentic coding activity across open-source contributions, personal projects, or private work graphs.",
+      "dont": "Do not go dormant for months at a time or rely on fake commit-generator scripts to pad the contribution matrix.",
+      "ats_keywords": [
+        "Contribution Graph",
+        "Commit Consistency",
+        "Continuous Development",
+        "Engineering Habit"
+      ]
+    },
+    {
+      "rule_id": "GHB-PRF-004",
+      "rule_name": "Active Open Source and Public Engagement",
+      "category": "Community Contribution",
+      "severity": "Low",
+      "explanation": "Contributing pull requests, reporting issues, or reviewing code in community repositories demonstrates collaboration readiness.",
+      "do": "Participate in open-source discussions, issue triage, or pull requests in relevant industry tools/frameworks.",
+      "dont": "Do not treat GitHub purely as a passive cloud backup drive without utilizing its collaborative social features.",
+      "ats_keywords": [
+        "Open Source PRs",
+        "Community Triage",
+        "Collaboration Readiness",
+        "Issue Engagement"
+      ]
+    }
+  ]
+}

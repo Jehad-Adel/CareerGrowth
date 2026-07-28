@@ -73,6 +73,7 @@ Still planned, per phase:
 - `roadmaps` + `roadmap_steps` — phase 5
 - `interview_sessions` + `interview_turns` — phase 6
 - `chat_messages`, `documents` + `document_chunks` (pgvector, HNSW) — **shipped** (phase 7)
+- `knowledge_chunks` (pgvector, HNSW) — **shipped**. The curated `knowledge_base/` corpus: ATS rules, CV writing guidance, per-track roadmaps. The one table with **no `profile_id`**, because it belongs to nobody — it is editorial content, identical for every user, written only by `python -m app.cli.ingest_knowledge` and never by a request. Retrieval against it therefore does not filter by profile. RLS still applies.
 
 ## Build status
 
@@ -88,7 +89,7 @@ Original plan sequenced the frontend at step 4; it was **brought forward** to a 
 | 5 | Roadmap | ✅ Done (phase 5). Steps persist; completing one emits `goal_completed` and grows the farm. |
 | 6 | Job Match · Skill Gap · Resume Optimizer | ✅ Done (phase 4). All three read CV text from the profile, never the request. |
 | 7 | Interview Coach | ✅ Done (phase 6). Stateful multi-turn; history rebuilt server-side, never accepted from the client. |
-| 8 | Career Chat | ✅ Done (phase 7). pgvector RAG; retrieval filtered by profile in SQL, not after top-k. |
+| 8 | Career Chat | ✅ Done (phase 7). pgvector RAG; retrieval filtered by profile in SQL, not after top-k. Two separate retrievals: the person's own documents, plus the shared curated corpus, ranked independently so general guidance cannot evict the document the question was about. |
 
 Every page now reads from the real API. The mock data layer has been deleted.
 

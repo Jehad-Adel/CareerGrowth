@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Embedded",
+    "file_name": "rtos_and_testing.json",
+    "target_features": [
+      "Embedded_Analyzer",
+      "RTOS_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "FreeRTOS Kernel Official Reference Manual",
+      "Embedded Software Testing Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "EMB-RTS-001",
+      "rule_name": "RTOS Task Design and Priority Management",
+      "category": "Real-Time OS",
+      "severity": "Critical",
+      "explanation": "In multi-tasking embedded applications, tasks must be broken down by periodicity and urgency with correct task priority assignments to prevent thread starvation.",
+      "do": "Define task priorities based on deadline criticality, use deterministic blocking mechanisms (vTaskDelayUntil), and structure tasks in modular infinite loops.",
+      "dont": "Do not create unmonitored busy-wait loops inside RTOS tasks or assign identical priorities without task slicing considerations.",
+      "ats_keywords": [
+        "FreeRTOS",
+        "Task Priority",
+        "Deterministic Scheduling",
+        "Real-Time Kernel",
+        "Preemptive Multitasking"
+      ]
+    },
+    {
+      "rule_id": "EMB-RTS-002",
+      "rule_name": "Inter-Task Communication and Synchronization",
+      "category": "Concurrency & Safety",
+      "severity": "Critical",
+      "explanation": "Sharing resources between RTOS tasks without proper synchronization causes race conditions, memory corruption, or priority inversion.",
+      "do": "Use Queues for message passing, Mutexes with priority inheritance for shared resource locking, and Semaphores for task synchronization.",
+      "dont": "Do not share global variables directly between tasks without atomic guards, critical sections, or mutex protection.",
+      "ats_keywords": [
+        "RTOS Queues",
+        "Mutex",
+        "Semaphore",
+        "Race Condition Guard",
+        "Priority Inversion"
+      ]
+    },
+    {
+      "rule_id": "EMB-RTS-003",
+      "rule_name": "Embedded Hardware Debugging Strategy",
+      "category": "Testing & Debugging",
+      "severity": "High",
+      "explanation": "Relying purely on serial print statements for embedded debugging is inefficient and disrupts real-time behavior. Standard hardware debuggers are mandatory.",
+      "do": "Utilize hardware debuggers (ST-Link, J-Link) with JTAG/SWD interfaces, breakpoints, memory inspection, and logic analyzers.",
+      "dont": "Do not rely exclusively on printf statements or LED blinking for complex embedded logic verification.",
+      "ats_keywords": [
+        "SWD / JTAG",
+        "ST-Link Debugging",
+        "Logic Analyzer",
+        "In-Circuit Emulation",
+        "Memory Inspection"
+      ]
+    },
+    {
+      "rule_id": "EMB-RTS-004",
+      "rule_name": "Hardware-in-the-Loop (HIL) and Unit Testing",
+      "category": "Embedded Testing",
+      "severity": "Medium",
+      "explanation": "Testing embedded software requires isolating logic using hardware abstraction layer mocks or executing automated tests on physical targets.",
+      "do": "Implement C/C++ unit testing frameworks (e.g., Unity, CppUTest) and mock hardware registers for host-side automated test execution.",
+      "dont": "Do not push embedded code to production or portfolio repositories without systematic unit testing or functional target validation.",
+      "ats_keywords": [
+        "Embedded Unit Testing",
+        "Unity Framework",
+        "Hardware Mocking",
+        "HIL Testing",
+        "CI/CD for Embedded"
+      ]
+    }
+  ]
+}

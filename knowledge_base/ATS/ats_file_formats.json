@@ -1,0 +1,75 @@
+{
+  "file_metadata": {
+    "category": "ATS",
+    "file_name": "ats_file_formats.json",
+    "target_features": [
+      "CV_Analyzer",
+      "ATS_Score",
+      "Resume_Optimizer",
+      "Hybrid_RAG"
+    ],
+    "source": "Jobscan PDF vs Word Guide"
+  },
+  "rules": [
+    {
+      "rule_id": "ATS-FMT-001",
+      "rule_name": "PDF vs DOCX Priority and Recommendation",
+      "category": "File Type Selection",
+      "severity": "Critical",
+      "explanation": "Tests show that most Applicant Tracking Systems read and parse PDF resumes more accurately than Word files, and PDFs guarantee format consistency across all devices. Modern ATS can read both, but .docx files sometimes suffer from formatting and special character parsing issues.",
+      "do": "Convert your Word resume to PDF before submitting, unless the job posting explicitly requests a .docx file.",
+      "dont": "Do not submit .docx files by default if PDF is supported, and never ignore specific file instructions in the job post.",
+      "ats_keywords": [
+        "PDF vs Word",
+        "ATS Accuracy",
+        "Special Characters Parsing",
+        "Format Preservation"
+      ]
+    },
+    {
+      "rule_id": "ATS-FMT-002",
+      "rule_name": "Follow Specific Recruiter Instructions",
+      "category": "Compliance",
+      "severity": "Critical",
+      "explanation": "If a employer, job description, or application portal specifies a required format (e.g., .docx only), failing to comply can cause automated rejection or manual disqualification.",
+      "do": "Carefully review the job posting and adhere strictly to any explicitly required file extension.",
+      "dont": "Do not override specific application instructions by sending an unrequested format.",
+      "ats_keywords": [
+        "Application Instructions",
+        "File Requirement",
+        "Portal Compliance",
+        "Recruiter Instructions"
+      ]
+    },
+    {
+      "rule_id": "ATS-FMT-003",
+      "rule_name": "Clear and Professional File Naming",
+      "category": "File Naming Standard",
+      "severity": "Medium",
+      "explanation": "Proper naming makes it easy for recruiters and systems to index, retrieve, and identify your resume document.",
+      "do": "Use a clear, structured file name such as 'FirstName_LastName_Resume.pdf'.",
+      "dont": "Do not use generic file names like 'Resume.pdf' or 'Resume Final'.",
+      "ats_keywords": [
+        "File Naming",
+        "Document Indexing",
+        "Professional Standard",
+        "Recruiter Retrieval"
+      ]
+    },
+    {
+      "rule_id": "ATS-FMT-004",
+      "rule_name": "Direct Recruiter Emailing Format",
+      "category": "Email Submission",
+      "severity": "High",
+      "explanation": "When sending a resume directly to a human hiring manager via email, formatting shifts in Word documents can distort design and layout depending on the recipient's software version.",
+      "do": "Attach a PDF version when emailing directly to ensure consistent layout, margins, and presentation.",
+      "dont": "Do not send raw editable documents via email if layout preservation is required.",
+      "ats_keywords": [
+        "Direct Emailing",
+        "Layout Consistency",
+        "Visual Presentation",
+        "Cross-Platform Compatibility"
+      ]
+    }
+  ]
+}

@@ -56,13 +56,36 @@ class RoadmapStep(UUIDPrimaryKey, Timestamps, Base):
     position: Mapped[int] = mapped_column(Integer, nullable=False)
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
+    # Why this step, and why here in the order, for this person specifically.
+    # Separate from `description` so the UI can show the plan and the argument
+    # for the plan independently.
+    reason: Mapped[str] = mapped_column(
+        Text, nullable=False, default="", server_default=""
+    )
+    # Beginner | Intermediate | Advanced, relative to the candidate's level.
+    difficulty: Mapped[str] = mapped_column(
+        String(20), nullable=False, default="Intermediate", server_default="Intermediate"
+    )
     skills_to_acquire: Mapped[list] = mapped_column(
         JSONType, nullable=False, default=list, server_default="[]"
     )
     prerequisite_skills: Mapped[list] = mapped_column(
         JSONType, nullable=False, default=list, server_default="[]"
     )
+    # Resource and platform *names*, never URLs — a hallucinated link is worse
+    # than no link, and there is no way to validate one at generation time.
+    recommended_resources: Mapped[list] = mapped_column(
+        JSONType, nullable=False, default=list, server_default="[]"
+    )
+    project_to_practice: Mapped[str] = mapped_column(
+        Text, nullable=False, default="", server_default=""
+    )
     estimated_months: Mapped[float] = mapped_column(Numeric(4, 1), nullable=False)
+    # Duration alone cannot say whether a step is an evening habit or a second
+    # job. Zero means the generation did not estimate it.
+    estimated_weekly_hours: Mapped[float] = mapped_column(
+        Numeric(4, 1), nullable=False, default=0, server_default="0"
+    )
     # todo | done
     status: Mapped[str] = mapped_column(
         String(20), nullable=False, default="todo", server_default="todo"

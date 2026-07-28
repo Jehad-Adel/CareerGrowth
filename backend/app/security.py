@@ -29,6 +29,7 @@ RLS_TABLES: frozenset[str] = frozenset(
         "chat_messages",
         "documents",
         "document_chunks",
+        "knowledge_chunks",
     }
 )
 

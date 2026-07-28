@@ -1,0 +1,77 @@
+{
+  "file_metadata": {
+    "category": "Portfolio",
+    "file_name": "portfolio_structure.json",
+    "target_features": [
+      "Portfolio_Analyzer",
+      "UX_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "GitHub Pages Developer Portfolio Best Practices",
+      "freeCodeCamp Technical Portfolio Guidelines"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "PTF-STR-001",
+      "rule_name": "Immediate Hero Section Value Proposition",
+      "category": "Layout & UX",
+      "severity": "Critical",
+      "explanation": "Visitors and recruiters decide whether to stay on a portfolio within the first 5 seconds. The Hero Section must clearly state your engineering discipline, core stack, and target role.",
+      "do": "Include a clear headline, concise intro statement (e.g., 'Embedded Systems & AI Engineer'), and primary Call-To-Action (Resume Download / Contact).",
+      "dont": "Do not leave the top banner ambiguous with vague inspirational quotes or missing technical titles.",
+      "ats_keywords": [
+        "Hero Section",
+        "Value Proposition",
+        "Headline Clarity",
+        "First Impression"
+      ]
+    },
+    {
+      "rule_id": "PTF-STR-002",
+      "rule_name": "Project Showcase Hierarchy",
+      "category": "Content Structure",
+      "severity": "Critical",
+      "explanation": "Portfolios should prioritize quality over quantity. Displaying 3-5 high-impact, fully documented projects is more effective than listing dozens of incomplete tutorials.",
+      "do": "Feature top 3-5 flagship projects with architecture diagrams, live demo links, source code, and key metrics.",
+      "dont": "Do not flood the showcase with basic course assignments or incomplete repositories without documentation.",
+      "ats_keywords": [
+        "Project Hierarchy",
+        "Flagship Projects",
+        "Live Demos",
+        "System Architecture"
+      ]
+    },
+    {
+      "rule_id": "PTF-STR-003",
+      "rule_name": "Responsive Design and Performance Optimization",
+      "category": "Technical Performance",
+      "severity": "High",
+      "explanation": "A slow or non-responsive portfolio creates a negative impression of your technical execution. Pages should load under 2 seconds and render cleanly on mobile.",
+      "do": "Ensure 100% mobile responsiveness, optimize image sizes, and maintain high performance (Lighthouse score > 90).",
+      "dont": "Do not use uncompressed heavy assets or broken layout grids on smaller screen sizes.",
+      "ats_keywords": [
+        "Mobile Responsiveness",
+        "Page Speed",
+        "Lighthouse Score",
+        "Clean UI"
+      ]
+    },
+    {
+      "rule_id": "PTF-STR-004",
+      "rule_name": "Direct Access to Resume and Contact Channels",
+      "category": "Accessibility",
+      "severity": "High",
+      "explanation": "Recruiters should never have to search for how to reach you or download your paper CV.",
+      "do": "Provide a prominent 'Download Resume' button (PDF) and active links to LinkedIn, GitHub, and professional Email in the header/footer.",
+      "dont": "Do not hide contact info behind complex contact forms without direct email fallback.",
+      "ats_keywords": [
+        "Resume Link",
+        "Contact Accessibility",
+        "Direct Channels",
+        "Recruiter Navigation"
+      ]
+    }
+  ]
+}

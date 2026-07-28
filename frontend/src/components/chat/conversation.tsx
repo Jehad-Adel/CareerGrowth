@@ -7,7 +7,7 @@ import { useFormStatus } from "react-dom";
 import { askQuestion, type ChatActionState } from "@/app/(app)/chat/actions";
 import { LogoMark } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
-import type { ChatMessageRecord } from "@/lib/services";
+import type { ChatMessageRecord, ChatSource } from "@/lib/services";
 import { cn } from "@/lib/utils";
 
 const SUGGESTIONS = [
@@ -34,6 +34,35 @@ function Bubble({
       )}
       <div className={cn("max-w-[80%]", muted && "opacity-60")}>{children}</div>
     </div>
+  );
+}
+
+function names(sources: ChatSource[]): string[] {
+  return [...new Set(sources.map((s) => s.label ?? s.kind))];
+}
+
+/**
+ * Where an answer came from.
+ *
+ * The two corpora are listed separately because they mean different things:
+ * the person's own documents are evidence about them, CareerFarm's guidance
+ * is not. Collapsing both into one "from:" list would let general advice read
+ * as something their CV said.
+ */
+function Attribution({ sources }: { sources: ChatSource[] }) {
+  // Sources without an origin predate guidance attribution, and everything
+  // stored back then came from the person's own documents.
+  const documents = names(sources.filter((s) => s.origin !== "guide"));
+  const guides = names(sources.filter((s) => s.origin === "guide"));
+
+  if (documents.length === 0 && guides.length === 0) return null;
+
+  return (
+    <p className="mt-1 px-1 font-mono text-[10px] text-muted-foreground">
+      {documents.length > 0 && <>from: {documents.join(", ")}</>}
+      {documents.length > 0 && guides.length > 0 && " · "}
+      {guides.length > 0 && <>guidance: {guides.join(", ")}</>}
+    </p>
   );
 }
 
@@ -138,9 +167,7 @@ export function Conversation({
                 {m.content}
               </div>
               {m.role === "assistant" && m.sources && m.sources.length > 0 ? (
-                <p className="mt-1 px-1 font-mono text-[10px] text-muted-foreground">
-                  from: {[...new Set(m.sources.map((s) => s.kind))].join(", ")}
-                </p>
+                <Attribution sources={m.sources} />
               ) : null}
             </Bubble>
           ))

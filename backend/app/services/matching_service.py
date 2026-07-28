@@ -120,6 +120,9 @@ def match_job(
     db.add(record)
     db.flush()
 
+    # `missing_skills` is derived from skill_matches, so this still seeds every
+    # unmatched requirement — including one matched only transferably, which
+    # the model reports as matched and therefore does not seed.
     _seed_missing_skills(
         db, profile_id, result.missing_skills, "job_match"  # type: ignore[attr-defined]
     )
@@ -135,7 +138,9 @@ def match_job(
         profile_id,
         "job_match",
         f"Job: {job_title or 'untitled'}\n\n{job_description}\n\n"
-        f"Match summary: {result.summary}",  # type: ignore[attr-defined]
+        f"Match summary: {result.summary}\n\n"  # type: ignore[attr-defined]
+        f"Screen likelihood {result.hiring_probability}%: "  # type: ignore[attr-defined]
+        f"{result.hiring_probability_reasoning}",  # type: ignore[attr-defined]
         record.id,
     )
 

@@ -1,0 +1,78 @@
+{
+  "file_metadata": {
+    "category": "LinkedIn",
+    "file_name": "profile_optimization.json",
+    "target_features": [
+      "LinkedIn_Analyzer",
+      "Profile_Scorer",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "LinkedIn Official Talent Solutions Guide",
+      "Jobscan LinkedIn Optimization Framework",
+      "Resume Worded Profile Reviewer"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "LKD-OPT-001",
+      "rule_name": "Complete All-Star Profile Criteria",
+      "category": "Profile Completeness",
+      "severity": "Critical",
+      "explanation": "LinkedIn's search algorithm boosts profiles that reach 'All-Star' status, making them up to 40 times more likely to receive contact from recruiters.",
+      "do": "Complete all mandatory sections: professional photo, custom banner, industry, location, current role/education, 5+ skills, and a minimum of 50 connections.",
+      "dont": "Do not leave core profile sections blank or without a designated industry and location.",
+      "ats_keywords": [
+        "All-Star Status",
+        "Profile Completeness",
+        "Algorithm Boost",
+        "Recruiter Visibility"
+      ]
+    },
+    {
+      "rule_id": "LKD-OPT-002",
+      "rule_name": "Professional Headshot and Custom Banner Standards",
+      "category": "Visual Identity",
+      "severity": "High",
+      "explanation": "Profiles with professional headshots receive up to 21 times more views and 9 times more connection requests. A custom banner reinforces field specialization.",
+      "do": "Use a clear, high-resolution front-facing headshot (face taking 60% of frame) and a banner matching your technical field (e.g., tech ecosystem, clean branding).",
+      "dont": "Do not use casual selfies, cropped group photos, low-quality graphics, or leave the default background banner.",
+      "ats_keywords": [
+        "Professional Headshot",
+        "Custom Banner",
+        "Visual Branding",
+        "Profile Impression"
+      ]
+    },
+    {
+      "rule_id": "LKD-OPT-003",
+      "rule_name": "Strategic Open to Work Visibility",
+      "category": "Recruiter Targeting",
+      "severity": "High",
+      "explanation": "Activating the 'Open to Work' feature specifically for recruiters increases inbound messages without making job-seeking public to current contacts if restricted.",
+      "do": "Configure target job titles, preferred locations (including remote options), and set visibility to 'Recruiters Only' or public frame based on preference.",
+      "dont": "Do not leave target titles empty or rely solely on passive profile presence without enabling recruiter signals.",
+      "ats_keywords": [
+        "Open to Work",
+        "Recruiter Signaling",
+        "Target Job Titles",
+        "Inbound Opportunities"
+      ]
+    },
+    {
+      "rule_id": "LKD-OPT-004",
+      "rule_name": "Custom Public URL Formatting",
+      "category": "URL Optimization",
+      "severity": "Medium",
+      "explanation": "A clean, customized LinkedIn URL makes the profile easily searchable and professional when linked in CVs and portfolios.",
+      "do": "Customize your public URL to follow the format 'linkedin.com/in/first-last' or 'first-last-tech'.",
+      "dont": "Do not keep the default URL containing random numbers and letters (e.g., 'john-doe-8b9a2113').",
+      "ats_keywords": [
+        "Custom URL",
+        "Clean Permalink",
+        "Professional Link",
+        "Shareable Profile"
+      ]
+    }
+  ]
+}

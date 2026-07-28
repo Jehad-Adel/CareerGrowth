@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Mobile Development",
+    "file_name": "mobile_testing_and_ci_cd_automation.json",
+    "target_features": [
+      "Mobile_Analyzer",
+      "Testing_Automation_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Mobile Testing & Automation Guidelines",
+      "Fastlane & Mobile CI/CD Best Practices"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "MOB-TST-001",
+      "rule_name": "Comprehensive Unit and Widget Testing Pyramid",
+      "category": "App Testing",
+      "severity": "Critical",
+      "explanation": "Releasing mobile applications without automated unit tests or widget tests results in frequent regressions and broken user interfaces after updates.",
+      "do": "Implement a robust testing pyramid: write thorough unit tests for business logic/ViewModels, widget/component tests for UI elements, and integration tests for core user flows.",
+      "dont": "Do not rely entirely on manual QA testing for complex mobile codebases and business logic.",
+      "ats_keywords": [
+        "Testing Pyramid",
+        "Unit Testing",
+        "Widget Testing",
+        "Integration Tests",
+        "Regression Prevention"
+      ]
+    },
+    {
+      "rule_id": "MOB-TST-002",
+      "rule_name": "Automated Mobile CI/CD Pipelines and Build Signing",
+      "category": "CI/CD Automation",
+      "severity": "High",
+      "explanation": "Compiling release binaries and managing provisioning profiles or keystores manually on local developer machines increases human error and security risks.",
+      "do": "Automate mobile build and deployment pipelines (e.g., using GitHub Actions, Bitrise) with secure, centralized management of signing certificates and keystores.",
+      "dont": "Do not store release signing keys in public repositories or generate production builds manually on local laptops.",
+      "ats_keywords": [
+        "Mobile CI/CD",
+        "Automated Builds",
+        "App Signing",
+        "Bitrise GitHub Actions",
+        "Release Automation"
+      ]
+    },
+    {
+      "rule_id": "MOB-TST-003",
+      "rule_name": "Automated Beta Distribution and Crash Reporting",
+      "category": "Release Management",
+      "severity": "High",
+      "explanation": "Releasing apps to production without staging beta tests or monitoring live crash reports leads to massive user churn during critical failures.",
+      "do": "Integrate automated beta distribution pipelines (e.g., TestFlight, Firebase App Distribution) and real-time crash reporting SDKs (e.g., Firebase Crashlytics, Sentry).",
+      "dont": "Do not push updates directly to production app stores without prior internal or closed beta testing phases.",
+      "ats_keywords": [
+        "Beta Distribution",
+        "TestFlight Firebase",
+        "Crash Reporting",
+        "Crashlytics Sentry",
+        "Staging Releases"
+      ]
+    },
+    {
+      "rule_id": "MOB-TST-004",
+      "rule_name": "UI Golden and Screenshot Testing for Visual Regressions",
+      "category": "Visual Quality",
+      "severity": "Medium",
+      "explanation": "Unintended visual changes, overlapping text, or broken layouts can slip into production without automated visual regression checks.",
+      "do": "Implement automated screenshot or golden tests to verify UI rendering consistency across different screen sizes and themes.",
+      "dont": "Do not skip visual validation checks when updating UI component libraries or design systems.",
+      "ats_keywords": [
+        "Golden Tests",
+        "Screenshot Testing",
+        "Visual Regression",
+        "UI Consistency",
+        "Layout Verification"
+      ]
+    }
+  ]
+}

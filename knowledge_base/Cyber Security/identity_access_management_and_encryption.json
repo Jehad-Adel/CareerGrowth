@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Cybersecurity",
+    "file_name": "identity_access_management_and_encryption.json",
+    "target_features": [
+      "Cybersecurity_Analyzer",
+      "IAM_Encryption_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "NIST Digital Identity Guidelines",
+      "Enterprise IAM & Cryptographic Best Practices"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "SEC-IAM-001",
+      "rule_name": "Multi-Factor Authentication (MFA) Enforcement",
+      "category": "Identity Management",
+      "severity": "Critical",
+      "explanation": "Relying solely on username and password authentication makes user accounts extremely vulnerable to credential stuffing and phishing attacks.",
+      "do": "Enforce Multi-Factor Authentication (MFA) across all administrative portals, cloud consoles, and user authentication systems.",
+      "dont": "Do not permit single-factor password authentication for privileged system accounts or administrative dashboards.",
+      "ats_keywords": [
+        "Multi-Factor Authentication",
+        "MFA Enforcement",
+        "Credential Security",
+        "Phishing Resistance",
+        "Identity Protection"
+      ]
+    },
+    {
+      "rule_id": "SEC-IAM-002",
+      "rule_name": "Role-Based Access Control (RBAC) and Least Privilege",
+      "category": "Access Control",
+      "severity": "Critical",
+      "explanation": "Assigning broad or wildcard permissions to users or services compromises access boundaries and violates security isolation.",
+      "do": "Implement fine-grained Role-Based Access Control (RBAC) or Attribute-Based Access Control (ABAC), assigning permissions based strictly on functional job needs.",
+      "dont": "Do not grant wildcard (*) permissions or overly broad access rights to general user roles.",
+      "ats_keywords": [
+        "Role-Based Access Control",
+        "RBAC Implementation",
+        "Least Privilege Principle",
+        "Access Boundaries",
+        "Permission Isolation"
+      ]
+    },
+    {
+      "rule_id": "SEC-IAM-003",
+      "rule_name": "Industry-Standard Cryptographic Algorithms and Key Management",
+      "category": "Cryptography",
+      "severity": "High",
+      "explanation": "Using deprecated encryption algorithms (e.g., MD5, SHA-1, DES) or hardcoding cryptographic keys weakens data confidentiality.",
+      "do": "Use modern cryptographic standards (e.g., AES-256 for symmetric encryption, RSA-2048+/ECDSA for asymmetric, SHA-256+ for hashing) and manage keys securely via dedicated key management services.",
+      "dont": "Do not implement custom cryptographic algorithms or use broken legacy hashing functions for sensitive data.",
+      "ats_keywords": [
+        "Cryptographic Standards",
+        "AES-256 Encryption",
+        "Key Management Service",
+        "Secure Hashing",
+        "Algorithm Security"
+      ]
+    },
+    {
+      "rule_id": "SEC-IAM-004",
+      "rule_name": "Token Expiration and Secure Token Revocation",
+      "category": "Session Security",
+      "severity": "Medium",
+      "explanation": "Issuing long-lived JWTs or API access tokens without expiration limits or revocation mechanisms increases exposure window if tokens are leaked.",
+      "do": "Configure short-lived access tokens paired with secure, revocable refresh tokens and implement token blacklist or revocation checks.",
+      "dont": "Do not issue permanent access tokens or JWTs that never expire without a secure renewal mechanism.",
+      "ats_keywords": [
+        "Token Expiration",
+        "JWT Security",
+        "Refresh Token Rotation",
+        "Session Revocation",
+        "Access Token Management"
+      ]
+    }
+  ]
+}

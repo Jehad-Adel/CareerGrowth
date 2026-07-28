@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Backend",
+    "file_name": "database_and_caching_strategies.json",
+    "target_features": [
+      "Backend_Analyzer",
+      "Database_Performance_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "PostgreSQL & MySQL Performance Tuning Documentation",
+      "Redis Distributed Caching Architecture Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "BE-DB-001",
+      "rule_name": "Database Indexing and Query Optimization",
+      "category": "Database Performance",
+      "severity": "Critical",
+      "explanation": "Missing index keys on frequently queried or joined columns leads to full table scans, causing severe latency spikes as data scales.",
+      "do": "Create targeted indexes (B-Tree, Hash, Composite) on columns used in WHERE, JOIN, and ORDER BY clauses while analyzing execution plans (EXPLAIN ANALYZE).",
+      "dont": "Do not execute unindexed queries across large tables or apply wildcards at the beginning of LIKE queries (%term).",
+      "ats_keywords": [
+        "Database Indexing",
+        "Query Optimization",
+        "EXPLAIN ANALYZE",
+        "Execution Plan",
+        "Full Table Scan Mitigation"
+      ]
+    },
+    {
+      "rule_id": "BE-DB-002",
+      "rule_name": "Prevention of N+1 Query Problem",
+      "category": "ORM Performance",
+      "severity": "Critical",
+      "explanation": "Executing a separate database query inside a loop for each child record in a relational collection (N+1 issue) degrades database performance exponentially.",
+      "do": "Use eager loading, JOIN FETCH, or prefetching strategies provided by ORMs to fetch related relational models in a single optimized query.",
+      "dont": "Do not iterate through parent entity arrays and fire individual child relation queries inside execution loops.",
+      "ats_keywords": [
+        "N+1 Query Problem",
+        "Eager Loading",
+        "Prefetching",
+        "ORM Optimization",
+        "Database Roundtrips"
+      ]
+    },
+    {
+      "rule_id": "BE-DB-003",
+      "rule_name": "ACID Transactions and Concurrency Guard",
+      "category": "Data Integrity",
+      "severity": "High",
+      "explanation": "Executing multi-step financial or critical business state modifications without atomicity causes partial writes and corrupted states during server crashes.",
+      "do": "Wrap related database mutations inside explicit ACID transactions with proper isolation levels and locking mechanisms (Optimistic/Pessimistic locking).",
+      "dont": "Do not perform interdependent database writes across multiple tables without transaction management rollback boundaries.",
+      "ats_keywords": [
+        "ACID Transactions",
+        "Database Rollback",
+        "Race Condition Guard",
+        "Optimistic Locking",
+        "Data Consistency"
+      ]
+    },
+    {
+      "rule_id": "BE-DB-004",
+      "rule_name": "Multi-Level Caching and Invalidation Patterns",
+      "category": "Caching Architecture",
+      "severity": "High",
+      "explanation": "Fetching frequently accessed static or slowly changing data directly from primary databases on every request wastes I/O throughput.",
+      "do": "Implement distributed memory caches (e.g., Redis, Memcached) with explicit Time-To-Live (TTL) expiration and write-through/cache-aside strategies.",
+      "dont": "Do not leave cached database entries without TTL settings or explicit cache invalidation mechanisms upon mutation events.",
+      "ats_keywords": [
+        "Redis Caching",
+        "Cache-Aside Pattern",
+        "TTL Management",
+        "Cache Invalidation",
+        "Database Offloading"
+      ]
+    }
+  ]
+}

@@ -44,8 +44,28 @@ def _match_result(**over) -> JobMatchResult:
     return JobMatchResult(
         **{
             "match_score": 62,
-            "matched_skills": ["Python"],
-            "missing_skills": ["Kubernetes", "Go"],
+            "hiring_probability": 55,
+            "hiring_probability_reasoning": "Strong Python, no infra.",
+            "skill_matches": [
+                {
+                    "job_skill": "Python",
+                    "requirement_level": "Required",
+                    "matched": True,
+                    "matched_via": "Python engineer",
+                },
+                {
+                    "job_skill": "Kubernetes",
+                    "requirement_level": "Required",
+                    "matched": False,
+                    "severity_if_missing": "Blocking",
+                },
+                {
+                    "job_skill": "Go",
+                    "requirement_level": "Preferred",
+                    "matched": False,
+                    "severity_if_missing": "Minor",
+                },
+            ],
             "strengths": ["Solid Python"],
             "weaknesses": ["No container experience"],
             "recommendations": ["Learn Kubernetes"],

@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Data Science",
+    "file_name": "statistical_analysis_and_hypothesis.json",
+    "target_features": [
+      "DataScience_Analyzer",
+      "Statistical_Inference_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Stanford Applied Statistics & Hypothesis Testing Guidelines",
+      "SciPy & Statsmodels Enterprise Inference Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "DS-STA-001",
+      "rule_name": "Formulation of Null and Alternative Hypotheses",
+      "category": "Hypothesis Testing",
+      "severity": "Critical",
+      "explanation": "Testing data without clear prior null (H0) and alternative (H1) hypotheses leads to p-hacking and false discovery rates.",
+      "do": "Explicitly state H0 and H1, choose the significance level (alpha = 0.05) beforehand, and verify underlying distributional assumptions (normality, homoscedasticity).",
+      "dont": "Do not run multiple uncalibrated statistical tests post-hoc to hunt for significant p-values.",
+      "ats_keywords": [
+        "Null Hypothesis",
+        "P-Value Calibration",
+        "Significance Level",
+        "P-Hacking Prevention",
+        "Statistical Inference"
+      ]
+    },
+    {
+      "rule_id": "DS-STA-002",
+      "rule_name": "Appropriate Test Selection Based on Data Distribution",
+      "category": "Test Selection",
+      "severity": "Critical",
+      "explanation": "Applying parametric tests (e.g., Student t-test) on heavily skewed or non-normal distributions distorts Type I error rates.",
+      "do": "Check parametric assumptions (e.g., Shapiro-Wilk test) and use non-parametric alternatives (e.g., Mann-Whitney U, Wilcoxon) when assumptions fail.",
+      "dont": "Do not blindly apply parametric t-tests or ANOVA without testing for normality and equal variances.",
+      "ats_keywords": [
+        "T-Test",
+        "Mann-Whitney U",
+        "ANOVA",
+        "Non-Parametric Testing",
+        "Normality Test"
+      ]
+    },
+    {
+      "rule_id": "DS-STA-003",
+      "rule_name": "Sample Size Calculation and Power Analysis",
+      "category": "Experiment Design",
+      "severity": "High",
+      "explanation": "Underpowered experiments fail to detect real effects, while overly large samples make trivial differences statistically significant without practical importance.",
+      "do": "Perform power analysis to compute required sample size based on Minimum Detectable Effect (MDE), statistical power (1-beta = 0.8), and significance level.",
+      "dont": "Do not terminate A/B tests early or evaluate experiments without calculating required statistical power.",
+      "ats_keywords": [
+        "Power Analysis",
+        "Sample Size Estimation",
+        "Minimum Detectable Effect",
+        "A/B Testing",
+        "Statistical Significance"
+      ]
+    },
+    {
+      "rule_id": "DS-STA-004",
+      "rule_name": "Confidence Interval Reporting and Effect Size",
+      "category": "Reporting",
+      "severity": "High",
+      "explanation": "P-values only indicate if an effect exists, not how large or practically meaningful the effect is in real-world applications.",
+      "do": "Report effect sizes (e.g., Cohen's d, Cramer's V) alongside 95% Confidence Intervals for all statistical outcomes.",
+      "dont": "Do not report p-values alone without accompanying effect sizes and confidence intervals.",
+      "ats_keywords": [
+        "Confidence Intervals",
+        "Effect Size",
+        "Cohen's d",
+        "Practical Significance",
+        "Inference Reporting"
+      ]
+    }
+  ]
+}

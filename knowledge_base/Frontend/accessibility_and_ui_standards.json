@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Frontend",
+    "file_name": "accessibility_and_ui_standards.json",
+    "target_features": [
+      "Frontend_Analyzer",
+      "Accessibility_UI_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "W3C WCAG 2.1 AA Accessibility Guidelines",
+      "MDN Web Responsive Design & Semantic HTML Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "FE-A11Y-001",
+      "rule_name": "WCAG 2.1 Compliance and Semantic HTML HTML5 Markup",
+      "category": "Accessibility",
+      "severity": "Critical",
+      "explanation": "Using generic non-semantic tags (e.g., clickable divs) breaks screen readers, keyboard navigation, and structural accessibility for users with disabilities.",
+      "do": "Use native HTML5 semantic tags (<main>, <nav>, <article>, <button>) and proper ARIA roles/labels when native elements are insufficient.",
+      "dont": "Do not attach click event listeners to un-focusable <div> or <span> elements without keyboard accessibility handlers and ARIA attributes.",
+      "ats_keywords": [
+        "WCAG 2.1 AA",
+        "Semantic HTML5",
+        "ARIA Roles",
+        "Screen Reader Support",
+        "Keyboard Accessibility"
+      ]
+    },
+    {
+      "rule_id": "FE-A11Y-002",
+      "rule_name": "Keyboard Navigation and Visual Focus States",
+      "category": "Accessibility",
+      "severity": "High",
+      "explanation": "Removing default visual outline indicators prevents power users and visually impaired individuals from navigating the site using keyboard controls.",
+      "do": "Ensure all interactive controls receive logical tab focus order (tabindex) and display high-contrast visible focus rings when focused.",
+      "dont": "Do not apply CSS rules like `outline: none` or `outline: 0` without providing a distinct custom focus indicator.",
+      "ats_keywords": [
+        "Keyboard Focus",
+        "Tab Navigation",
+        "Focus Outline",
+        "Interactive States",
+        "A11y Navigation"
+      ]
+    },
+    {
+      "rule_id": "FE-A11Y-003",
+      "rule_name": "Mobile-First Fluid Responsive Layouts",
+      "category": "Responsive Design",
+      "severity": "High",
+      "explanation": "Hardcoding fixed pixel widths causes horizontal scrollbars, clipped text, and broken layouts across mobile and tablet viewports.",
+      "do": "Adopt mobile-first CSS media queries, fluid sizing units (rem, em, vw, %), and modern layout models (CSS Grid, Flexbox).",
+      "dont": "Do not use fixed pixel widths for main containers or rely on hardcoded magic layout offsets that break on varying screen sizes.",
+      "ats_keywords": [
+        "Mobile-First Design",
+        "CSS Grid / Flexbox",
+        "Responsive Breakpoints",
+        "Fluid Sizing",
+        "Viewport Adaptation"
+      ]
+    },
+    {
+      "rule_id": "FE-A11Y-004",
+      "rule_name": "Design Token Consistency and Color Contrast Ratios",
+      "category": "Design System",
+      "severity": "Medium",
+      "explanation": "Low contrast text renders content unreadable, while inconsistent ad-hoc styling breaks visual continuity across application modules.",
+      "do": "Enforce minimum color contrast ratios (4.5:1 for normal text per WCAG AA) and centralize design variables using CSS custom properties or design tokens.",
+      "dont": "Do not hardcode arbitrary hexadecimal color values or use low-contrast text against light background elements.",
+      "ats_keywords": [
+        "Color Contrast Ratio",
+        "Design Tokens",
+        "CSS Custom Properties",
+        "Visual Consistency",
+        "Theme Tokens"
+      ]
+    }
+  ]
+}

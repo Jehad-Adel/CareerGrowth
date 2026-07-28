@@ -72,7 +72,35 @@ async function CvBody() {
                       ? "Not stated clearly enough to compute"
                       : `${cv.years_of_experience} years`}
                   </dd>
+                  {cv.employment_periods && cv.employment_periods.length > 0 && (
+                    // Shown because the number is computed, not reported: if
+                    // it looks wrong, the dates it was computed from are the
+                    // only way to see why.
+                    <dd className="mt-1.5 space-y-0.5 text-xs text-muted-foreground">
+                      {cv.employment_periods.map((p, i) => (
+                        <div key={`${p.company ?? "role"}-${i}`}>
+                          {p.start_date ?? "?"} –{" "}
+                          {p.is_current ? "now" : (p.end_date ?? "?")}
+                          {p.title ? ` · ${p.title}` : ""}
+                          {p.company ? ` @ ${p.company}` : ""}
+                        </div>
+                      ))}
+                    </dd>
+                  )}
                 </div>
+                {typeof cv.extraction_confidence === "number" &&
+                  cv.extraction_confidence < 80 && (
+                    <div>
+                      <dt className="text-muted-foreground">
+                        Extraction confidence
+                      </dt>
+                      {/* Only surfaced when it is low. A confident reading is
+                          the expected case and does not need a number. */}
+                      <dd className="text-[var(--harvest)]">
+                        {cv.extraction_confidence}% — check the fields above
+                      </dd>
+                    </div>
+                  )}
               </dl>
             </section>
           ) : null}

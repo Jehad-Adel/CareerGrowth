@@ -1,0 +1,80 @@
+{
+  "file_metadata": {
+    "category": "Backend",
+    "file_name": "api_design_and_architecture.json",
+    "target_features": [
+      "Backend_Analyzer",
+      "API_Architecture_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "OpenAPI v3 Specification Standards",
+      "Clean Architecture Framework by Robert C. Martin"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "BE-API-001",
+      "rule_name": "Standardized RESTful Naming and HTTP Status Codes",
+      "category": "API Design",
+      "severity": "Critical",
+      "explanation": "Inconsistent HTTP verbs, improper status code responses, or imperative endpoint paths break REST conventions and make client integration difficult.",
+      "do": "Use plural nouns for resource endpoints (e.g., /api/v1/users), standard HTTP verbs (GET, POST, PUT, DELETE), and explicit status codes (200, 201, 400, 401, 404, 500).",
+      "dont": "Do not use verbs in resource URIs (e.g., /api/getUserData) or return HTTP 200 OK status for response payloads containing explicit error messages.",
+      "ats_keywords": [
+        "RESTful API Design",
+        "OpenAPI",
+        "HTTP Status Codes",
+        "Resource Endpoints",
+        "API Versioning"
+      ]
+    },
+    {
+      "rule_id": "BE-API-002",
+      "rule_name": "Layered Architecture and Concern Separation",
+      "category": "Software Architecture",
+      "severity": "Critical",
+      "explanation": "Mixing database access, business logic, and HTTP request routing inside controller handlers creates tight coupling and breaks testability.",
+      "do": "Enforce strict separation between Controller/Routing layers, Service/Domain logic layers, and Repository/Data Access layers.",
+      "dont": "Do not write SQL queries or raw ORM calls directly inside request controller handlers.",
+      "ats_keywords": [
+        "Clean Architecture",
+        "Layered Architecture",
+        "Repository Pattern",
+        "Separation of Concerns",
+        "Dependency Injection"
+      ]
+    },
+    {
+      "rule_id": "BE-API-003",
+      "rule_name": "Unified Global Error Handling and Schema",
+      "category": "Error Management",
+      "severity": "High",
+      "explanation": "Uncaught exceptions leaking stack traces expose server internals, confuse API consumers, and create security vulnerabilities.",
+      "do": "Implement global exception middleware to catch errors, log stack traces securely server-side, and return standardized JSON error schemas.",
+      "dont": "Do not expose raw database errors or stack traces directly to API clients in production responses.",
+      "ats_keywords": [
+        "Global Exception Handler",
+        "Standardized Error Schema",
+        "Middleware Diagnostics",
+        "Secure Error Logging"
+      ]
+    },
+    {
+      "rule_id": "BE-API-004",
+      "rule_name": "Request Validation and DTO Enforcement",
+      "category": "Data Integrity",
+      "severity": "High",
+      "explanation": "Passing unvalidated request bodies directly to internal business logic or databases causes data corruption, type errors, and injection attacks.",
+      "do": "Validate incoming HTTP payloads at entry points using Data Transfer Objects (DTOs) with strict schema validation libraries (e.g., Pydantic, Zod, FluentValidation).",
+      "dont": "Do not trust incoming client payloads without verifying data types, field boundaries, and required keys.",
+      "ats_keywords": [
+        "Request Validation",
+        "DTO Pattern",
+        "Schema Enforcer",
+        "Input Sanitization",
+        "Payload Deserialization"
+      ]
+    }
+  ]
+}

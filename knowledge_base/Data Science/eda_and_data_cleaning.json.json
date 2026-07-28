@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Data Science",
+    "file_name": "eda_and_data_cleaning.json",
+    "target_features": [
+      "DataScience_Analyzer",
+      "EDA_Cleanliness_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Pandas & NumPy Enterprise Data Wrangling Standards",
+      "Harvard CS109 Exploratory Data Analysis Guidelines"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "DS-EDA-001",
+      "rule_name": "Systematic Missing Data Imputation Strategy",
+      "category": "Data Cleaning",
+      "severity": "Critical",
+      "explanation": "Dropping rows with missing values naively introduces bias, while improper imputation can alter distribution statistics.",
+      "do": "Analyze missingness mechanisms (MCAR, MAR, MNAR) and apply domain-aware imputation (e.g., median, KNN, iterative imputation) or create explicit missingness flags.",
+      "dont": "Do not drop all null rows indiscriminately or fill missing numerical values with arbitrary constant zeroes without statistical justification.",
+      "ats_keywords": [
+        "Missing Data Imputation",
+        "Data Wrangling",
+        "MAR/MCAR Analysis",
+        "KNN Imputer",
+        "Data Quality Assurance"
+      ]
+    },
+    {
+      "rule_id": "DS-EDA-002",
+      "rule_name": "Outlier Detection and Handling Protocol",
+      "category": "Data Cleaning",
+      "severity": "High",
+      "explanation": "Extreme outliers distort statistical summaries, mean-variance metrics, and regression trends if left unexamined.",
+      "do": "Identify outliers using robust statistical methods (e.g., IQR bounds, Z-score thresholds, Isolation Forests) and handle them appropriately via capping, transformation, or deletion.",
+      "dont": "Do not remove outliers blindly without investigating whether they represent valid extreme domain events or sensor errors.",
+      "ats_keywords": [
+        "Outlier Detection",
+        "IQR Bounds",
+        "Z-Score Analysis",
+        "Winsorization",
+        "Robust Statistics"
+      ]
+    },
+    {
+      "rule_id": "DS-EDA-003",
+      "rule_name": "Multivariate Distribution and Correlation Diagnostics",
+      "category": "Exploratory Analysis",
+      "severity": "High",
+      "explanation": "Univariate analysis alone fails to uncover multi-collinearity or hidden interaction effects between variables.",
+      "do": "Evaluate pairwise feature correlations (e.g., Pearson, Spearman), Variance Inflation Factor (VIF), and distribution skews prior to modeling.",
+      "dont": "Do not assume feature independence without verifying correlation matrices and collinearity metrics.",
+      "ats_keywords": [
+        "Correlation Matrix",
+        "Multicollinearity",
+        "VIF Score",
+        "Spearman Correlation",
+        "Exploratory Data Analysis"
+      ]
+    },
+    {
+      "rule_id": "DS-EDA-004",
+      "rule_name": "Automated Type Casting and Schema Validation",
+      "category": "Data Hygiene",
+      "severity": "Medium",
+      "explanation": "Operating on incorrectly parsed data types (e.g., dates stored as strings, numeric values as objects) leads to incorrect calculations and performance bottlenecks.",
+      "do": "Enforce explicit dtypes, parse dates accurately, and convert categorical string features to categorical memory-efficient structures early in ingestion.",
+      "dont": "Do not leave numerical or temporal variables stored as raw generic object columns in dataframes.",
+      "ats_keywords": [
+        "Data Type Casting",
+        "Schema Validation",
+        "Memory Optimization",
+        "Pandas Categoricals",
+        "Data Ingestion Integrity"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "file_metadata": {
+    "category": "Embedded",
+    "file_name": "embedded_project_standards.json",
+    "target_features": [
+      "Embedded_Analyzer",
+      "Firmware_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "MISRA C Embedded Software Guidelines",
+      "IEEE Embedded Systems Documentation Standards"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "EMB-STR-001",
+      "rule_name": "Hardware Schematic and Pinout Documentation",
+      "category": "Hardware Documentation",
+      "severity": "Critical",
+      "explanation": "Embedded projects cannot be evaluated without knowing the underlying hardware topology, pin configurations, and component connections.",
+      "do": "Include clear circuit schematics (Proteus, KiCad, or Fritzing) and a explicit pin mapping table in the documentation.",
+      "dont": "Do not present embedded firmware without detailing the microcontrollers, sensors, and actuators connected.",
+      "ats_keywords": [
+        "Circuit Schematic",
+        "Pinout Mapping",
+        "Hardware Topology",
+        "Component Wiring"
+      ]
+    },
+    {
+      "rule_id": "EMB-STR-002",
+      "rule_name": "Modular Layered Firmware Architecture (HAL/MCAL)",
+      "category": "Code Quality",
+      "severity": "Critical",
+      "explanation": "Writing monolithic embedded code inside main() limits portability and testability. Firmware should follow a layered architecture (MCAL, HAL, App layer).",
+      "do": "Separate hardware drivers, abstraction layers, and application logic into distinct modular C/C++ files.",
+      "dont": "Do not write entire embedded systems within a single main.c file or rely exclusively on high-level Arduino wrappers for professional engineering projects.",
+      "ats_keywords": [
+        "Modular C",
+        "Layered Architecture",
+        "HAL",
+        "MCAL",
+        "Driver Isolation"
+      ]
+    },
+    {
+      "rule_id": "EMB-STR-003",
+      "rule_name": "Resource Constraint and Memory Footprint Awareness",
+      "category": "Embedded Optimization",
+      "severity": "High",
+      "explanation": "Embedded microcontrollers have strict RAM/Flash limitations. Proper memory allocation and static allocation usage prevent stack overflows.",
+      "do": "Prefer static allocation over dynamic allocation (malloc/free) and document memory footprints (RAM/Flash usage).",
+      "dont": "Do not use unbounded recursion or unmonitored dynamic memory allocation in resource-constrained microcontrollers.",
+      "ats_keywords": [
+        "Memory Footprint",
+        "Static Allocation",
+        "Stack Overflow Prevention",
+        "RAM/Flash Usage"
+      ]
+    },
+    {
+      "rule_id": "EMB-STR-004",
+      "rule_name": "Interrupt Service Routine (ISR) Optimization",
+      "category": "Real-Time Execution",
+      "severity": "High",
+      "explanation": "Long-running operations inside an ISR block critical interrupts and break real-time deadlines.",
+      "do": "Keep ISRs short and deterministic by setting volatile flags or offloading work to main loops/OS tasks.",
+      "dont": "Do not execute blocking delay functions, heavy calculations, or serial prints inside interrupt routines.",
+      "ats_keywords": [
+        "ISR Optimization",
+        "Interrupt Latency",
+        "Volatile Flags",
+        "Deterministic Execution"
+      ]
+    }
+  ]
+}

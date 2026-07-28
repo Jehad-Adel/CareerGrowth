@@ -26,6 +26,7 @@ app/models/       SQLAlchemy 2 declarative
 app/schemas/      Pydantic request/response
 app/services/     business logic. Owns authorization by filtering on profile_id
 app/api/          routers. Validate, delegate, return. No logic.
+app/cli/          operator entry points. `python -m app.cli.ingest_knowledge`
 ```
 
 ## Layering
@@ -39,6 +40,7 @@ From Phase 3, `app/ai/` holds the LangChain chains and **only services import it
 - **Middleware order is asserted by a test.** `add_middleware` makes the last-added outermost; the stack is `CORS → SecurityHeaders → RequestContext → GlobalRateLimit`. Responses built in an inner layer must travel back out through the outer ones to get their headers.
 - **Unhandled exceptions are caught inside `RequestContextMiddleware.dispatch`**, not by the registered `Exception` handler — Starlette hoists that handler outside all user middleware, where the request-id ContextVar is already reset and no header can be attached.
 - **`GlobalRateLimitMiddleware` exists because slowapi's own middleware is inert here** (see ../AGENTS.md). Per-route limits use `@limiter.limit(...)` decorators, which do work.
+- **`knowledge_chunks` is the one table with no `profile_id`**, and `knowledge_service.retrieve` is the one retrieval that does not filter by owner. That is safe only because nothing user-supplied is ever written there — ingestion is a CLI over files in the repo, never a request. Do not add a write path from a route.
 - **`quota_service.consume()` runs before a chain invoke, never after.** A rejected call rolls back so repeated over-limit attempts cannot inflate the counter.
 - `profile_service.upsert_skills` matches case-insensitively and **only ever raises mastery** — a job-match pass must not demote what the CV established.
 - Growth events are append-only. Individual events are never updated or deleted; the whole log cascades away with its profile.

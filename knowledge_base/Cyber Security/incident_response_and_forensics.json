@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Cybersecurity",
+    "file_name": "incident_response_and_forensics.json",
+    "target_features": [
+      "Cybersecurity_Analyzer",
+      "Incident_Response_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "NIST SP 800-61 Incident Handling Guide",
+      "SANS Institute Incident Response Handbook"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "SEC-INC-001",
+      "rule_name": "Structured Incident Response Lifecycle (Preparation to Lessons Learned)",
+      "category": "Incident Management",
+      "severity": "Critical",
+      "explanation": "Responding to active security breaches in a chaotic, unstructured manner without a predefined playbook worsens system damage and extends downtime.",
+      "do": "Follow the standardized incident response lifecycle stages: Preparation, Containment, Eradication, Recovery, and Post-Incident Lessons Learned.",
+      "dont": "Do not improvise ad-hoc security patches or delete compromised system logs during an active breach.",
+      "ats_keywords": [
+        "Incident Response Lifecycle",
+        "Breach Containment",
+        "NIST SP 800-61",
+        "Security Playbook",
+        "Post-Incident Analysis"
+      ]
+    },
+    {
+      "rule_id": "SEC-INC-002",
+      "rule_name": "Digital Forensics Evidence Preservation and Chain of Custody",
+      "category": "Forensics",
+      "severity": "High",
+      "explanation": "Modifying, rebooting, or failing to preserve volatile memory and storage drives during an investigation destroys crucial forensic evidence.",
+      "do": "Capture memory dumps, preserve disk images securely, and maintain a strict Chain of Custody for all digital forensic artifacts.",
+      "dont": "Do not power off compromised physical servers or overwrite log files immediately without capturing forensic images.",
+      "ats_keywords": [
+        "Digital Forensics",
+        "Evidence Preservation",
+        "Chain of Custody",
+        "Memory Dumps",
+        "Forensic Artifacts"
+      ]
+    },
+    {
+      "rule_id": "SEC-INC-003",
+      "rule_name": "Rapid Threat Containment and Isolation",
+      "category": "Containment Strategy",
+      "severity": "High",
+      "explanation": "Allowing compromised network nodes or infected user accounts to remain online enables lateral movement across the internal network.",
+      "do": "Isolate infected hosts from the network immediately, revoke compromised session tokens, and disable compromised credentials upon threat detection.",
+      "dont": "Do not leave infected endpoints connected to internal network segments while investigating the root cause.",
+      "ats_keywords": [
+        "Threat Containment",
+        "Network Isolation",
+        "Lateral Movement Prevention",
+        "Credential Revocation",
+        "Endpoint Security"
+      ]
+    },
+    {
+      "rule_id": "SEC-INC-004",
+      "rule_name": "Post-Incident Root Cause Analysis and Remediation",
+      "category": "Post-Breach Review",
+      "severity": "Medium",
+      "explanation": "Closing a security incident without identifying the fundamental entry vector leaves the system vulnerable to identical recurring attacks.",
+      "do": "Conduct thorough Root Cause Analysis (RCA), document lessons learned, and patch the architectural or procedural vulnerabilities exploited.",
+      "dont": "Do not restore compromised systems from backups without closing or patching the vulnerability that allowed the initial intrusion.",
+      "ats_keywords": [
+        "Root Cause Analysis",
+        "RCA",
+        "Vulnerability Remediation",
+        "Security Hardening",
+        "Post-Incident Review"
+      ]
+    }
+  ]
+}

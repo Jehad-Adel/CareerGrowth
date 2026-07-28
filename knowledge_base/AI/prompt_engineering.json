@@ -1,0 +1,81 @@
+{
+  "file_metadata": {
+    "category": "Artificial Intelligence",
+    "file_name": "prompt_engineering.json",
+    "target_features": [
+      "AI_Analyzer",
+      "Prompt_Engineering_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "OpenAI & Anthropic Prompt Engineering Guidelines",
+      "Chain-of-Thought and ReAct Research Frameworks"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "AI-PRM-001",
+      "rule_name": "System Prompt Architecture and Explicit Role/Persona Framing",
+      "category": "Prompt Architecture",
+      "severity": "Critical",
+      "explanation": "Sending vague, unstructured instructions without a defined system persona or operational boundary increases model confusion, output drift, and susceptibility to prompt injection.",
+      "do": "Establish a robust system prompt that defines the exact role, domain expertise, behavioral boundaries, and tone before introducing user queries.",
+      "dont": "Do not rely on open-ended, ambiguous zero-shot prompts for complex, mission-critical domain applications.",
+      "ats_keywords": [
+        "System Prompt",
+        "Role Framing",
+        "Persona Definition",
+        "Operational Boundaries",
+        "Prompt Alignment"
+      ]
+    },
+    {
+      "rule_id": "AI-PRM-002",
+      "rule_name": "Few-Shot Prompting and In-Context Learning Demonstrations",
+      "category": "In-Context Learning",
+      "severity": "High",
+      "explanation": "Expecting large language models to consistently follow intricate output formatting or complex domain rules via zero-shot instructions often results in structural parsing failures.",
+      "do": "Utilize Few-Shot prompting by embedding 2 to 5 highly representative, diverse input-output example pairs directly within the prompt context to guide target schema generation.",
+      "dont": "Do not use zero-shot instructions when demanding rigid JSON schemas, specialized classifications, or non-standard syntax formatting.",
+      "ats_keywords": [
+        "Few-Shot Prompting",
+        "In-Context Learning",
+        "Example demonstrations",
+        "Zero-Shot Fallback",
+        "Schema Consistency"
+      ]
+    },
+    {
+      "rule_id": "AI-PRM-003",
+      "rule_name": "Chain-of-Thought (CoT) and Step-by-Step Reasoning Elicitation",
+      "category": "Advanced Reasoning",
+      "severity": "High",
+      "explanation": "Forcing LLMs to output immediate final answers for complex multi-step mathematical, logical, or architectural problems significantly spikes reasoning errors and hallucinations.",
+      "do": "Implement Chain-of-Thought (CoT) prompting techniques (e.g., instructing the model to 'think step-by-step' or providing structured reasoning scratchpads) to break complex problems into sequential logical evaluations.",
+      "dont": "Do not demand instantaneous final conclusions for multi-layered reasoning tasks without allowing intermediate reasoning steps.",
+      "ats_keywords": [
+        "Chain-of-Thought",
+        "CoT Prompting",
+        "Step-by-Step Reasoning",
+        "Hallucination Reduction",
+        "Logical Evaluation"
+      ]
+    },
+    {
+      "rule_id": "AI-PRM-004",
+      "rule_name": "Delimited Context Separation and Structured Output Parsing",
+      "category": "Formatting & Security",
+      "severity": "Medium",
+      "explanation": "Mixing instructions, reference data, and user input into a single text block without clear structural delimiters leads to context bleed and makes automated parsing fragile.",
+      "do": "Use explicit Markdown delimiters, XML tags (e.g., `<context>`, `<instructions>`, `<user_input>`), or structured JSON wrappers to strictly isolate reference data from operational instructions.",
+      "dont": "Do not concatenate raw user inputs directly with system instructions without distinct delimiters or structural boundaries.",
+      "ats_keywords": [
+        "XML Delimiters",
+        "Context Separation",
+        "Structured Formatting",
+        "Prompt Injection Defense",
+        "Output Parsing"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "file_metadata": {
+    "category": "Machine Learning",
+    "file_name": "evaluation_and_metrics.json",
+    "target_features": [
+      "ML_Analyzer",
+      "Model_Evaluation_Evaluator",
+      "Hybrid_RAG"
+    ],
+    "primary_sources": [
+      "Google Machine Learning Evaluation Standards",
+      "Stanford CS229 Applied ML Assessment Guidelines"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "ML-EVA-001",
+      "rule_name": "Metric Selection Alignment with Business/Domain Goal",
+      "category": "Metric Optimization",
+      "severity": "Critical",
+      "explanation": "Selecting generic metrics like Accuracy often obscures model failure in domain-specific tasks (e.g., medical diagnosis where False Negatives are costly).",
+      "do": "Align evaluation metrics with the application domain (e.g., Recall/F1-Score for anomaly detection, MAE/RMSE for regression, PR-AUC for heavy imbalance).",
+      "dont": "Do not rely on Accuracy as the sole evaluation metric for non-symmetrical classification problems.",
+      "ats_keywords": [
+        "Domain Metric Alignment",
+        "Precision-Recall Tradeoff",
+        "F1-Score",
+        "ROC-AUC",
+        "Cost-Sensitive Metrics"
+      ]
+    },
+    {
+      "rule_id": "ML-EVA-002",
+      "rule_name": "Overfitting Mitigation and Generalization Verification",
+      "category": "Model Robustness",
+      "severity": "Critical",
+      "explanation": "A high training accuracy coupled with degraded test performance indicates severe overfitting, rendering the model unusable on unseen real-world data.",
+      "do": "Utilize Cross-Validation (e.g., K-Fold / Stratified K-Fold), regularization (L1/L2, Dropout), and early stopping while monitoring train vs. validation loss curves.",
+      "dont": "Do not evaluate models only on training data or report performance without cross-validation bounds.",
+      "ats_keywords": [
+        "Overfitting Detection",
+        "Cross-Validation",
+        "Loss Curves",
+        "Regularization",
+        "Generalization Gap"
+      ]
+    },
+    {
+      "rule_id": "ML-EVA-003",
+      "rule_name": "Systematic Confusion Matrix and Error Analysis",
+      "category": "Error Diagnostic",
+      "severity": "High",
+      "explanation": "Quantitative score summaries do not reveal specific edge cases or systematic failure modes where the model struggles.",
+      "do": "Perform qualitative error analysis by examining the Confusion Matrix and inspecting misclassified samples to identify data quality or feature gaps.",
+      "dont": "Do not stop evaluation at top-level metrics without analyzing class-level false positives and false negatives.",
+      "ats_keywords": [
+        "Confusion Matrix",
+        "Error Analysis",
+        "False Positive Diagnostics",
+        "Failure Mode Analysis"
+      ]
+    },
+    {
+      "rule_id": "ML-EVA-004",
+      "rule_name": "Hyperparameter Tuning Transparency",
+      "category": "Experimentation",
+      "severity": "Medium",
+      "explanation": "Hyperparameters tuned manually without structured search strategies lead to sub-optimal model performance and non-reproducible benchmarks.",
+      "do": "Document search strategies (GridSearchCV, RandomizedSearchCV, Optuna) along with selected optimal parameter configurations.",
+      "dont": "Do not leave default hyperparameters unadjusted without documenting search space exploration.",
+      "ats_keywords": [
+        "Hyperparameter Tuning",
+        "Optuna",
+        "GridSearchCV",
+        "Search Space Optimization"
+      ]
+    }
+  ]
+}
