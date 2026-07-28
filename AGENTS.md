@@ -67,4 +67,5 @@ Project ref `jumsfxzsqvczdevquokk`, region `eu-north-1`.
 
 ## Known, accepted issues
 
-- `npm audit` reports 5 vulnerabilities (3 high, 2 moderate) in `sharp`/libvips, transitive under `next@16.2.11`. `npm audit fix --force` downgrades to `next@9` — do not run it. Track the Next patch release. (Was 6; the `postcss` finding has since been resolved upstream.)
+- `npm audit --omit=dev` reports 3 high findings — `sharp`/libvips and `postcss` — all transitive under `next@16.2.11`. `npm audit fix --force` downgrades to `next@9` — do not run it. `next@16.2.12` (current latest) is still inside the advisory range, so there is no upgrade path yet; track the next patch release. CI's `audit` job is `continue-on-error` for exactly this reason: it surfaces a genuinely new finding without blocking merges.
+- **`shadcn` is a CLI, so it belongs in `devDependencies`.** It pulls `@modelcontextprotocol/sdk` → `@hono/node-server`, which added a moderate advisory of its own; as a prod dependency that noise lands in the `--omit=dev` audit for a package that never ships to the client.
