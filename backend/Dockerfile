@@ -50,8 +50,11 @@ USER appuser
 
 EXPOSE 8000
 
-# Railway injects $PORT, so the command has to go through a shell to expand
-# it — but `exec` hands uvicorn PID 1, so SIGTERM on redeploy reaches the app
-# instead of stopping at a shell that ignores it. The bare shell form would
-# swallow it and every deploy would end in a 10-second SIGKILL.
+# $PORT has to expand, so this goes through a shell — and `exec` hands uvicorn
+# PID 1, so a SIGTERM reaches the app instead of stopping at a shell that
+# ignores it. This is the path for local `docker run`; on Railway it is dead
+# code, because railway.json's `startCommand` overrides CMD. Do not copy the
+# `sh -c` / `exec` shape into that field: Railway parses `startCommand` as
+# argv, not through a shell, so a leading `exec` is read as the executable
+# and the container dies with "The executable `exec` could not be found."
 CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*'"]

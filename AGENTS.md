@@ -69,6 +69,7 @@ Project ref `jumsfxzsqvczdevquokk`, region `eu-north-1`.
 
 - **The Docker build context is the repo root, not `backend/`.** `railway.json` sets `dockerfilePath: backend/Dockerfile`, which selects the file but leaves the context where it was. Every `COPY` in the Dockerfile is therefore written `backend/...`, and a plain `docker build .` from inside `backend/` fails on the first one. Build it the way Railway does: `docker build -f backend/Dockerfile .` from the repo root.
 - **`.dockerignore` must live next to the *context*, so it belongs at the repo root.** The one that used to sit in `backend/` was silently inert: the whole repo — `frontend/node_modules`, `.git`, and the real `.env` — was being uploaded to the builder on every deploy. Do not re-add one under `backend/`.
+- **`railway.json`'s `startCommand` overrides the image's `CMD`, and Railway parses it as argv — not through a shell.** `$PORT` still expands because Railway interpolates it itself, so `uvicorn` runs as PID 1 and gets SIGTERM directly. Do not carry the Dockerfile's `sh -c` / `exec` wrapper into that field: a leading `exec` is taken as the executable and the deploy dies at container creation with ``The executable `exec` could not be found.``
 - `knowledge_base/` is deliberately not in the image. Ingestion is an operator CLI run against the database from a checkout, never from the deployed container.
 
 ## Known, accepted issues
