@@ -224,7 +224,11 @@ async function RoadmapBody({
                     {step.skills_to_acquire.length > 0 ? (
                       <div className="mt-3 flex flex-wrap gap-1.5">
                         {step.skills_to_acquire.map((s) => (
-                          <Badge key={s} variant="secondary">
+                          <Badge
+                            key={s}
+                            variant="secondary"
+                            className="whitespace-normal text-left h-auto max-w-full py-1 leading-relaxed break-words"
+                          >
                             {s}
                           </Badge>
                         ))}

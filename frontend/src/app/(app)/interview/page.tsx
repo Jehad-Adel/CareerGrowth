@@ -195,7 +195,7 @@ async function InterviewBody({
                       <span className="font-mono text-xs text-muted-foreground">
                         Q{idx + 1}
                       </span>
-                      <p className="text-sm font-semibold text-foreground">{turn.question}</p>
+                      <p className="text-sm font-semibold text-foreground break-words">{turn.question}</p>
                     </div>
                     {turn.score !== null ? (
                       <Badge variant="outline" className="shrink-0 font-mono text-xs text-primary border-primary/30 bg-primary/5">
@@ -203,7 +203,7 @@ async function InterviewBody({
                       </Badge>
                     ) : null}
                   </div>
-                  <p className="mt-3 whitespace-pre-wrap rounded-xl bg-muted/60 border px-4 py-3 text-sm text-foreground">
+                  <p className="mt-3 whitespace-pre-wrap break-words rounded-xl bg-muted/60 border px-4 py-3 text-sm text-foreground">
                     {turn.answer}
                   </p>
 
@@ -229,7 +229,11 @@ async function InterviewBody({
                             <p className="font-medium text-foreground mb-1.5">Weak spots</p>
                             <div className="flex flex-wrap gap-1.5">
                               {turn.feedback.weaknesses.map((w) => (
-                                <Badge key={w} variant="secondary" className="text-[11px] font-normal">
+                                <Badge
+                                  key={w}
+                                  variant="secondary"
+                                  className="text-[11px] font-normal whitespace-normal text-left h-auto max-w-full py-1 leading-relaxed break-words"
+                                >
                                   {w}
                                 </Badge>
                               ))}
@@ -243,7 +247,11 @@ async function InterviewBody({
                             </p>
                             <div className="flex flex-wrap gap-1.5">
                               {turn.feedback.missing_concepts.map((c) => (
-                                <Badge key={c} variant="outline" className="text-[11px] font-normal border-amber-500/30 text-amber-600 dark:text-amber-400">
+                                <Badge
+                                  key={c}
+                                  variant="outline"
+                                  className="text-[11px] font-normal border-amber-500/30 text-amber-600 dark:text-amber-400 whitespace-normal text-left h-auto max-w-full py-1 leading-relaxed break-words"
+                                >
                                   {c}
                                 </Badge>
                               ))}
@@ -259,13 +267,13 @@ async function InterviewBody({
               {open ? (
                 <section className="rounded-2xl border border-primary/40 bg-card p-6">
                   <div className="flex items-start justify-between gap-3">
-                    <p className="text-base">{open.question}</p>
+                    <p className="text-base break-words">{open.question}</p>
                     {open.difficulty ? (
                       <Badge variant="outline">{open.difficulty}</Badge>
                     ) : null}
                   </div>
                   {open.expected_topics.length > 0 ? (
-                    <p className="mt-2 text-xs text-muted-foreground">
+                    <p className="mt-2 text-xs text-muted-foreground break-words">
                       A strong answer touches: {open.expected_topics.join(", ")}
                     </p>
                   ) : null}
@@ -295,7 +303,7 @@ async function InterviewBody({
                   <p className="text-sm font-medium">
                     {evaluation.hiring_recommendation}
                   </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
+                  <p className="mt-1 text-xs text-muted-foreground break-words">
                     {evaluation.summary}
                   </p>
                 </div>
@@ -312,7 +320,11 @@ async function InterviewBody({
               {evaluation.weak_areas.length > 0 ? (
                 <div className="mt-4 flex flex-wrap gap-1.5">
                   {evaluation.weak_areas.map((a) => (
-                    <Badge key={a} variant="outline">
+                    <Badge
+                      key={a}
+                      variant="outline"
+                      className="whitespace-normal text-left h-auto max-w-full py-1 leading-relaxed break-words"
+                    >
                       {a}
                     </Badge>
                   ))}

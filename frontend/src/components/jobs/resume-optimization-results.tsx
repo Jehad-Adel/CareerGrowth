@@ -135,7 +135,11 @@ export function ResumeOptimizationResultsView({
           </h4>
           <div className="flex flex-wrap gap-1.5">
             {result.missing_information.map((info, idx) => (
-              <Badge key={idx} variant="outline" className="border-amber-500/30 text-amber-600 dark:text-amber-400 py-1">
+              <Badge
+                key={idx}
+                variant="outline"
+                className="border-amber-500/30 text-amber-600 dark:text-amber-400 py-1 whitespace-normal text-left h-auto max-w-full leading-relaxed break-words"
+              >
                 {info}
               </Badge>
             ))}

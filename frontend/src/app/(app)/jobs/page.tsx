@@ -141,6 +141,7 @@ function SkillBreakdown({ result }: { result: JobMatchResult }) {
               <Badge
                 key={m.job_skill}
                 variant={m.is_transferable_match ? "outline" : "secondary"}
+                className="whitespace-normal text-left h-auto max-w-full py-1 leading-relaxed break-words"
                 // The transferable case is the one worth explaining: it looks
                 // like a match and is only close enough to argue for.
                 title={

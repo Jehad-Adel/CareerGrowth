@@ -22,9 +22,9 @@ function List({
   return (
     <ul className="space-y-2.5">
       {items.map((text) => (
-        <li key={text} className="flex gap-2.5 text-sm">
+        <li key={text} className="flex gap-2.5 text-sm break-words">
           <span className="mt-0.5 shrink-0">{icon}</span>
-          {text}
+          <span className="break-words">{text}</span>
         </li>
       ))}
     </ul>
@@ -124,7 +124,11 @@ async function CvBody() {
                 <p className="text-sm text-muted-foreground">{cv.summary}</p>
                 <div className="mt-4 flex flex-wrap gap-1.5">
                   {cv.skills.map((skill) => (
-                    <Badge key={skill} variant="secondary">
+                    <Badge
+                      key={skill}
+                      variant="secondary"
+                      className="whitespace-normal text-left h-auto max-w-full py-1 leading-relaxed break-words"
+                    >
                       {skill}
                     </Badge>
                   ))}
