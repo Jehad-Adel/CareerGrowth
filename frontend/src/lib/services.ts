@@ -251,6 +251,12 @@ export const getFarmData = (): Promise<Farm> => serverFetch<Farm>("/farm");
 export const getRoadmapData = (): Promise<RoadmapRecord | null> =>
   serverFetch<RoadmapRecord | null>("/roadmap");
 
+export const getRoadmapHistory = (): Promise<RoadmapRecord[]> =>
+  serverFetch<RoadmapRecord[]>("/roadmap/history");
+
+export const getRoadmapById = (id: string): Promise<RoadmapRecord | null> =>
+  serverFetch<RoadmapRecord | null>(`/roadmap/${id}`);
+
 /** One round trip. Five separate calls would each pay for auth and a JWKS check. */
 export const getDashboardData = (): Promise<Dashboard> =>
   serverFetch<Dashboard>("/dashboard");
@@ -306,6 +312,14 @@ export type InterviewSessionRecord = {
 
 export const getLatestInterview = (): Promise<InterviewSessionRecord | null> =>
   serverFetch<InterviewSessionRecord | null>("/interview/latest");
+
+export const getInterviewSessions = (): Promise<InterviewSessionRecord[]> =>
+  serverFetch<InterviewSessionRecord[]>("/interview/sessions");
+
+export const getInterviewSession = (
+  id: string,
+): Promise<InterviewSessionRecord | null> =>
+  serverFetch<InterviewSessionRecord | null>(`/interview/sessions/${id}`);
 
 // --- Career Chat ---
 

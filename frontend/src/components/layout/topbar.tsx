@@ -19,7 +19,7 @@ export function Topbar({ profile }: { profile: Profile }) {
   const pct = Math.round((profile.xp / profile.xpForNext) * 100);
 
   return (
-    <header className="sticky top-0 z-10 flex items-center gap-4 border-b bg-background/80 px-6 py-3 backdrop-blur">
+    <header className="sticky top-0 z-10 flex items-center gap-4 border-b bg-background/80 px-4 py-3 backdrop-blur sm:px-6">
       <div className="ml-auto flex items-center gap-5">
         <span
           className="flex items-center gap-1.5 font-mono text-sm text-muted-foreground"

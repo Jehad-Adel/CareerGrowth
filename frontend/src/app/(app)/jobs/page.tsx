@@ -378,7 +378,7 @@ export default async function JobsPage() {
     <>
       {header}
 
-      <Tabs defaultValue="match">
+      <Tabs defaultValue="match" className="space-y-6">
         <TabsList>
           <TabsTrigger value="match">Match</TabsTrigger>
           <TabsTrigger value="gap">Skill gap</TabsTrigger>
@@ -386,7 +386,7 @@ export default async function JobsPage() {
         </TabsList>
 
         <TabsContent value="match">
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid items-start gap-6 lg:grid-cols-2">
             <section className="rounded-2xl border bg-card p-6">
               <JobInput
                 action={matchJob}
@@ -404,7 +404,7 @@ export default async function JobsPage() {
         </TabsContent>
 
         <TabsContent value="gap">
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid items-start gap-6 lg:grid-cols-2">
             <section className="rounded-2xl border bg-card p-6">
               <JobInput
                 action={analyzeGap}
@@ -422,7 +422,7 @@ export default async function JobsPage() {
         </TabsContent>
 
         <TabsContent value="letter">
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid items-start gap-6 lg:grid-cols-2">
             <section className="rounded-2xl border bg-card p-6">
               <JobInput
                 action={writeCoverLetter}

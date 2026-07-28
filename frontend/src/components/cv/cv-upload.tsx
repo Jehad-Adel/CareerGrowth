@@ -77,9 +77,9 @@ export function CvUpload({ remaining }: { remaining: number }) {
       />
 
       {state.error ? (
-        <p role="alert" className="mt-3 text-center text-xs text-destructive">
+        <div role="alert" className="mt-3 flex items-center justify-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-xs text-destructive">
           {state.error}
-        </p>
+        </div>
       ) : null}
 
       <p className="mt-3 text-center text-xs text-muted-foreground">

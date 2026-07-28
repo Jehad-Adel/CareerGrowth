@@ -36,3 +36,17 @@ export async function askQuestion(
   revalidatePath("/chat");
   return { ok: true };
 }
+
+export async function clearChat(): Promise<ChatActionState> {
+  try {
+    await serverFetch("/chat", {
+      method: "DELETE",
+    });
+  } catch (error) {
+    if (error instanceof ApiError) return { error: error.message };
+    return { error: "Could not clear chat history." };
+  }
+
+  revalidatePath("/chat");
+  return { ok: true };
+}

@@ -262,3 +262,13 @@ def latest(db: Session, profile_id: uuid.UUID) -> InterviewSession | None:
         .order_by(InterviewSession.created_at.desc())
         .limit(1)
     ).scalar_one_or_none()
+
+
+def list_sessions(db: Session, profile_id: uuid.UUID) -> list[InterviewSession]:
+    return list(
+        db.execute(
+            select(InterviewSession)
+            .where(InterviewSession.profile_id == profile_id)
+            .order_by(InterviewSession.created_at.desc())
+        ).scalars()
+    )

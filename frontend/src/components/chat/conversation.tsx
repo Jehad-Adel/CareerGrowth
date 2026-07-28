@@ -1,10 +1,14 @@
 "use client";
 
-import { SendHorizontal } from "lucide-react";
-import { useActionState, useOptimistic, useRef } from "react";
+import { SendHorizontal, Trash2 } from "lucide-react";
+import { useActionState, useOptimistic, useRef, useTransition } from "react";
 import { useFormStatus } from "react-dom";
 
-import { askQuestion, type ChatActionState } from "@/app/(app)/chat/actions";
+import {
+  askQuestion,
+  clearChat,
+  type ChatActionState,
+} from "@/app/(app)/chat/actions";
 import { LogoMark } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { DictateButton } from "@/components/ui/dictate-button";
@@ -108,6 +112,27 @@ function Send() {
   );
 }
 
+function ClearChatButton() {
+  const [isPending, startTransition] = useTransition();
+
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="h-7 text-xs text-muted-foreground hover:text-destructive"
+      disabled={isPending}
+      onClick={() => {
+        startTransition(async () => {
+          await clearChat();
+        });
+      }}
+    >
+      <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+      {isPending ? "Clearing..." : "Clear history"}
+    </Button>
+  );
+}
+
 /**
  * Transcript and composer in one client component.
  *
@@ -131,7 +156,7 @@ export function Conversation({
     (current, content: string): ChatMessageRecord[] => [
       ...current,
       {
-        id: `pending-${current.length}`,
+        id: `pending-${Date.now()}`,
         role: "user",
         content,
         sources: null,
@@ -143,6 +168,11 @@ export function Conversation({
 
   return (
     <div className="flex h-[560px] flex-col rounded-2xl border bg-card">
+      {messages.length > 0 ? (
+        <div className="flex justify-end border-b px-4 py-2 bg-muted/20">
+          <ClearChatButton />
+        </div>
+      ) : null}
       <div className="flex-1 space-y-4 overflow-y-auto p-6">
         {shown.length === 0 ? (
           <p className="pt-16 text-center text-sm text-muted-foreground">

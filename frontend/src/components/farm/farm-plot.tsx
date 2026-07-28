@@ -71,7 +71,7 @@ export function FarmPlot({ plants }: { plants: FarmPlant[] }) {
 
 export function FarmPreview({ plants }: { plants: FarmPlant[] }) {
   return (
-    <div className="grid grid-cols-4 gap-3 sm:grid-cols-6">
+    <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
       {plants.map((p) => (
         <SkillPlant key={p.id} plant={p} />
       ))}

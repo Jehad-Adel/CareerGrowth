@@ -155,6 +155,28 @@ def latest(db: Session, profile_id: uuid.UUID) -> Roadmap | None:
     ).scalar_one_or_none()
 
 
+def list_history(db: Session, profile_id: uuid.UUID) -> list[Roadmap]:
+    return list(
+        db.execute(
+            select(Roadmap)
+            .where(Roadmap.profile_id == profile_id)
+            .order_by(Roadmap.created_at.desc())
+        ).scalars()
+    )
+
+
+def get(
+    db: Session, profile_id: uuid.UUID, roadmap_id: uuid.UUID
+) -> Roadmap | None:
+    return db.execute(
+        select(Roadmap)
+        .where(
+            Roadmap.id == roadmap_id,
+            Roadmap.profile_id == profile_id,
+        )
+    ).scalar_one_or_none()
+
+
 def complete_step(
     db: Session, profile_id: uuid.UUID, step_id: uuid.UUID
 ) -> RoadmapStep:

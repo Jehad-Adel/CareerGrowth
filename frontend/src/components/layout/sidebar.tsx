@@ -2,7 +2,7 @@
 
 import Link, { useLinkStatus } from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader2, PanelLeftClose } from "lucide-react";
 
 import { Logo } from "@/components/brand/logo";
@@ -33,6 +33,17 @@ function NavPending() {
 export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(defaultCollapsed);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 1023px)");
+    const check = () => setIsSmallScreen(mql.matches);
+    check();
+    mql.addEventListener("change", check);
+    return () => mql.removeEventListener("change", check);
+  }, []);
+
+  const isCollapsed = isSmallScreen || collapsed;
 
   const toggle = () =>
     setCollapsed((c) => {
@@ -47,18 +58,18 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
     <aside
       className={cn(
         "sticky top-0 flex h-screen shrink-0 flex-col border-r border-sidebar-border bg-sidebar transition-[width] duration-200",
-        collapsed ? "w-16" : "w-60",
+        isCollapsed ? "w-16" : "w-60",
       )}
     >
       <Link
         href="/dashboard"
         className={cn(
           "flex items-center py-5",
-          collapsed ? "justify-center px-0" : "gap-2.5 px-5",
+          isCollapsed ? "justify-center px-0" : "gap-2.5 px-5",
         )}
       >
         <Logo />
-        {!collapsed && (
+        {!isCollapsed && (
           <span className="leading-none">
             <span className="block font-heading text-lg font-semibold text-sidebar-foreground">
               CareerFarm
@@ -78,17 +89,17 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
               key={href}
               href={href}
               aria-current={active ? "page" : undefined}
-              title={collapsed ? label : undefined}
+              title={isCollapsed ? label : undefined}
               className={cn(
                 "flex items-center gap-3 rounded-lg py-2 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
-                collapsed ? "justify-center px-0" : "px-3",
+                isCollapsed ? "justify-center px-0" : "px-3",
                 active
                   ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
                   : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
-              {!collapsed && (
+              {!isCollapsed && (
                 <>
                   {label}
                   <NavPending />
@@ -99,7 +110,7 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
         })}
       </nav>
 
-      {!collapsed && (
+      {!isCollapsed && (
         <div className="m-3 rounded-xl border border-sidebar-border bg-background/40 p-3">
           <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
             Today
@@ -110,21 +121,23 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
         </div>
       )}
 
-      <button
-        type="button"
-        onClick={toggle}
-        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        className={cn(
-          "m-3 flex items-center gap-2 rounded-lg border border-sidebar-border py-2 text-sm text-muted-foreground outline-none transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring",
-          collapsed ? "justify-center px-0" : "px-3",
-        )}
-      >
-        <PanelLeftClose
-          className={cn("h-4 w-4 shrink-0 transition-transform", collapsed && "rotate-180")}
-        />
-        {!collapsed && "Collapse"}
-      </button>
+      {!isSmallScreen && (
+        <button
+          type="button"
+          onClick={toggle}
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          className={cn(
+            "m-3 flex items-center gap-2 rounded-lg border border-sidebar-border py-2 text-sm text-muted-foreground outline-none transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring",
+            isCollapsed ? "justify-center px-0" : "px-3",
+          )}
+        >
+          <PanelLeftClose
+            className={cn("h-4 w-4 shrink-0 transition-transform", isCollapsed && "rotate-180")}
+          />
+          {!isCollapsed && "Collapse"}
+        </button>
+      )}
     </aside>
   );
 }

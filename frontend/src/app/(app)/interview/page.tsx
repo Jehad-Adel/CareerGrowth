@@ -12,7 +12,14 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ScoreRing } from "@/components/ui/score-ring";
-import { getLatestInterview, getProfile } from "@/lib/services";
+import {
+  getInterviewSession,
+  getInterviewSessions,
+  getLatestInterview,
+  getProfile,
+  type InterviewSessionRecord,
+} from "@/lib/services";
+import { cn } from "@/lib/utils";
 
 const LEVEL_LABEL: Record<string, string> = {
   friendly_hr: "Friendly HR",
@@ -32,9 +39,74 @@ function Metric({ label, value }: { label: string; value: number }) {
   );
 }
 
-export default async function InterviewPage() {
+function InterviewHistoryList({
+  sessions,
+  activeId,
+}: {
+  sessions: InterviewSessionRecord[];
+  activeId: string | undefined;
+}) {
+  if (sessions.length === 0) return null;
+
+  return (
+    <section className="rounded-2xl border bg-card p-6">
+      <div className="flex items-center justify-between gap-2 mb-4">
+        <h2 className="text-base">Interview History</h2>
+        <span className="font-mono text-xs text-muted-foreground">
+          {sessions.length} {sessions.length === 1 ? "session" : "sessions"}
+        </span>
+      </div>
+      <div className="space-y-2">
+        {sessions.map((s, index) => {
+          const isLatest = index === 0;
+          const isActive = activeId ? s.id === activeId : isLatest;
+          const label = LEVEL_LABEL[s.level] ?? s.level;
+          const turnsCount = s.turns.filter((t) => t.answer !== null).length;
+          return (
+            <Link
+              key={s.id}
+              href={isLatest ? "/interview" : `/interview?session=${s.id}`}
+              className={cn(
+                "block rounded-xl border p-3 text-xs transition-colors hover:border-primary/50",
+                isActive
+                  ? "border-primary bg-primary/10"
+                  : "bg-background",
+              )}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-medium truncate">
+                  {s.interviewer_name ?? "Interviewer"} ({label})
+                </span>
+                <span className="font-mono text-[10px] text-muted-foreground shrink-0">
+                  {new Date(s.created_at).toLocaleDateString()}
+                </span>
+              </div>
+              <div className="mt-1.5 flex items-center justify-between gap-2 text-[10px] text-muted-foreground">
+                <span>
+                  {s.finished ? "Finished" : `${turnsCount} answers`}
+                </span>
+                {s.final_evaluation ? (
+                  <span className="font-mono font-medium text-primary">
+                    Score: {s.final_evaluation.overall_score}
+                  </span>
+                ) : null}
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+export default async function InterviewPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ session?: string }>;
+}) {
   // Free: the layout already resolved the profile, and `has_cv` rides on it.
   const profile = await getProfile();
+  const { session: selectedSessionId } = await searchParams;
 
   const header = (
     <PageHeader
@@ -67,15 +139,26 @@ export default async function InterviewPage() {
     <>
       {header}
       <Suspense fallback={<InterviewSkeleton />}>
-        <InterviewBody />
+        <InterviewBody selectedSessionId={selectedSessionId} />
       </Suspense>
     </>
   );
 }
 
 /** The transcript. Streams behind the header instead of blocking it. */
-async function InterviewBody() {
-  const session = await getLatestInterview();
+async function InterviewBody({
+  selectedSessionId,
+}: {
+  selectedSessionId?: string;
+}) {
+  const [sessions, defaultSession] = await Promise.all([
+    getInterviewSessions().catch(() => []),
+    getLatestInterview(),
+  ]);
+
+  const session = selectedSessionId
+    ? (await getInterviewSession(selectedSessionId)) ?? defaultSession
+    : defaultSession;
 
   const open = session?.turns.find((t) => t.answer === null) ?? null;
   const answered = session?.turns.filter((t) => t.answer !== null) ?? [];
@@ -83,7 +166,7 @@ async function InterviewBody() {
 
   return (
     <>
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid items-start gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
           {session ? (
             <>
@@ -183,6 +266,10 @@ async function InterviewBody() {
         </div>
 
         <aside className="space-y-6">
+          <InterviewHistoryList
+            sessions={sessions}
+            activeId={selectedSessionId}
+          />
           {evaluation ? (
             <section className="rounded-2xl border bg-card p-6">
               <div className="flex items-center gap-5">

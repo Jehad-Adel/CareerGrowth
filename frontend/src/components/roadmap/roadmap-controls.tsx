@@ -22,7 +22,7 @@ export function GenerateRoadmap({ targetRole }: { targetRole: string | null }) {
     <form action={action} className="flex flex-col gap-3 sm:flex-row sm:items-end">
       <PendingFieldset>
         <div className="flex-1 space-y-1.5">
-          <Label htmlFor="target_role">Target role</Label>
+          <Label htmlFor="target_role" className="text-sm font-medium">Target role</Label>
           <Input
             id="target_role"
             name="target_role"
@@ -34,9 +34,9 @@ export function GenerateRoadmap({ targetRole }: { targetRole: string | null }) {
       </PendingFieldset>
       <SubmitButton idle="Build my roadmap" busy="Planning…" />
       {state.error ? (
-        <p role="alert" className="text-xs text-destructive sm:self-center">
+        <div role="alert" className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-xs text-destructive sm:self-center">
           {state.error}
-        </p>
+        </div>
       ) : null}
     </form>
   );

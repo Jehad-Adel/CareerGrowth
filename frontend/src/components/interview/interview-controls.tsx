@@ -40,47 +40,49 @@ export function StartInterview() {
   return (
     <form action={action} className="space-y-5">
       <PendingFieldset>
-        <fieldset className="space-y-2">
-          <legend className="mb-2 text-sm font-medium">Interviewer</legend>
-          {LEVELS.map((level, i) => (
-            <label
-              key={level.value}
-              className="flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition-colors hover:border-primary/50 has-[:checked]:border-primary has-[:checked]:bg-primary/5 has-[:disabled]:cursor-progress"
-            >
-              <input
-                type="radio"
-                name="level"
-                value={level.value}
-                defaultChecked={i === 0}
-                className="mt-1"
-              />
-              <span>
-                <span className="block text-sm font-medium">{level.label}</span>
-                <span className="block text-xs text-muted-foreground">
-                  {level.blurb}
+        <div className="space-y-5">
+          <fieldset className="space-y-2">
+            <legend className="mb-2 text-sm font-medium">Interviewer</legend>
+            {LEVELS.map((level, i) => (
+              <label
+                key={level.value}
+                className="flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition-colors hover:border-primary/50 has-[:checked]:border-primary has-[:checked]:bg-primary/5 has-[:disabled]:cursor-progress"
+              >
+                <input
+                  type="radio"
+                  name="level"
+                  value={level.value}
+                  defaultChecked={i === 0}
+                  className="mt-1"
+                />
+                <span>
+                  <span className="block text-sm font-medium">{level.label}</span>
+                  <span className="block text-xs text-muted-foreground">
+                    {level.blurb}
+                  </span>
                 </span>
-              </span>
-            </label>
-          ))}
-        </fieldset>
+              </label>
+            ))}
+          </fieldset>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="job_description">Job description</Label>
-          <Textarea
-            id="job_description"
-            name="job_description"
-            rows={8}
-            placeholder="Paste the role you're interviewing for…"
-          />
+          <div className="space-y-1.5">
+            <Label htmlFor="job_description" className="text-sm font-medium">Job description</Label>
+            <Textarea
+              id="job_description"
+              name="job_description"
+              rows={8}
+              placeholder="Paste the role you're interviewing for…"
+            />
+          </div>
         </div>
       </PendingFieldset>
 
       <SubmitButton idle="Start interview" busy="Setting up…" />
 
       {state.error ? (
-        <p role="alert" className="text-xs text-destructive">
+        <div role="alert" className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-xs text-destructive">
           {state.error}
-        </p>
+        </div>
       ) : null}
     </form>
   );
@@ -110,9 +112,9 @@ export function AnswerQuestion({ sessionId }: { sessionId: string }) {
       <div className="flex items-center gap-3">
         <SubmitButton idle="Submit answer" busy="Thinking…" />
         {state.error ? (
-          <p role="alert" className="text-xs text-destructive">
+          <div role="alert" className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-1.5 text-xs text-destructive">
             {state.error}
-          </p>
+          </div>
         ) : null}
       </div>
     </form>

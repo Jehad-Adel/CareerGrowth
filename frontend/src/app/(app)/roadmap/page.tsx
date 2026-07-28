@@ -8,12 +8,73 @@ import { RoadmapSkeleton } from "@/components/skeletons";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import {
+  getProfile,
+  getRoadmapById,
+  getRoadmapData,
+  getRoadmapHistory,
+  type RoadmapRecord,
+} from "@/lib/services";
 import { cn } from "@/lib/utils";
-import { getProfile, getRoadmapData } from "@/lib/services";
 
-export default async function RoadmapPage() {
-  // Free: the layout already resolved the profile, and `has_cv` rides on it.
+function RoadmapHistoryBar({
+  history,
+  activeId,
+}: {
+  history: RoadmapRecord[];
+  activeId: string | undefined;
+}) {
+  if (history.length === 0) return null;
+
+  return (
+    <section className="mb-6 rounded-2xl border bg-card p-5">
+      <div className="flex items-center justify-between gap-2 mb-3">
+        <h3 className="text-sm font-medium">Roadmap History</h3>
+        <span className="font-mono text-xs text-muted-foreground">
+          {history.length} roadmaps saved
+        </span>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {history.map((r, index) => {
+          const isLatest = index === 0;
+          const isActive = activeId ? r.id === activeId : isLatest;
+          const done = r.steps.filter((s) => s.status === "done").length;
+          const total = r.steps.length;
+          return (
+            <Link
+              key={r.id}
+              href={isLatest ? "/roadmap" : `/roadmap?id=${r.id}`}
+              className={cn(
+                "flex items-center gap-2.5 rounded-xl border px-3.5 py-2 text-xs transition-colors hover:border-primary/50",
+                isActive
+                  ? "border-primary bg-primary/10 text-foreground font-medium"
+                  : "bg-background text-muted-foreground",
+              )}
+            >
+              <span>{r.target_role}</span>
+              <span className="rounded-md bg-muted px-1.5 py-0.5 font-mono text-[10px]">
+                {done}/{total}
+              </span>
+              {isLatest && (
+                <span className="rounded bg-primary/20 px-1.5 py-0.5 text-[10px] text-primary">
+                  Latest
+                </span>
+              )}
+            </Link>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+export default async function RoadmapPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ id?: string }>;
+}) {
   const profile = await getProfile();
+  const { id: selectedId } = await searchParams;
 
   const header = (
     <PageHeader
@@ -46,15 +107,31 @@ export default async function RoadmapPage() {
     <>
       {header}
       <Suspense fallback={<RoadmapSkeleton />}>
-        <RoadmapBody fallbackTarget={profile.targetRole} />
+        <RoadmapBody
+          fallbackTarget={profile.targetRole}
+          selectedId={selectedId}
+        />
       </Suspense>
     </>
   );
 }
 
 /** The plan itself. Streams in behind the header rather than blocking it. */
-async function RoadmapBody({ fallbackTarget }: { fallbackTarget: string }) {
-  const roadmap = await getRoadmapData();
+async function RoadmapBody({
+  fallbackTarget,
+  selectedId,
+}: {
+  fallbackTarget: string;
+  selectedId?: string;
+}) {
+  const [history, defaultRoadmap] = await Promise.all([
+    getRoadmapHistory().catch(() => []),
+    getRoadmapData(),
+  ]);
+
+  const roadmap = selectedId
+    ? (await getRoadmapById(selectedId)) ?? defaultRoadmap
+    : defaultRoadmap;
 
   const done = roadmap?.steps.filter((s) => s.status === "done").length ?? 0;
   const total = roadmap?.steps.length ?? 0;
@@ -62,6 +139,7 @@ async function RoadmapBody({ fallbackTarget }: { fallbackTarget: string }) {
 
   return (
     <>
+      <RoadmapHistoryBar history={history} activeId={selectedId} />
       <section className="mb-6 rounded-2xl border bg-card p-6">
         <GenerateRoadmap targetRole={roadmap?.target_role ?? fallbackTarget} />
         {roadmap ? (

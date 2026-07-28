@@ -52,31 +52,34 @@ function Card({
   const waiting = daysSince(application.applied_at);
 
   return (
-    <li className="rounded-xl border bg-card p-3">
-      <p className="text-sm font-medium">{application.role}</p>
-      <p className="text-xs text-muted-foreground">{application.company}</p>
+    <li className="flex flex-col gap-3 rounded-xl border bg-card p-4 transition-shadow hover:shadow-sm">
+      <div className="space-y-1">
+        <p className="text-sm font-semibold leading-snug">{application.role}</p>
+        <p className="text-xs text-muted-foreground">{application.company}</p>
+      </div>
 
-      {waiting !== null && !["offer", "rejected"].includes(application.status) ? (
-        // The number people actually want: how long they have been waiting.
-        <p className="mt-1 text-xs text-muted-foreground">
-          {waiting === 0 ? "Applied today" : `${waiting}d since applying`}
-        </p>
-      ) : null}
+      <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+        {waiting !== null && !["offer", "rejected"].includes(application.status) ? (
+          <span className="rounded-md bg-muted/70 px-2 py-0.5 font-mono text-[11px] text-muted-foreground">
+            {waiting === 0 ? "Applied today" : `${waiting}d waiting`}
+          </span>
+        ) : (
+          <span />
+        )}
 
-      {application.url ? (
-        <a
-          href={application.url}
-          target="_blank"
-          // noreferrer alongside noopener: the target must learn nothing about
-          // where the click came from.
-          rel="noopener noreferrer"
-          className="mt-1 inline-block text-xs text-primary underline underline-offset-2"
-        >
-          Posting
-        </a>
-      ) : null}
+        {application.url ? (
+          <a
+            href={application.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-primary underline-offset-4 hover:underline"
+          >
+            Posting ↗
+          </a>
+        ) : null}
+      </div>
 
-      <div className="mt-2.5 flex items-center gap-2">
+      <div className="flex items-center gap-2 border-t border-border/50 pt-2.5">
         <form action={moveApplication} className="flex-1">
           <input type="hidden" name="id" value={application.id} />
           <label className="sr-only" htmlFor={`move-${application.id}`}>
@@ -86,11 +89,8 @@ function Card({
             id={`move-${application.id}`}
             name="status"
             defaultValue={application.status}
-            // A select rather than drag-and-drop: it works on a phone, works
-            // with a keyboard, needs no library, and cannot drop a card into
-            // nowhere.
             onChange={(e) => e.currentTarget.form?.requestSubmit()}
-            className="w-full rounded-lg border bg-background px-2 py-1 text-xs outline-none focus-visible:border-ring"
+            className="w-full rounded-lg border bg-background px-2.5 py-1.5 text-xs outline-none transition-colors focus-visible:border-ring"
           >
             {statuses.map((s) => (
               <option key={s} value={s}>
@@ -105,9 +105,9 @@ function Card({
           <button
             type="submit"
             aria-label={`Delete ${application.role} at ${application.company}`}
-            className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+            className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
           >
-            <Trash2 className="h-3.5 w-3.5" />
+            <Trash2 className="h-4 w-4" />
           </button>
         </form>
       </div>
@@ -123,39 +123,39 @@ export function ApplicationsBoard({ board }: { board: ApplicationBoard }) {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl border bg-card p-5">
+      <section className="rounded-2xl border bg-card p-6">
         {/* Keyed on submittedAt so the inputs clear once a row is saved, and
             keep their text when validation rejects it. */}
-        <form key={state.submittedAt ?? "new"} action={action} className="space-y-3">
+        <form key={state.submittedAt ?? "new"} action={action} className="space-y-4">
           <PendingFieldset>
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-3">
               <div className="space-y-1.5">
-                <Label htmlFor="company">Company</Label>
-                <Input id="company" name="company" maxLength={200} />
+                <Label htmlFor="company" className="text-sm font-medium">Company</Label>
+                <Input id="company" name="company" maxLength={200} placeholder="Acme Corp" />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="role">Role</Label>
-                <Input id="role" name="role" maxLength={200} />
+                <Label htmlFor="role" className="text-sm font-medium">Role</Label>
+                <Input id="role" name="role" maxLength={200} placeholder="Senior Frontend Engineer" />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="url">Posting link (optional)</Label>
-                <Input id="url" name="url" type="url" maxLength={500} />
+                <Label htmlFor="url" className="text-sm font-medium">Posting link (optional)</Label>
+                <Input id="url" name="url" type="url" maxLength={500} placeholder="https://..." />
               </div>
             </div>
           </PendingFieldset>
 
-          <div className="flex items-center gap-3">
-            <SubmitButton idle="Track this" busy="Saving…" size="sm" />
+          <div className="flex flex-wrap items-center gap-3 pt-1">
+            <SubmitButton idle="Track this" busy="Saving…" />
             {state.error ? (
-              <p role="alert" className="text-xs text-destructive">
+              <div role="alert" className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-1.5 text-xs text-destructive">
                 {state.error}
-              </p>
+              </div>
             ) : null}
           </div>
         </form>
       </section>
 
-      <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         {board.statuses.map((status) => {
           const column = board.applications.filter((a) => a.status === status);
           return (

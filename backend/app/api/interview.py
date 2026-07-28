@@ -99,6 +99,11 @@ def answer_question(
     return _to_out(session)
 
 
+@router.get("/sessions", response_model=list[SessionOut])
+def list_sessions(profile: CurrentProfile, db: DbSession) -> list[SessionOut]:
+    return [_to_out(s) for s in interview_service.list_sessions(db, profile.id)]
+
+
 @router.get("/sessions/{session_id}", response_model=SessionOut)
 def read_session(
     session_id: uuid.UUID, profile: CurrentProfile, db: DbSession

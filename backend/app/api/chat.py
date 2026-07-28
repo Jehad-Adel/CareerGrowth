@@ -63,3 +63,8 @@ def ask(
 ) -> MessageOut:
     reply = chat_service.send(db, profile, payload.message)
     return _to_out(reply)
+
+
+@router.delete("", status_code=204)
+def delete_chat(profile: CurrentProfile, db: DbSession) -> None:
+    chat_service.clear_history(db, profile.id)

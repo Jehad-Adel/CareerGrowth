@@ -87,6 +87,19 @@ def latest_roadmap(profile: CurrentProfile, db: DbSession) -> RoadmapOut | None:
     return _to_out(roadmap) if roadmap else None
 
 
+@router.get("/roadmap/history", response_model=list[RoadmapOut])
+def roadmap_history(profile: CurrentProfile, db: DbSession) -> list[RoadmapOut]:
+    return [_to_out(r) for r in roadmap_service.list_history(db, profile.id)]
+
+
+@router.get("/roadmap/{roadmap_id}", response_model=RoadmapOut | None)
+def read_roadmap(
+    roadmap_id: uuid.UUID, profile: CurrentProfile, db: DbSession
+) -> RoadmapOut | None:
+    roadmap = roadmap_service.get(db, profile.id, roadmap_id)
+    return _to_out(roadmap) if roadmap else None
+
+
 @router.post("/roadmap/steps/{step_id}/complete", response_model=StepOut)
 def complete_step(
     step_id: uuid.UUID, profile: CurrentProfile, db: DbSession

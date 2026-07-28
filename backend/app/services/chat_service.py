@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import func, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
 from app.ai import embeddings
@@ -65,6 +65,12 @@ def history(db: Session, profile_id: uuid.UUID, limit: int = PAGE_SIZE) -> list[
         ).scalars()
     )
     return list(reversed(rows))
+
+
+def clear_history(db: Session, profile_id: uuid.UUID) -> int:
+    result = db.execute(delete(ChatMessage).where(ChatMessage.profile_id == profile_id))
+    db.commit()
+    return result.rowcount
 
 
 def _next_position(db: Session, profile_id: uuid.UUID) -> int:
