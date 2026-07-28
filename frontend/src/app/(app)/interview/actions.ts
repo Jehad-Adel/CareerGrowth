@@ -8,6 +8,12 @@ import { serverFetch } from "@/lib/api/server";
 export type InterviewActionState = {
   error?: string;
   ok?: boolean;
+  /**
+   * When a submission was accepted. A controlled input needs to know that
+   * *this* submit succeeded, and `ok` cannot say that — once true it stays
+   * true, so the second answer would never clear the field.
+   */
+  submittedAt?: number;
 };
 
 const MIN_JD = 50;
@@ -39,7 +45,7 @@ export async function startInterview(
   }
 
   revalidatePath("/interview");
-  return { ok: true };
+  return { ok: true, submittedAt: Date.now() };
 }
 
 export async function submitAnswer(
@@ -72,5 +78,5 @@ export async function submitAnswer(
   revalidatePath("/interview");
   revalidatePath("/dashboard");
   revalidatePath("/farm");
-  return { ok: true };
+  return { ok: true, submittedAt: Date.now() };
 }

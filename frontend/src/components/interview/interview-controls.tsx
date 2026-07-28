@@ -7,6 +7,7 @@ import {
   submitAnswer,
   type InterviewActionState,
 } from "@/app/(app)/interview/actions";
+import { DictateField } from "@/components/ui/dictate-field";
 import { Label } from "@/components/ui/label";
 import { PendingFieldset, SubmitButton } from "@/components/ui/submit-button";
 import { Textarea } from "@/components/ui/textarea";
@@ -95,11 +96,15 @@ export function AnswerQuestion({ sessionId }: { sessionId: string }) {
     <form action={action} className="space-y-3">
       <input type="hidden" name="session_id" value={sessionId} />
       <PendingFieldset>
-        <Textarea
+        {/* Remounted on each accepted answer, which clears it. Keyed on
+            `submittedAt` rather than `ok`, so a validation error does not
+            throw away what the user just dictated. */}
+        <DictateField
+          key={state.submittedAt ?? "first"}
           name="answer"
           rows={6}
-          placeholder="Answer out loud, then write the gist here…"
-          aria-label="Your answer"
+          placeholder="Answer out loud — tap the mic and speak, or type here…"
+          ariaLabel="Your answer"
         />
       </PendingFieldset>
       <div className="flex items-center gap-3">

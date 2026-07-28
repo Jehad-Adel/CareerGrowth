@@ -7,6 +7,7 @@ import { useFormStatus } from "react-dom";
 import { askQuestion, type ChatActionState } from "@/app/(app)/chat/actions";
 import { LogoMark } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
+import { DictateButton } from "@/components/ui/dictate-button";
 import type { ChatMessageRecord, ChatSource } from "@/lib/services";
 import { cn } from "@/lib/utils";
 
@@ -214,6 +215,10 @@ export function Conversation({
             }
             className="h-10 flex-1 rounded-lg border bg-background px-3 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 disabled:opacity-60"
           />
+          {/* Writes straight into the uncontrolled input, the same way the
+              suggestion chips above already do. Never submits on its own —
+              the user reads what was heard, then presses send. */}
+          <DictateButton inputRef={inputRef} disabled={disabled} />
           <Send />
         </div>
 
