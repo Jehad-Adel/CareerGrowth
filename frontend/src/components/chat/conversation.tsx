@@ -176,11 +176,12 @@ export function Conversation({
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    // A fixed 560px box is taller than a phone's viewport minus the topbar and
-    // page header, so the composer sat below the fold and the transcript could
-    // not be reached without scrolling the page under a sticky header. `dvh`
-    // rather than `vh` — `vh` measures the viewport with the URL bar hidden.
-    <div className="flex h-[calc(100dvh-13rem)] min-h-[26rem] flex-col rounded-2xl border bg-card sm:h-[560px]">
+    // Fills whatever height the page gives it rather than carrying its own.
+    // The old fixed 560px box was taller than a phone viewport (composer below
+    // the fold) and shorter than a desktop one (a small panel stranded in a
+    // large empty page). `min-h-0` so the transcript inside can scroll instead
+    // of stretching the column.
+    <div className="flex min-h-0 flex-1 flex-col rounded-2xl border bg-card">
       {messages.length > 0 ? (
         <div className="flex justify-end border-b px-4 py-2 bg-muted/20">
           <ClearChatButton />

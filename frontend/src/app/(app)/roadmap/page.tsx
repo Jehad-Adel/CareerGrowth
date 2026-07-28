@@ -184,8 +184,13 @@ async function RoadmapBody({
                   step.status === "done" && "opacity-70",
                 )}
               >
-                <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-4">
-                  <div className="min-w-0 flex-1">
+                {/* `flex-1` on the text column meant it and the Complete
+                    button always shared one row: the button never shrinks, so
+                    on a phone the entire step description was squeezed into
+                    what was left of ~375px. Stacked below `sm`, side by side
+                    above it. */}
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                  <div className="min-w-0 sm:flex-1">
                     {/* Step number, effort and difficulty on their own line.
                         Sharing a row with the title left the title a sliver of
                         width on a phone — one word per line under two badges

@@ -20,7 +20,7 @@ async function ChatBody() {
     <>
       <Conversation messages={chat.messages} disabled={remaining <= 0} />
 
-      <p className="mt-3 text-center text-xs text-muted-foreground">
+      <p className="mt-3 shrink-0 text-center text-xs text-muted-foreground">
         {remaining <= 0
           ? "You've used today's messages. More tomorrow."
           : `${remaining} messages left today`}
@@ -35,11 +35,11 @@ async function ChatBody() {
 /** Same box as `Conversation`, so the transcript lands without a resize. */
 function ChatBodyFallback() {
   return (
-    <div className="flex h-[calc(100dvh-13rem)] min-h-[26rem] flex-col rounded-2xl border bg-card sm:h-[560px]">
-      <div className="flex-1 overflow-hidden">
+    <div className="flex min-h-0 flex-1 flex-col rounded-2xl border bg-card">
+      <div className="min-h-0 flex-1 overflow-hidden">
         <ChatSkeleton />
       </div>
-      <div className="border-t p-4">
+      <div className="border-t p-3 sm:p-4">
         <div className="mb-3 flex flex-wrap gap-2">
           <Skeleton className="h-6 w-40 rounded-full" />
           <Skeleton className="h-6 w-52 rounded-full" />
@@ -55,7 +55,11 @@ export default async function ChatPage() {
   const { hasCv } = await getProfile();
 
   return (
-    <div className="mx-auto flex h-full max-w-3xl flex-col">
+    // The page owns the height now, so the panel can fill it: viewport minus
+    // the sticky topbar and this main's own padding. Wider too — a 3xl column
+    // left the conversation as a narrow strip down the middle of a desktop
+    // window while its own bubbles wrapped every few words.
+    <div className="mx-auto flex h-[calc(100dvh-7rem)] min-h-[26rem] max-w-5xl flex-col sm:h-[calc(100dvh-8.5rem)]">
       <PageHeader
         eyebrow="Career Chat"
         title="Ask your career assistant"
