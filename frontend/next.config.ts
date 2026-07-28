@@ -13,8 +13,13 @@ const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   {
+    // `microphone=(self)`, not `()`. Chrome gates the Web Speech API behind the
+    // *microphone* policy, so a blanket denial kills dictation on every route
+    // with a `not-allowed` error that reads exactly like the user refusing the
+    // permission prompt — the prompt never appears at all. Same-origin only;
+    // no third-party frame inherits it.
     key: "Permissions-Policy",
-    value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+    value: "camera=(), microphone=(self), geolocation=(), interest-cohort=()",
   },
   ...(isProd
     ? [

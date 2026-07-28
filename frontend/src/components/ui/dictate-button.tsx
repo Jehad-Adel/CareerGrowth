@@ -30,33 +30,66 @@ export function DictateButton({
     if (!input || !phrase) return;
     const current = input.value.trim();
     input.value = current ? `${current} ${phrase}` : phrase;
+    // React tracks the last value it wrote to an input and swallows an `input`
+    // event that reports the same one. Clearing that tracker first makes the
+    // dispatch below behave like real typing, so anything listening (and the
+    // browser's own scroll-to-caret) reacts to dictated text too.
+    const tracker = (
+      input as unknown as {
+        _valueTracker?: { setValue: (v: string) => void };
+      }
+    )._valueTracker;
+    tracker?.setValue("");
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.scrollLeft = input.scrollWidth;
   });
 
   if (!dictation.supported) return null;
 
   return (
-    <Button
-      type="button"
-      variant={dictation.listening ? "default" : "ghost"}
-      size="icon"
-      disabled={disabled}
-      onClick={dictation.toggle}
-      aria-pressed={dictation.listening}
-      aria-label={dictation.listening ? "Stop dictating" : "Dictate your question"}
-      title={
-        dictation.error ??
-        (dictation.listening ? "Stop dictating" : "Dictate your question")
-      }
-      className="shrink-0"
-    >
-      {dictation.listening ? (
-        <Square className="h-4 w-4" />
-      ) : (
-        <Mic className="h-4 w-4" />
-      )}
-      <span className="sr-only" aria-live="polite">
-        {dictation.listening ? `Listening. ${dictation.interim}` : ""}
-      </span>
-    </Button>
+    <div className="relative shrink-0">
+      {/* Live feedback anchored to the button. Without it the only sign that
+          recognition is running is the icon swap, and a mic that is listening
+          but has not heard anything yet looks identical to a broken one. */}
+      {dictation.listening || dictation.error ? (
+        <div
+          className="absolute bottom-full end-0 mb-2 max-w-[min(18rem,60vw)] rounded-lg border bg-popover px-2.5 py-1.5 text-xs shadow-md"
+          role={dictation.error ? "alert" : undefined}
+        >
+          {dictation.error ? (
+            <span className="text-destructive">{dictation.error}</span>
+          ) : (
+            <span className="line-clamp-2 text-muted-foreground">
+              <span className="me-1.5 inline-block h-2 w-2 animate-pulse rounded-full bg-destructive align-middle" />
+              {dictation.interim || "Listening…"}
+            </span>
+          )}
+        </div>
+      ) : null}
+
+      <Button
+        type="button"
+        variant={dictation.listening ? "default" : "ghost"}
+        size="icon"
+        disabled={disabled}
+        onClick={dictation.toggle}
+        aria-pressed={dictation.listening}
+        aria-label={dictation.listening ? "Stop dictating" : "Dictate your question"}
+        title={
+          dictation.error ??
+          (dictation.listening ? "Stop dictating" : "Dictate your question")
+        }
+        className="h-11 w-11 rounded-xl"
+      >
+        {dictation.listening ? (
+          <Square className="h-4 w-4" />
+        ) : (
+          <Mic className="h-4 w-4" />
+        )}
+        <span className="sr-only" aria-live="polite">
+          {dictation.listening ? `Listening. ${dictation.interim}` : ""}
+        </span>
+      </Button>
+    </div>
   );
 }

@@ -73,6 +73,18 @@ const MESSAGES: Record<string, string> = {
   network: "Dictation needs a network connection.",
 };
 
+/**
+ * Chrome ends a recognition session on its own after a few seconds of silence,
+ * even with `continuous = true`. Left alone that stops dictation mid-answer
+ * while the button still reads "listening" — the single most common way this
+ * feature "doesn't work". `onend` restarts it as long as the user has not
+ * pressed stop. The cap and the window exist so a session that dies instantly
+ * and repeatedly (device unplugged, service refusing) surfaces as an error
+ * instead of spinning forever.
+ */
+const RESTART_LIMIT = 8;
+const RESTART_WINDOW_MS = 10_000;
+
 export type Dictation = {
   /** False on browsers without the API. Hide the control rather than disable it. */
   supported: boolean;
@@ -107,6 +119,12 @@ export function useDictation(onResult: (text: string) => void): Dictation {
   const [error, setError] = useState<string | null>(null);
 
   const recognition = useRef<SpeechRecognitionInstance | null>(null);
+  // What the *user* asked for, as opposed to whether the engine happens to be
+  // running right now. `onend` reads it to decide restart vs. stop, and it is a
+  // ref because that callback is installed once and would otherwise close over
+  // the first render's state forever.
+  const wanted = useRef(false);
+  const restarts = useRef<number[]>([]);
   // Held in a ref so re-creating the callback each render does not force the
   // recognition instance to be rebuilt mid-sentence. Assigned in an effect,
   // not during render — a ref write during render is not safe under
@@ -142,20 +160,44 @@ export function useDictation(onResult: (text: string) => void): Dictation {
     };
 
     instance.onerror = (event) => {
-      // Silence between sentences is normal, not a failure worth surfacing.
+      // Silence between sentences is normal, not a failure worth surfacing —
+      // `onend` restarts the session right after.
       if (event.error === "no-speech" || event.error === "aborted") return;
+      wanted.current = false;
       setError(MESSAGES[event.error] ?? "Dictation stopped unexpectedly.");
       setListening(false);
     };
 
     instance.onend = () => {
-      setListening(false);
       setInterim("");
+      if (!wanted.current) {
+        setListening(false);
+        return;
+      }
+
+      const now = Date.now();
+      restarts.current = [
+        ...restarts.current.filter((t) => now - t < RESTART_WINDOW_MS),
+        now,
+      ];
+      if (restarts.current.length > RESTART_LIMIT) {
+        wanted.current = false;
+        setListening(false);
+        setError("Dictation kept dropping. Check your microphone and try again.");
+        return;
+      }
+
+      try {
+        instance.start();
+      } catch {
+        // Already restarting on its own; the state we want is unchanged.
+      }
     };
 
     recognition.current = instance;
 
     return () => {
+      wanted.current = false;
       instance.onresult = null;
       instance.onerror = null;
       instance.onend = null;
@@ -168,28 +210,32 @@ export function useDictation(onResult: (text: string) => void): Dictation {
   }, []);
 
   const start = useCallback(() => {
-    if (!recognition.current || listening) return;
+    if (!recognition.current || wanted.current) return;
     setError(null);
+    restarts.current = [];
+    wanted.current = true;
     try {
       recognition.current.start();
-      setListening(true);
     } catch {
       // Chrome throws if start() is called while already running. The state is
       // what we wanted either way.
-      setListening(true);
     }
-  }, [listening]);
+    setListening(true);
+  }, []);
 
   const stop = useCallback(() => {
+    wanted.current = false;
+    // stop(), not abort(): it flushes the phrase currently being recognised as
+    // a final result, so the last words before the tap are not thrown away.
     recognition.current?.stop();
     setListening(false);
     setInterim("");
   }, []);
 
   const toggle = useCallback(() => {
-    if (listening) stop();
+    if (wanted.current) stop();
     else start();
-  }, [listening, start, stop]);
+  }, [start, stop]);
 
   return { supported, listening, interim, error, start, stop, toggle };
 }
