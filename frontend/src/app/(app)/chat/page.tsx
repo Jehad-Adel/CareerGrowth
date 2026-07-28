@@ -32,10 +32,10 @@ async function ChatBody() {
   );
 }
 
-/** Same 560px box, so the transcript lands without resizing the page. */
+/** Same box as `Conversation`, so the transcript lands without a resize. */
 function ChatBodyFallback() {
   return (
-    <div className="flex h-[560px] flex-col rounded-2xl border bg-card">
+    <div className="flex h-[calc(100dvh-13rem)] min-h-[26rem] flex-col rounded-2xl border bg-card sm:h-[560px]">
       <div className="flex-1 overflow-hidden">
         <ChatSkeleton />
       </div>

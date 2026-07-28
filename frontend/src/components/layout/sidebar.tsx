@@ -2,7 +2,7 @@
 
 import Link, { useLinkStatus } from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Loader2, PanelLeftClose } from "lucide-react";
 
 import { Logo } from "@/components/brand/logo";
@@ -30,20 +30,15 @@ function NavPending() {
   );
 }
 
+/**
+ * Desktop navigation rail. Hidden below `lg`, where `MobileNav`'s drawer takes
+ * over — the collapsed icon rail this used to render on phones cost 64px of a
+ * 375px viewport and showed eight unlabelled icons. Because it never renders
+ * small any more, the viewport listener that used to force collapse is gone.
+ */
 export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(defaultCollapsed);
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
-
-  useEffect(() => {
-    const mql = window.matchMedia("(max-width: 1023px)");
-    const check = () => setIsSmallScreen(mql.matches);
-    check();
-    mql.addEventListener("change", check);
-    return () => mql.removeEventListener("change", check);
-  }, []);
-
-  const isCollapsed = isSmallScreen || collapsed;
+  const [isCollapsed, setCollapsed] = useState(defaultCollapsed);
 
   const toggle = () =>
     setCollapsed((c) => {
@@ -57,7 +52,10 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
   return (
     <aside
       className={cn(
-        "sticky top-0 flex h-screen shrink-0 flex-col border-e border-sidebar-border bg-sidebar transition-[width] duration-200",
+        // `h-dvh`, not `h-screen`: on mobile browsers `100vh` is the height
+        // with the URL bar hidden, so a full-height column overflows by the
+        // bar's height until it is scrolled away.
+        "sticky top-0 hidden h-dvh shrink-0 flex-col border-e border-sidebar-border bg-sidebar transition-[width] duration-200 lg:flex",
         isCollapsed ? "w-16" : "w-60",
       )}
     >
@@ -121,23 +119,21 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
         </div>
       ) : null}
 
-      {!isSmallScreen ? (
-        <button
-          type="button"
-          onClick={toggle}
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className={cn(
-            "m-3 flex items-center gap-2 rounded-lg border border-sidebar-border py-2 text-sm text-muted-foreground outline-none transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring",
-            isCollapsed ? "justify-center px-0" : "px-3",
-          )}
-        >
-          <PanelLeftClose
-            className={cn("h-4 w-4 shrink-0 transition-transform", isCollapsed && "rotate-180")}
-          />
-          {!isCollapsed ? "Collapse" : null}
-        </button>
-      ) : null}
+      <button
+        type="button"
+        onClick={toggle}
+        aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        className={cn(
+          "m-3 flex min-h-11 items-center gap-2 rounded-lg border border-sidebar-border py-2 text-sm text-muted-foreground outline-none transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring",
+          isCollapsed ? "justify-center px-0" : "px-3",
+        )}
+      >
+        <PanelLeftClose
+          className={cn("h-4 w-4 shrink-0 transition-transform", isCollapsed && "rotate-180")}
+        />
+        {!isCollapsed ? "Collapse" : null}
+      </button>
     </aside>
   );
 }

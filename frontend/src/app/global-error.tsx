@@ -18,7 +18,7 @@ export default function GlobalError({
         style={{
           fontFamily: "system-ui, sans-serif",
           display: "flex",
-          minHeight: "100vh",
+          minHeight: "100dvh",
           alignItems: "center",
           justifyContent: "center",
           margin: 0,

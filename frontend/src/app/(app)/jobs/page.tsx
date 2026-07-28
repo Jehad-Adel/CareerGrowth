@@ -198,7 +198,9 @@ async function MatchResults() {
   return (
     <section className="space-y-6">
       <div className="rounded-2xl border bg-card p-6">
-        <div className="flex items-center gap-6">
+        {/* Two rings plus a paragraph is wider than a phone. Rings sit side by
+            side and the text drops beneath them until there is room. */}
+        <div className="flex flex-wrap items-center gap-4 sm:gap-6">
           <ScoreRing value={match.result.match_score} label="Match" />
           {typeof match.result.hiring_probability === "number" && (
             <ScoreRing
@@ -206,7 +208,7 @@ async function MatchResults() {
               label="Screen odds"
             />
           )}
-          <div>
+          <div className="min-w-0 flex-1 basis-64">
             <h2 className="text-lg">{match.job_title ?? "Latest match"}</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               {match.result.summary}
@@ -300,9 +302,9 @@ async function GapResults() {
   return (
     <section className="space-y-6">
       <div className="rounded-2xl border bg-card p-6">
-        <div className="flex items-center gap-6">
+        <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
           <ScoreRing value={gap.result.overall_gap_score} label="Gap" />
-          <div>
+          <div className="min-w-0">
             <p className="text-sm text-muted-foreground">
               {gap.result.gap_summary}
             </p>
@@ -388,7 +390,10 @@ export default async function JobsPage() {
       {header}
 
       <Tabs defaultValue="match" className="space-y-6">
-        <TabsList className="flex flex-wrap h-auto gap-1">
+        {/* `flex-1` triggers plus `h-auto` produced ~28px-tall tabs; the
+            min-height brings them back to a thumb-sized target once they wrap
+            onto two rows on a phone. */}
+        <TabsList className="flex h-auto flex-wrap gap-1 [&_[data-slot=tabs-trigger]]:min-h-11">
           <TabsTrigger value="match">Match</TabsTrigger>
           <TabsTrigger value="gap">Skill gap</TabsTrigger>
           <TabsTrigger value="letter">Cover letter</TabsTrigger>

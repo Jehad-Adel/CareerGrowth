@@ -16,7 +16,7 @@ export default async function SignupPage({
   const { notice, error } = await searchParams;
 
   return (
-    <div className="rounded-2xl border bg-card p-8">
+    <div className="rounded-2xl border bg-card p-6 sm:p-8">
       <h1 className="text-2xl">Start growing</h1>
       <p className="mt-1 text-sm text-muted-foreground">
         Create your farm in under a minute.

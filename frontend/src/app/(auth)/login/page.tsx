@@ -11,7 +11,7 @@ export default async function LoginPage({
   const { next, notice, error } = await searchParams;
 
   return (
-    <div className="rounded-2xl border bg-card p-8">
+    <div className="rounded-2xl border bg-card p-6 sm:p-8">
       <h1 className="text-2xl">Welcome back</h1>
       <p className="mt-1 text-sm text-muted-foreground">Log in to keep growing.</p>
 

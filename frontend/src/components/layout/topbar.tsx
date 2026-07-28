@@ -1,6 +1,9 @@
 import { Flame, LogOut } from "lucide-react";
+import Link from "next/link";
 
 import { signOut } from "@/app/(auth)/actions";
+import { Logo } from "@/components/brand/logo";
+import { MobileNav } from "@/components/layout/mobile-nav";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -21,10 +24,19 @@ export function Topbar({ profile }: { profile: Profile }) {
   const pct = Math.round((profile.xp / profile.xpForNext) * 100);
 
   return (
-    <header className="sticky top-0 z-10 flex items-center gap-4 border-b bg-background/80 px-4 py-3 backdrop-blur sm:px-6">
-      <div className="ms-auto flex items-center gap-5">
+    <header className="sticky top-0 z-30 flex items-center gap-2 border-b bg-background/80 px-3 py-2.5 backdrop-blur sm:gap-4 sm:px-6 sm:py-3">
+      {/* Below `lg` the sidebar is gone, so the drawer trigger and the wordmark
+          are the only things anchoring the page. Both disappear at `lg`, where
+          the rail carries them. */}
+      <MobileNav />
+      <Link href="/dashboard" className="flex items-center gap-2 lg:hidden">
+        <Logo />
+        <span className="font-heading text-base font-semibold">CareerFarm</span>
+      </Link>
+
+      <div className="ms-auto flex min-w-0 items-center gap-2 sm:gap-5">
         <span
-          className="flex items-center gap-1.5 font-mono text-sm text-muted-foreground"
+          className="flex shrink-0 items-center gap-1.5 font-mono text-sm text-muted-foreground"
           title={`${profile.streakDays}-day streak`}
         >
           <Flame className="h-4 w-4 text-[var(--harvest)]" />
@@ -47,7 +59,7 @@ export function Topbar({ profile }: { profile: Profile }) {
           <Progress value={pct} className="mt-1 h-1.5" />
         </div>
 
-        <Avatar className="h-10 w-10">
+        <Avatar className="h-9 w-9 shrink-0 sm:h-10 sm:w-10">
           <AvatarFallback className="bg-primary/12 font-medium text-primary">
             {initials(profile.name)}
           </AvatarFallback>

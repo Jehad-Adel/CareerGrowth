@@ -23,7 +23,7 @@ export default async function AppLayout({
   const collapsed = (await cookies()).get(SIDEBAR_COOKIE)?.value === "1";
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-dvh">
       <Sidebar defaultCollapsed={collapsed} />
       <div className="flex min-w-0 flex-1 flex-col">
         <Suspense fallback={<TopbarSkeleton />}>
