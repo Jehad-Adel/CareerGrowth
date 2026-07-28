@@ -1,13 +1,14 @@
 # Explicit Dockerfile rather than leaving Railway's nixpacks to infer a uv
 # project. Deterministic, and the same image runs locally.
 #
-# BUILD CONTEXT IS THE REPO ROOT, not backend/. Railway's `dockerfilePath`
-# selects the Dockerfile but does not move the context, so every COPY below
-# is written `backend/...`. Build it the same way by hand:
+# BUILD CONTEXT IS backend/, set by the Railway service's Root Directory.
+# `dockerfilePath` in railway.json is still resolved from the repo root, which
+# is why it reads `backend/Dockerfile` while the context does not. Every COPY
+# below is therefore relative to backend/. Build it the same way by hand:
 #
-#     docker build -f backend/Dockerfile .        # from the repo root
+#     cd backend && docker build .
 #
-# Running it from inside backend/ fails on the first COPY.
+# Running it from the repo root fails on the first COPY.
 FROM python:3.11-slim AS base
 
 ENV PYTHONUNBUFFERED=1 \
@@ -32,12 +33,12 @@ WORKDIR /app
 
 # Dependencies first: this layer is cached until the lockfile changes, which
 # is the difference between a 20-second deploy and a 3-minute one.
-COPY backend/pyproject.toml backend/uv.lock ./
+COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev --no-install-project
 
-COPY backend/app ./app
-COPY backend/migrations ./migrations
-COPY backend/alembic.ini ./
+COPY app ./app
+COPY migrations ./migrations
+COPY alembic.ini ./
 
 RUN uv sync --frozen --no-dev
 

@@ -1,0 +1,19 @@
+# Docker reads the .dockerignore next to the *context*, and the context is
+# backend/ — set by the Railway service's Root Directory. A .dockerignore at
+# the repo root would be silently inert; do not add one back there.
+#
+# Nothing outside backend/ is in the context at all, so the repo-root .env
+# cannot reach the builder even though nothing here mentions it.
+
+.venv/
+tests/
+
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+.env
+.env.*
+
+*.md
