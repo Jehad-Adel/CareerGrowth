@@ -4,6 +4,7 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
+from app.ai.schemas.cover_letter_schema import CoverLetter as CoverLetterResult
 from app.ai.schemas.job_match_schema import JobMatch as JobMatchResult
 from app.ai.schemas.resume_optimizer_schema import ResumeOptimization as ResumeResult
 from app.ai.schemas.resume_optimizer_schema import ResumeSection
@@ -14,6 +15,7 @@ from app.db import Base
 from app.errors import NoCvOnProfile, QuotaExceeded
 from app.models import (
     CareerProfile,
+    CoverLetter as CoverLetterRecord,
     GrowthEvent,
     JobMatch,
     ResumeOptimization,
@@ -304,3 +306,90 @@ def test_latest_is_scoped_to_the_caller(monkeypatch):
 
     assert matching_service.latest_match(db, mine.id) is not None
     assert matching_service.latest_match(db, theirs.id) is None
+
+
+# --- Cover letter ---
+
+
+def _letter_result(**over) -> CoverLetterResult:
+    return CoverLetterResult(
+        **{
+            "greeting": "Dear Hiring Team,",
+            "opening": "I am applying for the Backend Engineer role.",
+            "body": ["I built an API in Python.", "   ", ""],
+            "closing": "I would welcome a conversation.",
+            "sign_off": "Sincerely",
+            "tone": "Formal",
+            "evidence_used": ["Python engineer", "python engineer"],
+            **over,
+        }
+    )
+
+
+def test_blank_paragraphs_are_dropped():
+    """The model pads the list. Empty paragraphs would render as gaps."""
+    assert _letter_result().body == ["I built an API in Python."]
+
+
+def test_full_text_assembles_the_whole_letter():
+    """Assembled server-side so copy, download and any export cannot drift."""
+    text = _letter_result().full_text
+
+    assert text.startswith("Dear Hiring Team,")
+    assert "I built an API in Python." in text
+    assert text.endswith("Sincerely")
+
+
+def test_full_text_is_not_requested_from_the_model():
+    """It is computed. Asking the model to also write it invites the two to
+    disagree, and the export would ship whichever one it happened to read."""
+    assert "full_text" not in CoverLetterResult.model_json_schema()["properties"]
+
+
+def test_cover_letter_persists_and_denormalises_the_text(monkeypatch):
+    db = _session()
+    profile = _profile_with_cv(db)
+    _patch(monkeypatch, "build_cover_letter_chain", _letter_result())
+
+    record = matching_service.write_cover_letter(
+        db, profile.id, JD, job_title="Backend Eng"
+    )
+
+    assert record.job_title == "Backend Eng"
+    assert record.full_text.startswith("Dear Hiring Team,")
+    assert db.query(CoverLetterRecord).count() == 1
+
+
+def test_a_letter_does_not_grow_the_farm(monkeypatch):
+    """It presents capability the CV already proved. Nothing was learned, so
+    no growth event and no seeded skills."""
+    db = _session()
+    profile = _profile_with_cv(db)
+    _patch(monkeypatch, "build_cover_letter_chain", _letter_result())
+    before = db.query(GrowthEvent).count()
+
+    matching_service.write_cover_letter(db, profile.id, JD)
+
+    assert db.query(GrowthEvent).count() == before
+    assert db.query(Skill).count() == 0
+
+
+def test_a_letter_needs_a_cv(monkeypatch):
+    db = _session()
+    profile = profile_service.get_or_create(
+        db, AuthUser(id=str(uuid.uuid4()), email="a@b.com")
+    )
+    _patch(monkeypatch, "build_cover_letter_chain", _letter_result())
+
+    with pytest.raises(NoCvOnProfile):
+        matching_service.write_cover_letter(db, profile.id, JD)
+
+
+def test_the_letter_quota_is_charged_before_the_chain(monkeypatch):
+    db = _session()
+    profile = _profile_with_cv(db)
+    _patch(monkeypatch, "build_cover_letter_chain", _letter_result())
+
+    matching_service.write_cover_letter(db, profile.id, JD)
+
+    assert quota_service.usage_today(db, profile.id)["cover_letter"] == 1

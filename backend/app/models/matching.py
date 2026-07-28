@@ -58,3 +58,14 @@ class ResumeOptimization(_JobScoped, Base):
     profile_id: Mapped[uuid.UUID] = _profile_fk()
     ats_score_before: Mapped[int] = mapped_column(Integer, nullable=False)
     ats_score_after: Mapped[int] = mapped_column(Integer, nullable=False)
+
+
+class CoverLetter(_JobScoped, Base):
+    """A letter written for one specific job from the profile's CV."""
+
+    __tablename__ = "cover_letters"
+
+    profile_id: Mapped[uuid.UUID] = _profile_fk()
+    # Denormalised so a history list can show a preview without unpacking the
+    # JSON, and so the export path never has to reassemble the letter.
+    full_text: Mapped[str] = mapped_column(Text, nullable=False)

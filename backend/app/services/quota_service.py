@@ -15,6 +15,7 @@ DAILY_LIMITS: dict[str, int] = {
     "job_match": 20,
     "skill_gap": 20,
     "resume_optimizer": 10,
+    "cover_letter": 10,
     "roadmap": 10,
     "interview_turn": 60,
     "chat_message": 100,

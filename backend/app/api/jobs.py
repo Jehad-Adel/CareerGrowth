@@ -124,3 +124,32 @@ def latest_resume(profile: CurrentProfile, db: DbSession) -> AnalysisOut | None:
         job_title=record.job_title,
         result=record.result,
     )
+
+
+@router.post("/jobs/cover-letter", response_model=AnalysisOut)
+@limiter.limit("5/minute")
+def write_cover_letter(
+    request: Request, payload: JobPayload, profile: CurrentProfile, db: DbSession
+) -> AnalysisOut:
+    record = matching_service.write_cover_letter(
+        db, profile.id, payload.job_description, payload.job_title
+    )
+    return AnalysisOut(
+        id=record.id,
+        created_at=record.created_at,
+        job_title=record.job_title,
+        result=record.result,
+    )
+
+
+@router.get("/jobs/cover-letter/latest", response_model=AnalysisOut | None)
+def latest_cover_letter(profile: CurrentProfile, db: DbSession) -> AnalysisOut | None:
+    record = matching_service.latest_cover_letter(db, profile.id)
+    if record is None:
+        return None
+    return AnalysisOut(
+        id=record.id,
+        created_at=record.created_at,
+        job_title=record.job_title,
+        result=record.result,
+    )

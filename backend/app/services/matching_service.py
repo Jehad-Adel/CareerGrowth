@@ -1,8 +1,8 @@
-"""Job Match, Skill Gap, and Resume Optimizer.
+"""Job Match, Skill Gap, Resume Optimizer, and Cover Letter.
 
-One module rather than three near-identical ones: all three chains take the
-same input (the profile's CV text plus a job description), run the same
-guard/quota/invoke/persist sequence, and change together.
+One module rather than four near-identical ones: every chain here takes the
+same input (the profile's CV text plus a job description), runs the same
+guard/quota/invoke/persist sequence, and they change together.
 
 The CV text comes from the profile, never from the request. This is the spine
 paying off — CV Studio already wrote it, so the user pastes only the job.
@@ -15,6 +15,7 @@ from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.ai.chains.cover_letter_chain import build_cover_letter_chain
 from app.ai.chains.job_match_chain import build_job_match_chain
 from app.ai.chains.resume_optimizer_chain import build_resume_optimizer_chain
 from app.ai.chains.skill_gap_chain import build_skill_gap_chain
@@ -22,6 +23,7 @@ from app.errors import AppError, NoCvOnProfile
 from app.logging import get_logger
 from app.models import (
     CareerProfile,
+    CoverLetter,
     JobMatch,
     ResumeOptimization,
     SkillGapAnalysis,
@@ -229,6 +231,45 @@ def optimize_resume(
     # No growth event: this rewrites presentation, it does not add a skill,
     # and the farm must only reflect real capability.
     return record
+
+
+def write_cover_letter(
+    db: Session,
+    profile_id: uuid.UUID,
+    job_description: str,
+    job_title: str | None = None,
+) -> CoverLetter:
+    """Write a letter for one job from the CV the profile already holds."""
+    _, cv_text = _require_cv(db, profile_id)
+    quota_service.consume(db, profile_id, "cover_letter")
+
+    result = _invoke(
+        build_cover_letter_chain,
+        {
+            "cv_text": cv_text,
+            "job_description": job_description,
+            "job_title": job_title,
+        },
+        "cover_letter",
+    )
+
+    record = CoverLetter(
+        profile_id=profile_id,
+        job_title=job_title,
+        job_description=job_description,
+        result=result.model_dump(mode="json"),
+        full_text=result.full_text,  # type: ignore[attr-defined]
+    )
+    db.add(record)
+    db.commit()
+    # No growth event and no skill seeding: a letter presents capability the
+    # CV already proved. Nothing new was learned, so the farm must not grow.
+    db.refresh(record)
+    return record
+
+
+def latest_cover_letter(db: Session, profile_id: uuid.UUID) -> CoverLetter | None:
+    return _latest(db, CoverLetter, profile_id)
 
 
 def _latest(db: Session, model, profile_id: uuid.UUID):

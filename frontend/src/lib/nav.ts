@@ -6,6 +6,7 @@ import {
   Mic,
   Sprout,
   Target,
+  ClipboardList,
   type LucideIcon,
 } from "lucide-react";
 
@@ -21,6 +22,7 @@ export const navItems: NavItem[] = [
   { href: "/farm", label: "My Farm", icon: Sprout },
   { href: "/cv", label: "CV Studio", icon: FileText },
   { href: "/jobs", label: "Job Match", icon: Target },
+  { href: "/applications", label: "Applications", icon: ClipboardList },
   { href: "/interview", label: "Interview Coach", icon: Mic },
   { href: "/roadmap", label: "Roadmap", icon: Map },
   { href: "/chat", label: "Career Chat", icon: MessageCircle },

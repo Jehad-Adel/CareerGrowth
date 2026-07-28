@@ -69,3 +69,12 @@ export async function analyzeGap(
 ): Promise<JobActionState> {
   return run("/skills/gap", formData, ["/jobs", "/dashboard", "/farm"]);
 }
+
+export async function writeCoverLetter(
+  _prev: JobActionState,
+  formData: FormData,
+): Promise<JobActionState> {
+  // No farm or dashboard revalidation: a letter presents capability the CV
+  // already proved, so nothing grew and no XP was awarded.
+  return run("/jobs/cover-letter", formData, ["/jobs"]);
+}

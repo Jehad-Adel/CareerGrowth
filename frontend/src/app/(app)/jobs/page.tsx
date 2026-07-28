@@ -2,7 +2,12 @@ import { Sprout } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
-import { analyzeGap, matchJob } from "@/app/(app)/jobs/actions";
+import {
+  analyzeGap,
+  matchJob,
+  writeCoverLetter,
+} from "@/app/(app)/jobs/actions";
+import { CoverLetterActions } from "@/components/jobs/cover-letter-actions";
 import { JobInput } from "@/components/jobs/job-input";
 import { PageHeader } from "@/components/layout/page-header";
 import { ResultsSkeleton } from "@/components/skeletons";
@@ -11,6 +16,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { ScoreRing } from "@/components/ui/score-ring";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+  getLatestCoverLetter,
   getLatestJobMatch,
   getLatestSkillGap,
   getProfile,
@@ -229,6 +235,59 @@ async function MatchResults() {
   );
 }
 
+async function CoverLetterResult() {
+  const letter = await getLatestCoverLetter();
+
+  if (!letter) {
+    return <Empty>No letter yet. Paste a job description to write one.</Empty>;
+  }
+
+  const { result } = letter;
+
+  return (
+    <section className="space-y-4">
+      <div className="rounded-2xl border bg-card p-6">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-lg">{letter.job_title ?? "Your letter"}</h2>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {result.tone} tone
+              {result.word_count_note ? ` · ${result.word_count_note}` : ""}
+            </p>
+          </div>
+          <CoverLetterActions
+            text={result.full_text}
+            jobTitle={letter.job_title}
+          />
+        </div>
+
+        {/* Plain text in a pre, never markup — same rule as the chat. */}
+        <pre className="whitespace-pre-wrap rounded-xl bg-muted p-4 font-sans text-sm leading-relaxed">
+          {result.full_text}
+        </pre>
+      </div>
+
+      {result.evidence_used.length > 0 ? (
+        <div className="rounded-2xl border bg-card p-6">
+          <h3 className="mb-1 text-base">What it claimed about you</h3>
+          <p className="mb-3 text-xs text-muted-foreground">
+            Every line here should be something your CV genuinely says. If one
+            is not, the letter overreached — edit it before sending.
+          </p>
+          <ul className="space-y-1.5">
+            {result.evidence_used.map((item) => (
+              <li key={item} className="flex gap-2 text-sm">
+                <span className="text-muted-foreground">·</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
 async function GapResults() {
   const gap = await getLatestSkillGap();
 
@@ -323,6 +382,7 @@ export default async function JobsPage() {
         <TabsList>
           <TabsTrigger value="match">Match</TabsTrigger>
           <TabsTrigger value="gap">Skill gap</TabsTrigger>
+          <TabsTrigger value="letter">Cover letter</TabsTrigger>
         </TabsList>
 
         <TabsContent value="match">
@@ -357,6 +417,24 @@ export default async function JobsPage() {
               fallback={<ResultsSkeleton label="Loading your latest gap analysis" />}
             >
               <GapResults />
+            </Suspense>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="letter">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <section className="rounded-2xl border bg-card p-6">
+              <JobInput
+                action={writeCoverLetter}
+                label="Write my letter"
+                hint="Written only from what your CV actually evidences. Every claim it makes is listed underneath so you can check it."
+              />
+            </section>
+
+            <Suspense
+              fallback={<ResultsSkeleton label="Loading your latest letter" />}
+            >
+              <CoverLetterResult />
             </Suspense>
           </div>
         </TabsContent>

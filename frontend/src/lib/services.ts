@@ -343,3 +343,58 @@ export type ChatState = {
 
 export const getChatState = (): Promise<ChatState> =>
   serverFetch<ChatState>("/chat");
+
+// --- Cover letter ---
+
+export type CoverLetterResult = {
+  greeting: string;
+  opening: string;
+  body: string[];
+  closing: string;
+  sign_off: string;
+  tone: "Formal" | "Conversational" | "Enthusiastic";
+  /** The CV facts the letter leans on, so the candidate can check them. */
+  evidence_used: string[];
+  word_count_note: string;
+  /** Assembled server-side so copy, download and any future PDF agree. */
+  full_text: string;
+};
+
+export const getLatestCoverLetter = (): Promise<
+  AnalysisRecord<CoverLetterResult> | null
+> =>
+  serverFetch<AnalysisRecord<CoverLetterResult> | null>(
+    "/jobs/cover-letter/latest",
+  );
+
+// --- Application tracker ---
+
+export type ApplicationStatus =
+  | "saved"
+  | "applied"
+  | "interviewing"
+  | "offer"
+  | "rejected";
+
+export type ApplicationRecord = {
+  id: string;
+  company: string;
+  role: string;
+  status: ApplicationStatus;
+  job_match_id: string | null;
+  applied_at: string | null;
+  url: string;
+  notes: string;
+  created_at: string;
+};
+
+export type ApplicationBoard = {
+  /** Pipeline order, defined server-side so both ends cannot disagree. */
+  statuses: ApplicationStatus[];
+  counts: Record<ApplicationStatus, number>;
+  applications: ApplicationRecord[];
+};
+
+/** The whole board in one call — every column renders at once. */
+export const getApplications = (): Promise<ApplicationBoard> =>
+  serverFetch<ApplicationBoard>("/applications");
