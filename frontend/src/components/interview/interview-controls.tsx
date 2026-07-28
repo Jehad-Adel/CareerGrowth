@@ -1,5 +1,6 @@
 "use client";
 
+import { AlertCircle } from "lucide-react";
 import { useActionState } from "react";
 
 import {
@@ -53,7 +54,7 @@ export function StartInterview() {
                   name="level"
                   value={level.value}
                   defaultChecked={i === 0}
-                  className="mt-1"
+                  className="mt-1 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 />
                 <span>
                   <span className="block text-sm font-medium">{level.label}</span>
@@ -71,6 +72,8 @@ export function StartInterview() {
               id="job_description"
               name="job_description"
               rows={8}
+              required
+              aria-required="true"
               placeholder="Paste the role you're interviewing for…"
             />
           </div>
@@ -80,8 +83,9 @@ export function StartInterview() {
       <SubmitButton idle="Start interview" busy="Setting up…" />
 
       {state.error ? (
-        <div role="alert" className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-xs text-destructive">
-          {state.error}
+        <div role="alert" className="flex items-start gap-2.5 rounded-lg bg-destructive/10 px-3.5 py-2.5 text-xs text-destructive">
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+          <span>{state.error}</span>
         </div>
       ) : null}
     </form>
@@ -112,8 +116,9 @@ export function AnswerQuestion({ sessionId }: { sessionId: string }) {
       <div className="flex items-center gap-3">
         <SubmitButton idle="Submit answer" busy="Thinking…" />
         {state.error ? (
-          <div role="alert" className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-1.5 text-xs text-destructive">
-            {state.error}
+          <div role="alert" className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3.5 py-2 text-xs text-destructive">
+            <AlertCircle className="h-3.5 w-3.5 shrink-0 text-destructive" />
+            <span>{state.error}</span>
           </div>
         ) : null}
       </div>

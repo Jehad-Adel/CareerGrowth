@@ -69,7 +69,7 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
         )}
       >
         <Logo />
-        {!isCollapsed && (
+        {!isCollapsed ? (
           <span className="leading-none">
             <span className="block font-heading text-lg font-semibold text-sidebar-foreground">
               CareerFarm
@@ -78,7 +78,7 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
               Grow your career
             </span>
           </span>
-        )}
+        ) : null}
       </Link>
 
       <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3">
@@ -91,7 +91,7 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
               aria-current={active ? "page" : undefined}
               title={isCollapsed ? label : undefined}
               className={cn(
-                "flex items-center gap-3 rounded-lg py-2 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+                "flex items-center gap-3 rounded-lg py-2.5 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
                 isCollapsed ? "justify-center px-0" : "px-3",
                 active
                   ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
@@ -99,18 +99,18 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
-              {!isCollapsed && (
+              {!isCollapsed ? (
                 <>
                   {label}
                   <NavPending />
                 </>
-              )}
+              ) : null}
             </Link>
           );
         })}
       </nav>
 
-      {!isCollapsed && (
+      {!isCollapsed ? (
         <div className="m-3 rounded-xl border border-sidebar-border bg-background/40 p-3">
           <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
             Today
@@ -119,9 +119,9 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
             Tend one plant. Small, daily growth compounds.
           </p>
         </div>
-      )}
+      ) : null}
 
-      {!isSmallScreen && (
+      {!isSmallScreen ? (
         <button
           type="button"
           onClick={toggle}
@@ -135,9 +135,9 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
           <PanelLeftClose
             className={cn("h-4 w-4 shrink-0 transition-transform", isCollapsed && "rotate-180")}
           />
-          {!isCollapsed && "Collapse"}
+          {!isCollapsed ? "Collapse" : null}
         </button>
-      )}
+      ) : null}
     </aside>
   );
 }

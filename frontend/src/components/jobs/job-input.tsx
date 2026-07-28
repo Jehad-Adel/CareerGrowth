@@ -1,5 +1,6 @@
 "use client";
 
+import { AlertCircle } from "lucide-react";
 import { useActionState } from "react";
 
 import type { JobActionState } from "@/app/(app)/jobs/actions";
@@ -41,6 +42,8 @@ export function JobInput({
               id="job_description"
               name="job_description"
               rows={10}
+              required
+              aria-required="true"
               placeholder="Paste the full posting here…"
               aria-describedby="jd-hint"
             />
@@ -59,8 +62,9 @@ export function JobInput({
       />
 
       {state.error ? (
-        <div role="alert" className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-xs text-destructive">
-          {state.error}
+        <div role="alert" className="flex items-start gap-2.5 rounded-lg bg-destructive/10 px-3.5 py-2.5 text-xs text-destructive">
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+          <span>{state.error}</span>
         </div>
       ) : null}
     </form>

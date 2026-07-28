@@ -1,6 +1,6 @@
 "use client";
 
-import { FileUp, Loader2 } from "lucide-react";
+import { AlertCircle, FileUp, Loader2 } from "lucide-react";
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 
@@ -13,16 +13,18 @@ import { cn } from "@/lib/utils";
  * call, and a button spinner alone leaves the largest thing on screen looking
  * idle while it runs.
  */
-function DropZone({ filename }: { filename: string | null }) {
+function DropZone({ filename, outOfQuota }: { filename: string | null; outOfQuota: boolean }) {
   const { pending } = useFormStatus();
 
   return (
     <label
       className={cn(
-        "flex flex-col items-center gap-3 rounded-xl border border-dashed border-border px-6 py-10 text-center transition-colors",
+        "flex flex-col items-center gap-3 rounded-xl border border-dashed border-border px-6 py-10 text-center transition-colors focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2",
         pending
           ? "cursor-progress border-primary/40 bg-accent/30"
-          : "cursor-pointer hover:border-primary/50 hover:bg-accent/40",
+          : outOfQuota
+            ? "cursor-not-allowed opacity-60"
+            : "cursor-pointer hover:border-primary/50 hover:bg-accent/40",
       )}
     >
       {pending ? (
@@ -40,7 +42,8 @@ function DropZone({ filename }: { filename: string | null }) {
         type="file"
         name="file"
         accept="application/pdf"
-        className="hidden"
+        disabled={outOfQuota || pending}
+        className="sr-only"
       />
     </label>
   );
@@ -66,7 +69,7 @@ export function CvUpload({ remaining }: { remaining: number }) {
       }}
     >
       <PendingFieldset>
-        <DropZone filename={filename} />
+        <DropZone filename={filename} outOfQuota={outOfQuota} />
       </PendingFieldset>
 
       <SubmitButton
@@ -77,8 +80,9 @@ export function CvUpload({ remaining }: { remaining: number }) {
       />
 
       {state.error ? (
-        <div role="alert" className="mt-3 flex items-center justify-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-xs text-destructive">
-          {state.error}
+        <div role="alert" className="mt-3 flex items-start gap-2.5 rounded-lg bg-destructive/10 px-3.5 py-2.5 text-xs text-destructive">
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+          <span>{state.error}</span>
         </div>
       ) : null}
 

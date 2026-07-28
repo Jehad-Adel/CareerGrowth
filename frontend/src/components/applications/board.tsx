@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { AlertCircle, Trash2 } from "lucide-react";
 import { useActionState } from "react";
 
 import {
@@ -53,9 +53,9 @@ function Card({
 
   return (
     <li className="flex flex-col gap-3 rounded-xl border bg-card p-4 transition-shadow hover:shadow-sm">
-      <div className="space-y-1">
-        <p className="text-sm font-semibold leading-snug">{application.role}</p>
-        <p className="text-xs text-muted-foreground">{application.company}</p>
+      <div className="space-y-1 min-w-0">
+        <p className="text-sm font-semibold leading-snug break-words">{application.role}</p>
+        <p className="text-xs text-muted-foreground break-words">{application.company}</p>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
@@ -72,7 +72,7 @@ function Card({
             href={application.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-primary underline-offset-4 hover:underline"
+            className="font-medium text-primary underline-offset-4 hover:underline focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 rounded-sm"
           >
             Posting ↗
           </a>
@@ -80,7 +80,7 @@ function Card({
       </div>
 
       <div className="flex items-center gap-2 border-t border-border/50 pt-2.5">
-        <form action={moveApplication} className="flex-1">
+        <form action={moveApplication} className="flex-1 min-w-0">
           <input type="hidden" name="id" value={application.id} />
           <label className="sr-only" htmlFor={`move-${application.id}`}>
             Move {application.role} to another stage
@@ -90,7 +90,7 @@ function Card({
             name="status"
             defaultValue={application.status}
             onChange={(e) => e.currentTarget.form?.requestSubmit()}
-            className="w-full rounded-lg border bg-background px-2.5 py-1.5 text-xs outline-none transition-colors focus-visible:border-ring"
+            className="w-full rounded-lg border bg-background px-2.5 py-1.5 text-xs outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
           >
             {statuses.map((s) => (
               <option key={s} value={s}>
@@ -105,7 +105,7 @@ function Card({
           <button
             type="submit"
             aria-label={`Delete ${application.role} at ${application.company}`}
-            className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+            className="min-h-[36px] min-w-[36px] flex items-center justify-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:ring-2 focus-visible:ring-destructive focus-visible:outline-none"
           >
             <Trash2 className="h-4 w-4" />
           </button>
@@ -131,11 +131,11 @@ export function ApplicationsBoard({ board }: { board: ApplicationBoard }) {
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="space-y-1.5">
                 <Label htmlFor="company" className="text-sm font-medium">Company</Label>
-                <Input id="company" name="company" maxLength={200} placeholder="Acme Corp" />
+                <Input id="company" name="company" maxLength={200} placeholder="Acme Corp" required aria-required="true" />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="role" className="text-sm font-medium">Role</Label>
-                <Input id="role" name="role" maxLength={200} placeholder="Senior Frontend Engineer" />
+                <Input id="role" name="role" maxLength={200} placeholder="Senior Frontend Engineer" required aria-required="true" />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="url" className="text-sm font-medium">Posting link (optional)</Label>
@@ -147,19 +147,20 @@ export function ApplicationsBoard({ board }: { board: ApplicationBoard }) {
           <div className="flex flex-wrap items-center gap-3 pt-1">
             <SubmitButton idle="Track this" busy="Saving…" />
             {state.error ? (
-              <div role="alert" className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-1.5 text-xs text-destructive">
-                {state.error}
+              <div role="alert" className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3.5 py-2 text-xs text-destructive">
+                <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                <span>{state.error}</span>
               </div>
             ) : null}
           </div>
         </form>
       </section>
 
-      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+      <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
         {board.statuses.map((status) => {
           const column = board.applications.filter((a) => a.status === status);
           return (
-            <section key={status} className="space-y-2.5">
+            <section key={status} className="space-y-2.5 min-w-0">
               <div className="flex items-center justify-between">
                 <h2 className="text-sm font-medium">{LABELS[status]}</h2>
                 <span

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check } from "lucide-react";
+import { AlertCircle, Check } from "lucide-react";
 import { useActionState } from "react";
 
 import {
@@ -29,13 +29,16 @@ export function GenerateRoadmap({ targetRole }: { targetRole: string | null }) {
             defaultValue={targetRole ?? ""}
             placeholder="Staff Engineer"
             maxLength={200}
+            required
+            aria-required="true"
           />
         </div>
       </PendingFieldset>
       <SubmitButton idle="Build my roadmap" busy="Planning…" />
       {state.error ? (
-        <div role="alert" className="flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-xs text-destructive sm:self-center">
-          {state.error}
+        <div role="alert" className="flex items-start gap-2.5 rounded-lg bg-destructive/10 px-3.5 py-2.5 text-xs text-destructive sm:self-center">
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+          <span>{state.error}</span>
         </div>
       ) : null}
     </form>
@@ -68,8 +71,9 @@ export function CompleteStep({
       <input type="hidden" name="step_id" value={stepId} />
       <SubmitButton idle="Mark done" busy="Saving…" />
       {state.error ? (
-        <p role="alert" className="mt-1 text-xs text-destructive">
-          {state.error}
+        <p role="alert" className="mt-1 flex items-center gap-1.5 text-xs text-destructive">
+          <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+          <span>{state.error}</span>
         </p>
       ) : null}
     </form>

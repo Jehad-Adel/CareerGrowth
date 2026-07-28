@@ -1,6 +1,6 @@
 "use client";
 
-import { SendHorizontal, Trash2 } from "lucide-react";
+import { Loader2, SendHorizontal, Trash2 } from "lucide-react";
 import { useActionState, useOptimistic, useRef, useTransition } from "react";
 import { useFormStatus } from "react-dom";
 
@@ -95,19 +95,23 @@ function Thinking() {
     </Bubble>
   );
 }
-
-function Send() {
+function Send() {
   const { pending } = useFormStatus();
+
   return (
     <Button
       type="submit"
       size="icon"
-      className="h-10 w-10"
+      className="h-10 w-10 shrink-0"
       aria-label="Send"
       disabled={pending}
       aria-busy={pending}
     >
-      <SendHorizontal className="h-4 w-4" />
+      {pending ? (
+        <Loader2 className="h-4 w-4 animate-spin" />
+      ) : (
+        <SendHorizontal className="h-4 w-4" />
+      )}
     </Button>
   );
 }
@@ -119,7 +123,8 @@ function ClearChatButton() {
     <Button
       variant="ghost"
       size="sm"
-      className="h-7 text-xs text-muted-foreground hover:text-destructive"
+      className="h-7 text-xs text-muted-foreground hover:text-destructive focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-1"
+      aria-label="Clear chat history"
       disabled={isPending}
       onClick={() => {
         startTransition(async () => {
@@ -226,7 +231,7 @@ export function Conversation({
               onClick={() => {
                 if (inputRef.current) inputRef.current.value = s;
               }}
-              className="rounded-full border px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground disabled:opacity-50"
+              className="rounded-full border px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:opacity-50"
             >
               {s}
             </button>
@@ -238,6 +243,7 @@ export function Conversation({
             ref={inputRef}
             name="message"
             disabled={disabled}
+            aria-label="Ask a question about your career"
             placeholder={
               disabled
                 ? "Analyze your CV first so there's something to talk about"

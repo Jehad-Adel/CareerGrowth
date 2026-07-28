@@ -7,8 +7,10 @@ import { Progress } from "@/components/ui/progress";
 import type { Profile } from "@/types";
 
 function initials(name: string) {
-  return name
-    .split(" ")
+  const clean = name.trim();
+  if (!clean) return "CF";
+  return clean
+    .split(/\s+/)
     .map((p) => p[0])
     .slice(0, 2)
     .join("")
@@ -29,7 +31,11 @@ export function Topbar({ profile }: { profile: Profile }) {
           {profile.streakDays}d
         </span>
 
-        <div className="hidden w-44 sm:block">
+        <div
+          className="hidden w-44 sm:block"
+          role="status"
+          aria-label={`Level ${profile.level}, ${profile.levelTitle}: ${profile.xp} of ${profile.xpForNext} XP`}
+        >
           <div className="flex justify-between font-mono text-[11px] text-muted-foreground">
             <span>
               Lv {profile.level} · {profile.levelTitle}
@@ -54,7 +60,7 @@ export function Topbar({ profile }: { profile: Profile }) {
             type="submit"
             variant="ghost"
             size="icon"
-            className="h-9 w-9"
+            className="h-9 w-9 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             aria-label="Log out"
             title="Log out"
           >

@@ -18,7 +18,11 @@ export function SkillPlant({ plant }: { plant: FarmPlant }) {
   // The stage comes from the API. The farm is a server-side projection, and
   // recomputing it here with a second set of thresholds is how the two drift.
   return (
-    <div className="group flex flex-col items-center gap-2">
+    <div
+      role="group"
+      aria-label={`${plant.name}: ${plant.mastery}% mastery, ${stageLabel[plant.stage]}`}
+      className="group flex flex-col items-center gap-2"
+    >
       <div className="relative flex h-24 w-full items-end justify-center rounded-xl border bg-[linear-gradient(to_bottom,transparent_55%,color-mix(in_oklch,var(--soil)_16%,transparent))] pb-1 transition-colors group-hover:border-primary/40">
         <span className="absolute right-1.5 top-1.5 font-mono text-[10px] text-muted-foreground">
           {plant.mastery}%
@@ -58,7 +62,7 @@ export function FarmPlot({ plants }: { plants: FarmPlant[] }) {
               {items.length} {items.length === 1 ? "plant" : "plants"}
             </span>
           </div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
             {items.map((p) => (
               <SkillPlant key={p.id} plant={p} />
             ))}

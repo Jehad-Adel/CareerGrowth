@@ -1,5 +1,6 @@
 "use client";
 
+import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 
@@ -19,8 +20,20 @@ type Field = {
 function SubmitButton({ label }: { label: string }) {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" className="w-full" disabled={pending}>
-      {pending ? "Working…" : label}
+    <Button
+      type="submit"
+      className="w-full h-10 font-medium"
+      disabled={pending}
+      aria-busy={pending}
+    >
+      {pending ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Working…
+        </>
+      ) : (
+        label
+      )}
     </Button>
   );
 }
@@ -32,6 +45,9 @@ function formatInitialError(err?: string) {
   }
   if (err === "missing_code") {
     return "Could not confirm your email address. Please try logging in.";
+  }
+  if (err === "access_denied") {
+    return "Access was denied. Please check your account and try again.";
   }
   return err;
 }
@@ -60,21 +76,23 @@ export function AuthForm({
       {next ? <input type="hidden" name="next" value={next} /> : null}
 
       {notice ? (
-        <p
+        <div
           role="status"
-          className="rounded-lg border border-primary/30 bg-primary/8 px-3 py-2 text-sm text-foreground"
+          className="flex items-start gap-2.5 rounded-lg border border-primary/30 bg-primary/8 px-3.5 py-2.5 text-sm text-foreground"
         >
-          {notice}
-        </p>
+          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+          <span>{notice}</span>
+        </div>
       ) : null}
 
       {formError ? (
-        <p
+        <div
           role="alert"
-          className="rounded-lg border border-destructive/40 bg-destructive/8 px-3 py-2 text-sm text-destructive"
+          className="flex items-start gap-2.5 rounded-lg border border-destructive/40 bg-destructive/8 px-3.5 py-2.5 text-sm text-destructive"
         >
-          {formError}
-        </p>
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+          <span>{formError}</span>
+        </div>
       ) : null}
 
       {fields.map((field) => {
@@ -89,11 +107,13 @@ export function AuthForm({
               type={field.type ?? "text"}
               placeholder={field.placeholder}
               autoComplete={field.autoComplete}
+              required
               aria-invalid={error ? true : undefined}
               aria-describedby={error ? errorId : undefined}
             />
             {error ? (
-              <p id={errorId} role="alert" className="text-xs text-destructive">
+              <p id={errorId} role="alert" className="flex items-center gap-1.5 text-xs text-destructive">
+                <AlertCircle className="h-3 w-3 shrink-0" />
                 {error}
               </p>
             ) : null}
