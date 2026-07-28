@@ -20,22 +20,27 @@ import { cn } from "@/lib/utils";
  * The drawer shows the same items with their labels.
  *
  * Deliberately not a `<dialog>` or a headless dialog dependency: this needs
- * one focus move, Escape, and a scroll lock, and all three are visible here.
+ * one focus move, Escape, a scroll lock and an exit animation, and all four
+ * are visible here.
  */
 export function MobileNav() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
+  // Three states, not a boolean: the panel has to stay mounted while its exit
+  // animation runs, or closing would be an instant disappearance.
+  const [state, setState] = useState<"closed" | "open" | "closing">("closed");
   const panel = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
 
+  const mounted = state !== "closed";
+  const closing = state === "closing";
+
+  const close = () => setState((s) => (s === "open" ? "closing" : s));
+
   useEffect(() => {
-    if (!open) return;
+    if (state !== "open") return;
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setOpen(false);
-        trigger.current?.focus();
-      }
+      if (e.key === "Escape") setState("closing");
     };
     document.addEventListener("keydown", onKey);
 
@@ -51,16 +56,16 @@ export function MobileNav() {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = previous;
     };
-  }, [open]);
+  }, [state]);
 
   return (
     <>
       <button
         ref={trigger}
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => setState("open")}
         aria-label="Open navigation"
-        aria-expanded={open}
+        aria-expanded={mounted}
         aria-controls="mobile-nav"
         className="-ms-1 grid h-11 w-11 shrink-0 place-items-center rounded-lg text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring lg:hidden"
       >
@@ -72,80 +77,95 @@ export function MobileNav() {
           makes that ancestor the containing block for `position: fixed`
           descendants — so the drawer laid itself out inside the 56px header
           strip instead of over the viewport, which is what "the menu does not
-          open" looked like. `open` only becomes true on a click, so this never
-          runs during SSR. */}
-      {open
+          open" looked like. Only mounted after a click, so this never runs
+          during SSR. */}
+      {mounted
         ? createPortal(
-        <div className="fixed inset-0 z-50 lg:hidden">
-          {/* 60% scrim: at the lighter end of the range the page behind still
-              competes with the drawer's own surface in dark mode. */}
-          <button
-            type="button"
-            aria-label="Close navigation"
-            onClick={() => setOpen(false)}
-            className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"
-          />
-
-          <div
-            ref={panel}
-            id="mobile-nav"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Navigation"
-            className="absolute inset-y-0 start-0 flex w-[min(18rem,82vw)] flex-col border-e border-sidebar-border bg-sidebar shadow-2xl"
-          >
-            <div className="flex items-center justify-between gap-2 px-4 py-4">
-              <Link
-                href="/dashboard"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-2.5"
-              >
-                <Logo />
-                <span className="font-heading text-lg font-semibold text-sidebar-foreground">
-                  CareerFarm
-                </span>
-              </Link>
+            <div className="fixed inset-0 z-50 lg:hidden">
+              {/* 60% scrim: at the lighter end of the range the page behind
+                  still competes with the drawer's surface in dark mode. */}
               <button
                 type="button"
-                onClick={() => setOpen(false)}
                 aria-label="Close navigation"
-                className="grid h-11 w-11 shrink-0 place-items-center rounded-lg text-muted-foreground outline-none transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
+                onClick={close}
+                className={cn(
+                  "absolute inset-0 bg-black/60 backdrop-blur-[2px]",
+                  closing ? "cf-scrim-out" : "cf-scrim-in",
+                )}
+              />
 
-            {/* Scrolls on short phones in landscape, where eight 48px rows do
-                not fit; `overscroll-contain` keeps that scroll off the page. */}
-            <nav className="flex flex-1 flex-col gap-1 overflow-y-auto overscroll-contain px-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
-              {navItems.map(({ href, label, icon: Icon }) => {
-                const active =
-                  pathname === href || pathname.startsWith(`${href}/`);
-                return (
+              <div
+                ref={panel}
+                id="mobile-nav"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Navigation"
+                // Unmounting on the panel's own animationend rather than a
+                // timeout keeps the two in step, including under
+                // prefers-reduced-motion where the duration is ~0.
+                onAnimationEnd={() => {
+                  if (!closing) return;
+                  setState("closed");
+                  trigger.current?.focus();
+                }}
+                className={cn(
+                  "absolute inset-y-0 start-0 flex w-[min(18rem,82vw)] flex-col border-e border-sidebar-border bg-sidebar shadow-2xl",
+                  closing ? "cf-drawer-out" : "cf-drawer-in",
+                )}
+              >
+                <div className="flex items-center justify-between gap-2 px-4 py-4">
                   <Link
-                    key={href}
-                    href={href}
-                    // Closed on click rather than in an effect watching the
-                    // pathname: that effect sets state during the render pass
-                    // that follows navigation, which React 19's lint flags as
-                    // a cascading render.
-                    onClick={() => setOpen(false)}
-                    aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "flex min-h-12 items-center gap-3 rounded-lg px-3 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
-                      active
-                        ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
-                        : "text-sidebar-foreground/80 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
-                    )}
+                    href="/dashboard"
+                    onClick={close}
+                    className="flex items-center gap-2.5"
                   >
-                    <Icon className="h-4 w-4 shrink-0" />
-                    {label}
+                    <Logo />
+                    <span className="font-heading text-lg font-semibold text-sidebar-foreground">
+                      CareerFarm
+                    </span>
                   </Link>
-                );
-              })}
-            </nav>
-          </div>
-        </div>,
+                  <button
+                    type="button"
+                    onClick={close}
+                    aria-label="Close navigation"
+                    className="grid h-11 w-11 shrink-0 place-items-center rounded-lg text-muted-foreground outline-none transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                {/* Scrolls on short phones in landscape, where eight 48px rows
+                    do not fit; `overscroll-contain` keeps that scroll off the
+                    page. */}
+                <nav className="flex flex-1 flex-col gap-1 overflow-y-auto overscroll-contain px-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
+                  {navItems.map(({ href, label, icon: Icon }) => {
+                    const active =
+                      pathname === href || pathname.startsWith(`${href}/`);
+                    return (
+                      <Link
+                        key={href}
+                        href={href}
+                        // Closed on click rather than in an effect watching the
+                        // pathname: that effect sets state during the render
+                        // pass that follows navigation, which React 19's lint
+                        // flags as a cascading render.
+                        onClick={close}
+                        aria-current={active ? "page" : undefined}
+                        className={cn(
+                          "flex min-h-12 items-center gap-3 rounded-lg px-3 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+                          active
+                            ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
+                            : "text-sidebar-foreground/80 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
+                        )}
+                      >
+                        <Icon className="h-4 w-4 shrink-0" />
+                        {label}
+                      </Link>
+                    );
+                  })}
+                </nav>
+              </div>
+            </div>,
             document.body,
           )
         : null}

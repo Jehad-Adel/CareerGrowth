@@ -310,6 +310,48 @@
   will-change: transform;
 }
 
+/* Navigation drawer. Transform and opacity only, so the panel slides on the
+   compositor instead of relaying out the page each frame. Exit is shorter than
+   enter — a dismissal that takes as long as the reveal feels unresponsive. */
+@keyframes cf-scrim-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes cf-scrim-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes cf-drawer-in {
+  from {
+    transform: translateX(calc(var(--cf-drawer-from, -1) * 100%));
+  }
+}
+@keyframes cf-drawer-out {
+  to {
+    transform: translateX(calc(var(--cf-drawer-from, -1) * 100%));
+  }
+}
+.cf-scrim-in {
+  animation: cf-scrim-in 220ms ease-out;
+}
+.cf-scrim-out {
+  animation: cf-scrim-out 160ms ease-in forwards;
+}
+.cf-drawer-in {
+  animation: cf-drawer-in 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cf-drawer-out {
+  animation: cf-drawer-out 170ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+/* The drawer enters from whichever edge is the start one, so it still slides
+   in from the correct side under `dir="rtl"`. */
+[dir="rtl"] .cf-drawer-in,
+[dir="rtl"] .cf-drawer-out {
+  --cf-drawer-from: 1;
+}
+
 /* Skip rendering work for below-the-fold landing sections until near view. */
 .cv-section {
   content-visibility: auto;

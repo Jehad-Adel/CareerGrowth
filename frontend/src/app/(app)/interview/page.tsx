@@ -189,20 +189,25 @@ async function InterviewBody({
               </section>
 
               {answered.map((turn, idx) => (
-                <section key={turn.id} className="rounded-2xl border bg-card p-6 shadow-sm">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs text-muted-foreground">
-                        Q{idx + 1}
-                      </span>
-                      <p className="text-sm font-semibold text-foreground break-words">{turn.question}</p>
-                    </div>
+                <section key={turn.id} className="rounded-2xl border bg-card p-5 shadow-sm sm:p-6">
+                  {/* The number and the score used to bracket the question on
+                      the same row, squeezing it into a narrow column that
+                      broke after two or three words on a phone. They are a
+                      meta line of their own now, and the question gets the
+                      full width underneath. */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono text-xs text-muted-foreground">
+                      Q{idx + 1}
+                    </span>
                     {turn.score !== null ? (
                       <Badge variant="outline" className="shrink-0 font-mono text-xs text-primary border-primary/30 bg-primary/5">
                         Score: {turn.score}
                       </Badge>
                     ) : null}
                   </div>
+                  <p className="mt-1.5 text-sm font-semibold text-foreground break-words">
+                    {turn.question}
+                  </p>
                   <p className="mt-3 whitespace-pre-wrap break-words rounded-xl bg-muted/60 border px-4 py-3 text-sm text-foreground">
                     {turn.answer}
                   </p>
@@ -265,13 +270,16 @@ async function InterviewBody({
               ))}
 
               {open ? (
-                <section className="rounded-2xl border border-primary/40 bg-card p-6">
-                  <div className="flex items-start justify-between gap-3">
-                    <p className="text-base break-words">{open.question}</p>
-                    {open.difficulty ? (
-                      <Badge variant="outline">{open.difficulty}</Badge>
-                    ) : null}
-                  </div>
+                <section className="rounded-2xl border border-primary/40 bg-card p-5 sm:p-6">
+                  {/* Same treatment as an answered turn: the difficulty badge
+                      sits above the question rather than stealing width from
+                      it. */}
+                  {open.difficulty ? (
+                    <Badge variant="outline" className="mb-2">
+                      {open.difficulty}
+                    </Badge>
+                  ) : null}
+                  <p className="text-base break-words">{open.question}</p>
                   {open.expected_topics.length > 0 ? (
                     <p className="mt-2 text-xs text-muted-foreground break-words">
                       A strong answer touches: {open.expected_topics.join(", ")}

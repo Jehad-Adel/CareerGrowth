@@ -180,24 +180,20 @@ async function RoadmapBody({
               <li
                 key={step.id}
                 className={cn(
-                  "rounded-2xl border bg-card p-6",
+                  "rounded-2xl border bg-card p-5 sm:p-6",
                   step.status === "done" && "opacity-70",
                 )}
               >
-                <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-4">
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2.5">
+                    {/* Step number, effort and difficulty on their own line.
+                        Sharing a row with the title left the title a sliver of
+                        width on a phone — one word per line under two badges
+                        that never shrink. */}
+                    <div className="flex flex-wrap items-center gap-2">
                       <span className="font-mono text-xs text-muted-foreground">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      <h3
-                        className={cn(
-                          "text-base",
-                          step.status === "done" && "line-through",
-                        )}
-                      >
-                        {step.title}
-                      </h3>
                       <Badge variant="outline">
                         ~{step.estimated_months} mo
                         {step.estimated_weekly_hours > 0 &&
@@ -207,6 +203,14 @@ async function RoadmapBody({
                         <Badge variant="outline">{step.difficulty}</Badge>
                       )}
                     </div>
+                    <h3
+                      className={cn(
+                        "mt-1.5 text-base break-words",
+                        step.status === "done" && "line-through",
+                      )}
+                    >
+                      {step.title}
+                    </h3>
                     <p className="mt-2 text-sm text-muted-foreground">
                       {step.description}
                     </p>

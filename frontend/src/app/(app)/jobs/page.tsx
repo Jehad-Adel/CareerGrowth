@@ -390,10 +390,11 @@ export default async function JobsPage() {
       {header}
 
       <Tabs defaultValue="match" className="space-y-6">
-        {/* `flex-1` triggers plus `h-auto` produced ~28px-tall tabs; the
-            min-height brings them back to a thumb-sized target once they wrap
-            onto two rows on a phone. */}
-        <TabsList className="flex h-auto flex-wrap gap-1 [&_[data-slot=tabs-trigger]]:min-h-11">
+        {/* Four labels do not fit one phone row, and wrapping `flex-1` triggers
+            left a stretched orphan on the second line. A 2×2 grid below `sm`
+            gives every tab the same box; above it they go back to a row. The
+            min-height is the touch target — `h-auto` alone left them ~28px. */}
+        <TabsList className="grid h-auto grid-cols-2 gap-1 sm:flex sm:flex-wrap [&_[data-slot=tabs-trigger]]:min-h-11 [&_[data-slot=tabs-trigger]]:whitespace-normal">
           <TabsTrigger value="match">Match</TabsTrigger>
           <TabsTrigger value="gap">Skill gap</TabsTrigger>
           <TabsTrigger value="letter">Cover letter</TabsTrigger>

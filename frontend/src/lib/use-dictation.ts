@@ -44,6 +44,7 @@ type SpeechRecognitionInstance = {
   lang: string;
   continuous: boolean;
   interimResults: boolean;
+  maxAlternatives: number;
   start: () => void;
   stop: () => void;
   abort: () => void;
@@ -85,6 +86,24 @@ const MESSAGES: Record<string, string> = {
 const RESTART_LIMIT = 8;
 const RESTART_WINDOW_MS = 10_000;
 
+/**
+ * Chrome re-delivers a phrase it has already finalised often enough that it is
+ * the feature's most visible flaw — words land twice, or the tail of the
+ * previous sentence is prepended to the next one after a restart. Two seconds
+ * covers a redelivery without swallowing a genuine repetition, which in speech
+ * is separated by at least the time it takes to say the words again.
+ */
+const DUPLICATE_WINDOW_MS = 2_000;
+
+/** Casing and punctuation vary between deliveries of the same phrase. */
+function normalise(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[.,!?;:]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export type Dictation = {
   /** False on browsers without the API. Hide the control rather than disable it. */
   supported: boolean;
@@ -125,6 +144,7 @@ export function useDictation(onResult: (text: string) => void): Dictation {
   // the first render's state forever.
   const wanted = useRef(false);
   const restarts = useRef<number[]>([]);
+  const lastFinal = useRef<{ text: string; at: number } | null>(null);
   // Held in a ref so re-creating the callback each render does not force the
   // recognition instance to be rebuilt mid-sentence. Assigned in an effect,
   // not during render — a ref write during render is not safe under
@@ -144,17 +164,38 @@ export function useDictation(onResult: (text: string) => void): Dictation {
     // session and the rest of the sentence is lost.
     instance.continuous = true;
     instance.interimResults = true;
+    // One transcription per phrase. The extra alternatives are never read, and
+    // asking for them makes some engines re-emit the same result.
+    instance.maxAlternatives = 1;
 
     instance.onresult = (event) => {
       let pending = "";
       for (let i = event.resultIndex; i < event.results.length; i += 1) {
         const result = event.results[i];
         const text = result[0].transcript;
-        if (result.isFinal) {
-          onResultRef.current(text.trim());
-        } else {
+        if (!result.isFinal) {
           pending += text;
+          continue;
         }
+
+        const phrase = text.trim();
+        if (!phrase) continue;
+
+        // Drop a phrase the engine has just handed us before. See
+        // DUPLICATE_WINDOW_MS — this is what stops dictation stuttering words
+        // into the field twice.
+        const key = normalise(phrase);
+        const now = Date.now();
+        const previous = lastFinal.current;
+        if (
+          previous &&
+          previous.text === key &&
+          now - previous.at < DUPLICATE_WINDOW_MS
+        ) {
+          continue;
+        }
+        lastFinal.current = { text: key, at: now };
+        onResultRef.current(phrase);
       }
       setInterim(pending);
     };
@@ -213,6 +254,9 @@ export function useDictation(onResult: (text: string) => void): Dictation {
     if (!recognition.current || wanted.current) return;
     setError(null);
     restarts.current = [];
+    // A new dictation is a new context; a phrase repeated from the last one is
+    // the user saying it again, not the engine stuttering.
+    lastFinal.current = null;
     wanted.current = true;
     try {
       recognition.current.start();

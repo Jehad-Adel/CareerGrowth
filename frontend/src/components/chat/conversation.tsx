@@ -37,7 +37,11 @@ function Bubble({
           <LogoMark className="h-4 w-4 text-primary" />
         </span>
       )}
-      <div className={cn("max-w-[80%]", muted && "opacity-60")}>{children}</div>
+      {/* `min-w-0` lets the bubble shrink below its longest word, which is what
+          keeps a pasted URL from widening the whole transcript. */}
+      <div className={cn("min-w-0 max-w-[85%] sm:max-w-[80%]", muted && "opacity-60")}>
+        {children}
+      </div>
     </div>
   );
 }
@@ -182,7 +186,7 @@ export function Conversation({
           <ClearChatButton />
         </div>
       ) : null}
-      <div className="flex-1 space-y-4 overflow-y-auto p-6">
+      <div className="scroll-area flex-1 space-y-4 overflow-y-auto p-4 sm:p-6">
         {shown.length === 0 ? (
           <p className="pt-16 text-center text-sm text-muted-foreground">
             Ask the first question.
@@ -198,7 +202,7 @@ export function Conversation({
                   markdown. Nothing the model returns can become markup. */}
               <div
                 className={cn(
-                  "whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm",
+                  "whitespace-pre-wrap break-words rounded-2xl px-3.5 py-2.5 text-sm sm:px-4",
                   m.role === "assistant"
                     ? "bg-muted"
                     : "bg-primary text-primary-foreground",
@@ -224,9 +228,12 @@ export function Conversation({
           if (inputRef.current) inputRef.current.value = "";
           return action(formData);
         }}
-        className="border-t p-4"
+        className="border-t p-3 sm:p-4"
       >
-        <div className="mb-3 flex flex-wrap gap-2">
+        {/* One scrolling row on a phone rather than three wrapped lines: inside
+            a viewport-height panel, wrapped chips ate the transcript. They go
+            back to wrapping once there is room. */}
+        <div className="scroll-area -mx-1 mb-2.5 flex gap-2 overflow-x-auto px-1 pb-1 sm:mx-0 sm:mb-3 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
           {SUGGESTIONS.map((s) => (
             <button
               key={s}
@@ -235,25 +242,32 @@ export function Conversation({
               onClick={() => {
                 if (inputRef.current) inputRef.current.value = s;
               }}
-              className="min-h-9 inline-flex items-center rounded-full border px-3.5 py-1.5 text-xs text-muted-foreground transition-all hover:border-primary/60 hover:bg-primary/5 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:opacity-50"
+              className="inline-flex min-h-9 shrink-0 items-center whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs text-muted-foreground transition-all hover:border-primary/60 hover:bg-primary/5 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:opacity-50 sm:whitespace-normal"
             >
               {s}
             </button>
           ))}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <input
             ref={inputRef}
             name="message"
             disabled={disabled}
+            // `enterkeyhint` so the phone keyboard's action key says Send, and
+            // the autocomplete/spellcheck settings a chat box wants.
+            enterKeyHint="send"
+            autoComplete="off"
             aria-label="Ask a question about your career"
             placeholder={
               disabled
                 ? "Analyze your CV first so there's something to talk about"
                 : "Ask anything about your career…"
             }
-            className="h-11 flex-1 rounded-xl border bg-background px-3.5 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 disabled:opacity-60"
+            // 16px on mobile deliberately: iOS zooms the whole page in when a
+            // focused input's text is smaller than that, and never zooms back
+            // out. `sm:text-sm` restores the intended size on desktop.
+            className="h-11 min-w-0 flex-1 rounded-xl border bg-background px-3.5 text-base outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 disabled:opacity-60 sm:text-sm"
           />
           {/* Writes straight into the uncontrolled input, the same way the
               suggestion chips above already do. Never submits on its own —
