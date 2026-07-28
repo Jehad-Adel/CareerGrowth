@@ -65,6 +65,12 @@ Project ref `jumsfxzsqvczdevquokk`, region `eu-north-1`.
 - Fixtures serving `TestClient` need `StaticPool` + `connect_args={"check_same_thread": False}`. TestClient runs on a worker thread, and a fresh connection to `:memory:` gets an empty database with no schema.
 - **Run `alembic revision --autogenerate` against Postgres, never SQLite.** Alembic skips expression-based indexes on SQLite with only a `UserWarning`, which would silently ship `skills` without its case-insensitive unique index.
 
+## Deployment — Railway
+
+- **The Docker build context is the repo root, not `backend/`.** `railway.json` sets `dockerfilePath: backend/Dockerfile`, which selects the file but leaves the context where it was. Every `COPY` in the Dockerfile is therefore written `backend/...`, and a plain `docker build .` from inside `backend/` fails on the first one. Build it the way Railway does: `docker build -f backend/Dockerfile .` from the repo root.
+- **`.dockerignore` must live next to the *context*, so it belongs at the repo root.** The one that used to sit in `backend/` was silently inert: the whole repo — `frontend/node_modules`, `.git`, and the real `.env` — was being uploaded to the builder on every deploy. Do not re-add one under `backend/`.
+- `knowledge_base/` is deliberately not in the image. Ingestion is an operator CLI run against the database from a checkout, never from the deployed container.
+
 ## Known, accepted issues
 
 - `npm audit --omit=dev` reports 3 high findings — `sharp`/libvips and `postcss` — all transitive under `next@16.2.11`. `npm audit fix --force` downgrades to `next@9` — do not run it. `next@16.2.12` (current latest) is still inside the advisory range, so there is no upgrade path yet; track the next patch release. CI's `audit` job gates on `frontend/scripts/check-audit.mjs`, which allowlists those advisories **by GHSA id** and fails on anything else — so the job is green today but still blocks on a genuinely new finding. Muting the job wholesale would hide the next real one. When Next patches, the script warns about ids it no longer sees; delete them.

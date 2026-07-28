@@ -1,5 +1,13 @@
 # Explicit Dockerfile rather than leaving Railway's nixpacks to infer a uv
 # project. Deterministic, and the same image runs locally.
+#
+# BUILD CONTEXT IS THE REPO ROOT, not backend/. Railway's `dockerfilePath`
+# selects the Dockerfile but does not move the context, so every COPY below
+# is written `backend/...`. Build it the same way by hand:
+#
+#     docker build -f backend/Dockerfile .        # from the repo root
+#
+# Running it from inside backend/ fails on the first COPY.
 FROM python:3.11-slim AS base
 
 ENV PYTHONUNBUFFERED=1 \
@@ -24,12 +32,12 @@ WORKDIR /app
 
 # Dependencies first: this layer is cached until the lockfile changes, which
 # is the difference between a 20-second deploy and a 3-minute one.
-COPY pyproject.toml uv.lock ./
+COPY backend/pyproject.toml backend/uv.lock ./
 RUN uv sync --frozen --no-dev --no-install-project
 
-COPY app ./app
-COPY migrations ./migrations
-COPY alembic.ini ./
+COPY backend/app ./app
+COPY backend/migrations ./migrations
+COPY backend/alembic.ini ./
 
 RUN uv sync --frozen --no-dev
 
@@ -42,5 +50,8 @@ USER appuser
 
 EXPOSE 8000
 
-# Railway injects $PORT. The shell form is required so it expands.
-CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*'
+# Railway injects $PORT, so the command has to go through a shell to expand
+# it — but `exec` hands uvicorn PID 1, so SIGTERM on redeploy reaches the app
+# instead of stopping at a shell that ignores it. The bare shell form would
+# swallow it and every deploy would end in a 10-second SIGKILL.
+CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*'"]
