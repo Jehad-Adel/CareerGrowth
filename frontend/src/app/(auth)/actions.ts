@@ -10,6 +10,18 @@ import {
   signUpSchema,
 } from "@/lib/validation/auth";
 
+/**
+ * Every signup outcome that is not an outright failure ends here — new
+ * account, address already registered, or Supabase declining to say which.
+ * One destination is the point: differing responses are what leak whether an
+ * address has an account.
+ */
+const CONFIRMATION_NOTICE =
+  "/login?notice=" +
+  encodeURIComponent(
+    "Account created! Please check your email to confirm your account before logging in. If you already had an account, log in instead.",
+  );
+
 /** Only allow same-origin relative paths, so `next` cannot become an open redirect. */
 function safeNext(next: FormDataEntryValue | null): string {
   if (typeof next !== "string") return "/dashboard";
@@ -110,16 +122,20 @@ export async function signUp(
 
   if (error) {
     const msg = error.message.toLowerCase();
+    // "This email is taken" is a registration oracle: anyone can type an
+    // address and learn whether its owner uses the product. Supabase's own
+    // enumeration protection exists to prevent exactly that, so the answer
+    // here is the same neutral confirmation notice a new signup gets — the
+    // person who really owns the address finds out by email, and nobody else
+    // finds out at all. Same rule as the login form, which never says which
+    // half of the credentials was wrong.
     if (
       msg.includes("already registered") ||
       msg.includes("already exists") ||
       msg.includes("user already registered") ||
-      error.status === 422 && msg.includes("registered")
+      (error.status === 422 && msg.includes("registered"))
     ) {
-      return {
-        formError:
-          "An account with this email address already exists. Please log in instead.",
-      };
+      redirect(CONFIRMATION_NOTICE);
     }
     if (
       msg.includes("rate limit") ||
@@ -144,29 +160,21 @@ export async function signUp(
     };
   }
 
-  // When email enumeration protection is enabled in Supabase, calling signUp on an
-  // already registered email returns a user with empty identities and no error.
-  if (data.user && data.user.identities && data.user.identities.length === 0) {
-    return {
-      formError:
-        "An account with this email address already exists. Please log in instead.",
-    };
-  }
-
+  // An empty `identities` array used to be treated as "this address is already
+  // registered". It is not a reliable signal: with email confirmation on,
+  // GoTrue returns an empty array for *new* signups too, so a perfectly good
+  // registration was rejected with "an account already exists" while the
+  // confirmation email sat in the person's inbox. The check is gone, and the
+  // ambiguous case now resolves the same way as the unambiguous one.
+  //
   // This project has email confirmation enabled (mailer_autoconfirm is off),
-  // so signUp returns a user with no session.
-  // Never redirect to dashboard as if logged in. Even if a session was returned
-  // by Supabase, sign out and redirect to login with confirmation notice.
+  // so signUp returns a user with no session. Never redirect as if logged in;
+  // if a session ever does come back, drop it first.
   if (data.session) {
     await supabase.auth.signOut();
   }
 
-  redirect(
-    "/login?notice=" +
-      encodeURIComponent(
-        "Account created! Please check your email to confirm your account before logging in.",
-      ),
-  );
+  redirect(CONFIRMATION_NOTICE);
 }
 
 export async function signOut() {

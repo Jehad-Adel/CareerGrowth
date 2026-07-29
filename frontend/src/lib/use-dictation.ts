@@ -51,6 +51,7 @@ type SpeechRecognitionInstance = {
   onresult: ((event: SpeechRecognitionEvent) => void) | null;
   onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
   onend: (() => void) | null;
+  onstart: (() => void) | null;
 };
 
 type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
@@ -155,10 +156,9 @@ export function useDictation(
   const wanted = useRef(false);
   const restarts = useRef<number[]>([]);
   const lastFinal = useRef<{ text: string; at: number } | null>(null);
-  // How many results of the current recognition session have already been
-  // committed. See the loop in `onresult` for why this is the real fix for
-  // repeated words. Reset whenever a new session starts.
-  const committed = useRef(0);
+  // How many words of this session's final transcript the caller already has.
+  // Reset by `onstart` — see the comment there.
+  const emittedWords = useRef(0);
   // Held in a ref so re-creating the callback each render does not force the
   // recognition instance to be rebuilt mid-sentence. Assigned in an effect,
   // not during render — a ref write during render is not safe under
@@ -185,53 +185,65 @@ export function useDictation(
     instance.maxAlternatives = 1;
 
     instance.onresult = (event) => {
-      // Iterating from 0 and committing by index, rather than starting at
-      // `event.resultIndex`, is the fix for repeated words.
+      // Emit the *new tail* of this session's whole final transcript, rather
+      // than the results the event says changed.
       //
-      // With `continuous`, `event.results` is cumulative for the whole
-      // session, and `resultIndex` is only meant to say where the changed
-      // results begin. Chrome regularly reports an index at or below results
-      // it already delivered as final — after a pause, and on the event that
-      // follows a phrase being finalised. Trusting it re-emits phrases that
-      // were already committed, which is exactly the stutter: the same words
-      // appended two or three times.
+      // `event.resultIndex` cannot be trusted here. With `continuous`,
+      // `results` is cumulative for the session and the index is supposed to
+      // mark where changed results begin, but Chrome routinely reports one at
+      // or below results it already delivered as final — after a pause, and on
+      // the event following a finalised phrase. Anything keyed off it re-emits
+      // words the caller already has. Per-index bookkeeping fails the same way
+      // whenever the engine renumbers or re-delivers a result.
       //
-      // A result's index is stable for the life of a session, so "committed
-      // everything below `committed.current`" is an exact record of what the
-      // caller already has, regardless of what index the event claims.
+      // Word count is the one thing that cannot double-count: the caller has
+      // the first N words of this session, so only words past N are new. If
+      // the engine re-sends everything, the count is unchanged and nothing is
+      // emitted. Cost is a revision to an already-emitted word being ignored,
+      // which is the right trade — a wrong word can be edited, a stutter has
+      // to be hunted down and deleted.
+      let finalText = "";
       let pending = "";
       for (let i = 0; i < event.results.length; i += 1) {
         const result = event.results[i];
         const text = result[0].transcript;
+        if (result.isFinal) finalText += `${text} `;
+        else pending += text;
+      }
 
-        if (!result.isFinal) {
-          pending += text;
-          continue;
-        }
+      const words = finalText.split(/\s+/).filter(Boolean);
+      if (words.length > emittedWords.current) {
+        const phrase = words.slice(emittedWords.current).join(" ").trim();
+        emittedWords.current = words.length;
 
-        if (i < committed.current) continue;
-        committed.current = i + 1;
-
-        const phrase = text.trim();
-        if (!phrase) continue;
-
-        // Second net, for the session boundary only: indices restart at 0
-        // after `onend` restarts the engine, and Chrome sometimes finalises
-        // the tail of the previous session again in the new one.
+        // Second net, for the session boundary only: the word count restarts
+        // at 0 when `onend` restarts the engine, and Chrome sometimes
+        // finalises the tail of the previous session again in the new one.
         const key = normalise(phrase);
         const now = Date.now();
         const previous = lastFinal.current;
-        if (
+        const repeated =
           previous &&
           previous.text === key &&
-          now - previous.at < DUPLICATE_WINDOW_MS
-        ) {
-          continue;
+          now - previous.at < DUPLICATE_WINDOW_MS;
+
+        if (phrase && !repeated) {
+          lastFinal.current = { text: key, at: now };
+          onResultRef.current(phrase);
         }
-        lastFinal.current = { text: key, at: now };
-        onResultRef.current(phrase);
       }
+
       setInterim(pending);
+    };
+
+    // The only place the word count may be reset. Doing it in `onend` before
+    // calling `start()` was itself a source of duplicates: if `start()` threw
+    // because a session was still running, the counter was back at 0 while
+    // that session's results kept growing, so the whole transcript so far was
+    // emitted again. `onstart` fires exactly when a new session — and its
+    // empty `results` — actually begins.
+    instance.onstart = () => {
+      emittedWords.current = 0;
     };
 
     instance.onerror = (event) => {
@@ -263,10 +275,8 @@ export function useDictation(
       }
 
       try {
-        // A restart is a fresh session: `results` starts empty and indices
-        // begin at 0 again, so the commit mark has to go with it or every
-        // phrase after the first restart would be silently swallowed.
-        committed.current = 0;
+        // No counter reset here — `onstart` owns it, and only fires if this
+        // call actually opens a session.
         instance.start();
       } catch {
         // Already restarting on its own; the state we want is unchanged.
@@ -280,6 +290,7 @@ export function useDictation(
       instance.onresult = null;
       instance.onerror = null;
       instance.onend = null;
+      instance.onstart = null;
       // abort, not stop: this fires on unmount and on React's development
       // double-invoke, where a graceful stop would still emit a final result
       // into a component that no longer exists.
@@ -295,7 +306,6 @@ export function useDictation(
     // A new dictation is a new context; a phrase repeated from the last one is
     // the user saying it again, not the engine stuttering.
     lastFinal.current = null;
-    committed.current = 0;
     wanted.current = true;
     try {
       // Set here rather than at construction: the picker can change between
