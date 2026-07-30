@@ -17,6 +17,7 @@ from app.errors import AppError
 from app.logging import get_logger
 from app.models import JobApplication
 from app.models.application import CLOSED_STATUSES, STATUSES
+from app.services import xp_service
 
 log = get_logger(__name__)
 
@@ -48,6 +49,9 @@ def create(
     job_match_id: uuid.UUID | None = None,
     url: str = "",
     notes: str = "",
+    deadline_at: date | None = None,
+    next_step: str = "",
+    next_step_date: date | None = None,
 ) -> JobApplication:
     _validate(status)
 
@@ -59,11 +63,24 @@ def create(
         job_match_id=job_match_id,
         url=url.strip(),
         notes=notes.strip(),
-        # Recording the date up front means the pipeline view can show "waiting
-        # 12 days" without the user having to fill anything in.
+        deadline_at=deadline_at,
+        next_step=next_step.strip(),
+        next_step_date=next_step_date,
         applied_at=_today() if status != "saved" else None,
     )
     db.add(application)
+    db.flush()
+
+    # Award XP for applying to a job
+    if status == "applied":
+        xp_service.record_event(
+            db,
+            profile_id,
+            "applied_job",
+            {"application_id": str(application.id), "company": company, "role": role},
+            xp=xp_service.XP_AWARDS.get("applied_job", 25),
+        )
+
     db.commit()
     db.refresh(application)
     return application
@@ -127,6 +144,9 @@ def update(
     *,
     notes: str | None = None,
     url: str | None = None,
+    deadline_at: date | None = None,
+    next_step: str | None = None,
+    next_step_date: date | None = None,
 ) -> JobApplication:
     application = db.execute(
         select(JobApplication).where(
@@ -141,6 +161,12 @@ def update(
         application.notes = notes.strip()
     if url is not None:
         application.url = url.strip()
+    if deadline_at is not None:
+        application.deadline_at = deadline_at
+    if next_step is not None:
+        application.next_step = next_step.strip()
+    if next_step_date is not None:
+        application.next_step_date = next_step_date
 
     db.commit()
     db.refresh(application)

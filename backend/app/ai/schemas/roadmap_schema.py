@@ -1,15 +1,27 @@
-"""Schema for the Personalized Roadmap feature."""
-
 from typing import Literal
 
 from pydantic import BaseModel, Field, model_validator
 
 Difficulty = Literal["Beginner", "Intermediate", "Advanced"]
 
+ResourceType = Literal["tutorial", "documentation", "course", "video", "book"]
+
+
+class ResourceLink(BaseModel):
+    title: str = Field(description="Title of the resource.")
+    url: str | None = Field(
+        default=None,
+        description="URL to the resource. Only include if you are highly confident it is real.",
+    )
+    type: ResourceType = Field(description="Type of resource.")
+
+
+class MicroPoint(BaseModel):
+    title: str = Field(description="Short title of this micro-point.")
+    description: str = Field(description="What to do in this micro-point.")
+
 
 class RoadmapStep(BaseModel):
-    """A single milestone in the candidate's career roadmap."""
-
     title: str = Field(description="Short title of this roadmap step.")
     description: str = Field(description="What the candidate should do in this step.")
     reason: str = Field(
@@ -31,8 +43,7 @@ class RoadmapStep(BaseModel):
         default_factory=list,
         description=(
             "Skills from earlier steps (or already held by the candidate) that this step "
-            "depends on, e.g. Docker before Kubernetes, SQL before PostgreSQL optimization, "
-            "Git before CI/CD. Empty list if this step has no prerequisites."
+            "depends on. Empty list if this step has no prerequisites."
         ),
     )
     estimated_duration_months: float = Field(
@@ -43,24 +54,32 @@ class RoadmapStep(BaseModel):
         default=0,
         ge=0,
         description=(
-            "Realistic hours per week the candidate should put into this step. The "
-            "duration alone does not say whether a step is an evening habit or a "
-            "second job."
+            "Realistic hours per week the candidate should put into this step."
+        ),
+    )
+    micro_points: list[MicroPoint] = Field(
+        default_factory=list,
+        description=(
+            "3-7 granular, actionable sub-steps that break this step down into "
+            "concrete micro-actions. Each micro-point has a title and description."
+        ),
+    )
+    learning_resources: list[ResourceLink] = Field(
+        default_factory=list,
+        max_length=6,
+        description=(
+            "Curated learning resources (tutorials, documentation, courses, videos, books) "
+            "with title, optional URL, and type. Include real resources you are confident exist."
         ),
     )
     recommended_resources: list[str] = Field(
         default_factory=list,
         max_length=4,
-        description=(
-            "Two to four resource or platform names for this step. Names only, "
-            "never URLs — a hallucinated link is worse than no link."
-        ),
+        description="Legacy resource or platform names only. Prefer learning_resources instead.",
     )
     project_to_practice: str = Field(
         default="",
-        description=(
-            "One realistic, scoped project idea that demonstrates this step's skills."
-        ),
+        description="One realistic, scoped project idea that demonstrates this step's skills.",
     )
 
 
@@ -84,12 +103,6 @@ class CareerRoadmap(BaseModel):
 
     @model_validator(mode="after")
     def _recompute_total_duration(self) -> "CareerRoadmap":
-        """Re-add the steps rather than trusting the model's own sum.
-
-        The total drives the roadmap header and the farm's horizon, and a
-        figure that disagrees with the steps under it reads as a bug to the
-        user whichever number is right.
-        """
         self.total_estimated_duration_months = round(
             sum(step.estimated_duration_months for step in self.steps), 1
         )

@@ -11,10 +11,14 @@ from app.models.matching import (
     ResumeOptimization,
     SkillGapAnalysis,
 )
+from app.models.notification import Notification
+from app.models.offer import OfferEvaluation
 from app.models.profile import CareerProfile
+from app.models.quiz import QuizAttempt, QuizQuestion
 from app.models.roadmap import Roadmap, RoadmapStep
 from app.models.skill import Skill
 from app.models.usage import AiUsage
+from app.models.video import VideoSummary
 
 __all__ = [
     "AiUsage",
@@ -31,9 +35,14 @@ __all__ = [
     "JobApplication",
     "JobMatch",
     "KnowledgeChunk",
+    "Notification",
+    "OfferEvaluation",
+    "QuizAttempt",
+    "QuizQuestion",
     "ResumeOptimization",
     "Roadmap",
     "RoadmapStep",
     "Skill",
     "SkillGapAnalysis",
+    "VideoSummary",
 ]

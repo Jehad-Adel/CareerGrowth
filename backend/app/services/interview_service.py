@@ -177,7 +177,11 @@ def start(
 
 
 def answer(
-    db: Session, profile_id: uuid.UUID, session_id: uuid.UUID, text: str
+    db: Session,
+    profile_id: uuid.UUID,
+    session_id: uuid.UUID,
+    text: str | None = None,
+    audio_data: bytes | None = None,
 ) -> InterviewSession:
     """Record an answer to the open question and generate the next turn."""
     session = _get_session(db, profile_id, session_id)
@@ -208,7 +212,23 @@ def answer(
 
     quota_service.consume(db, profile_id, FEATURE)
 
-    pending.answer = text
+    if audio_data and not text:
+        try:
+            from app.services.audio_service import transcribe_audio
+            transcribed = transcribe_audio(audio_data)
+            if transcribed:
+                pending.answer = transcribed
+            else:
+                raise ValueError("Audio transcription returned empty.")
+        except Exception as exc:
+            log.exception("stt_failed", session_id=str(session.id))
+            raise AnalysisFailed(
+                "Could not transcribe your audio. Try typing your answer instead."
+            ) from exc
+    elif text:
+        pending.answer = text
+    else:
+        raise ValueError("Either text or audio_data must be provided.")
     db.flush()
 
     result = _invoke(

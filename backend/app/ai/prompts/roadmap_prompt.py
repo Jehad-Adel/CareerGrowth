@@ -1,5 +1,3 @@
-"""Prompt for the Personalized Roadmap feature."""
-
 from langchain_core.prompts import PromptTemplate
 
 ROADMAP_PROMPT = PromptTemplate(
@@ -30,9 +28,7 @@ Personalization:
 
 Ordering and dependencies:
 - Order steps so foundational skills always come before the skills
-  that depend on them. Never schedule a skill before its prerequisite,
-  for example: Docker before Kubernetes, SQL before PostgreSQL
-  optimization, and Git before CI/CD.
+  that depend on them. Never schedule a skill before its prerequisite.
 - Record each step's prerequisite_skills explicitly. Leave it empty
   only if the step has no real dependency on an earlier step or
   existing skill.
@@ -41,19 +37,32 @@ Ordering and dependencies:
 
 Difficulty and time estimates:
 - Set difficulty relative to this candidate's current level, not the
-  topic's absolute complexity. A step can be Beginner for them even on
-  an advanced topic if their background already supports it.
+  topic's absolute complexity.
 - estimated_duration_months and estimated_weekly_hours must be
-  realistic and justified by the step's actual scope — not arbitrary,
-  and not uniform across steps.
+  realistic and justified by the step's actual scope.
 
-Resources and practice:
-- recommended_resources: two to four resource or platform names per
-  step (e.g. "Docker Docs", "Kubernetes Official Tutorials",
-  "Coursera"). Names only, never URLs. If you cannot name real ones
-  with confidence, return fewer, or an empty list — never a guess.
-- project_to_practice: exactly one realistic, scoped project that
-  demonstrates the skills from this step.
+Micro-points (MANDATORY):
+- Each step MUST include 3-7 micro_points — granular, actionable sub-steps.
+- Each micro-point has a title and description explaining exactly what
+  to do. Think of these as "Monday morning" actions, not broad topics.
+- Example micro-points for a "Learn Docker" step:
+  - "Install Docker Desktop and run hello-world"
+  - "Complete the official Docker getting-started tutorial"
+  - "Build a Dockerfile for a simple Node.js app"
+  - "Learn docker-compose with a multi-service setup"
+
+Learning resources (MANDATORY):
+- Each step MUST include curated learning_resources with title, type,
+  and optionally a URL.
+- Types: tutorial, documentation, course, video, book.
+- Only include URLs you are highly confident are real and correct.
+- Always prefer official documentation,知名 platforms, and well-known
+  resources. If uncertain about a URL, omit it but keep the title and type.
+- Include 2-6 resources per step covering different formats.
+
+Resources and practice (legacy):
+- recommended_resources: still include 2-4 platform names (e.g. "Docker Docs").
+- project_to_practice: exactly one realistic, scoped project.
 
 Candidate CV profile (structured, JSON):
 ---

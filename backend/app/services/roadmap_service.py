@@ -3,11 +3,12 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.ai import embeddings
 from app.ai.chains.roadmap_chain import build_roadmap_chain
 from app.errors import AppError, NoCvOnProfile
 from app.logging import get_logger
 from app.models import CareerProfile, Roadmap, RoadmapStep, Skill
-from app.services import quota_service, rag_service, xp_service
+from app.services import knowledge_service, quota_service, rag_service, xp_service
 
 log = get_logger(__name__)
 
@@ -75,6 +76,17 @@ def generate(
 
     quota_service.consume(db, profile_id, "roadmap")
 
+    # Retrieve RAG context for grounded roadmap generation
+    rag_context = ""
+    try:
+        query_vector = embeddings.embed_query(
+            f"Career roadmap from {profile.current_role or 'current role'} to {role}"
+        )
+        chunks = knowledge_service.retrieve(db, f"Career roadmap {role}", vector=query_vector)
+        rag_context = knowledge_service.build_context(chunks)
+    except Exception:
+        log.exception("knowledge_retrieve_failed", feature="roadmap")
+
     try:
         result = build_roadmap_chain().invoke(
             {"cv_profile": _profile_snapshot(db, profile), "target_role": role}
@@ -107,6 +119,8 @@ def generate(
                 difficulty=step.difficulty,
                 skills_to_acquire=list(step.skills_to_acquire),
                 prerequisite_skills=list(step.prerequisite_skills),
+                micro_points=[mp.model_dump() for mp in step.micro_points],
+                learning_resources=[lr.model_dump() for lr in step.learning_resources],
                 recommended_resources=list(step.recommended_resources),
                 project_to_practice=step.project_to_practice,
                 estimated_months=step.estimated_duration_months,
@@ -130,6 +144,11 @@ def generate(
         steps_text = "\n".join(
             f"{i + 1}. {s.title} ({s.estimated_duration_months} months, "
             f"{s.difficulty}): {s.description} {s.reason}".rstrip()
+            + (
+                "\n    Micro-points: " + "; ".join(mp.title for mp in s.micro_points)
+                if s.micro_points
+                else ""
+            )
             for i, s in enumerate(result.steps)
         )
         rag_service.ingest(

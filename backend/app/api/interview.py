@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, File, Form, Request, UploadFile
 from pydantic import BaseModel, Field
 
 from app.ai.schemas.interview_schema import InterviewLevel
@@ -88,14 +88,19 @@ def start_session(
 
 @router.post("/sessions/{session_id}/answer", response_model=SessionOut)
 @limiter.limit("20/minute")
-def answer_question(
+async def answer_question(
     request: Request,
     session_id: uuid.UUID,
-    payload: AnswerRequest,
     profile: CurrentProfile,
     db: DbSession,
+    answer: str = Form(default="", max_length=MAX_ANSWER),
+    audio: UploadFile | None = File(default=None),
 ) -> SessionOut:
-    session = interview_service.answer(db, profile.id, session_id, payload.answer)
+    audio_bytes = await audio.read() if audio else None
+    text = answer if answer else None
+    session = interview_service.answer(
+        db, profile.id, session_id, text=text, audio_data=audio_bytes
+    )
     return _to_out(session)
 
 

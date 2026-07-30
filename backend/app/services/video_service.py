@@ -1,0 +1,171 @@
+import re
+import uuid
+
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from app.ai.chains.video_summary_chain import build_video_summary_chain
+from app.errors import AppError
+from app.logging import get_logger
+from app.models import VideoSummary
+from app.services import quota_service, rag_service, xp_service
+
+log = get_logger(__name__)
+
+FEATURE = "video_summary"
+PAGE_SIZE = 50
+
+
+class AnalysisFailed(AppError):
+    status_code = 502
+    code = "analysis_failed"
+
+
+class UnsupportedUrl(AppError):
+    status_code = 422
+    code = "unsupported_url"
+
+
+def _extract_youtube_id(url: str) -> str | None:
+    patterns = [
+        r"(?:youtube\.com/watch\?v=|youtu\.be/)([\w-]{11})",
+        r"(?:youtube\.com/embed/)([\w-]{11})",
+        r"(?:youtube\.com/shorts/)([\w-]{11})",
+    ]
+    for pat in patterns:
+        m = re.search(pat, url)
+        if m:
+            return m.group(1)
+    return None
+
+
+def _detect_source(url: str) -> str:
+    if "youtube" in url.lower() or "youtu.be" in url.lower():
+        return "youtube"
+    if "vimeo" in url.lower():
+        return "vimeo"
+    return "other"
+
+
+def _fetch_transcript(url: str) -> str:
+    video_id = _extract_youtube_id(url)
+    if not video_id:
+        raise UnsupportedUrl(
+            "Could not extract a video ID from that URL. "
+            "Supported formats: YouTube (watch, short, embed, youtu.be)."
+        )
+    try:
+        from youtube_transcript_api import YouTubeTranscriptApi
+        transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+        return " ".join(entry["text"] for entry in transcript_list)
+    except ImportError:
+        raise UnsupportedUrl(
+            "YouTube transcript API is not installed. "
+            "Run: uv add youtube-transcript-api"
+        )
+    except Exception as exc:
+        raise UnsupportedUrl(
+            f"Could not fetch transcript: {exc}"
+        ) from exc
+
+
+def process(
+    db: Session,
+    profile_id: uuid.UUID,
+    *,
+    url: str,
+    mode: str = "summary",
+) -> VideoSummary:
+    source_type = _detect_source(url)
+    transcript = _fetch_transcript(url)
+
+    if mode == "transcript":
+        record = VideoSummary(
+            profile_id=profile_id,
+            url=url,
+            source_type=source_type,
+            mode=mode,
+            transcript=transcript,
+        )
+        db.add(record)
+        xp_service.record_event(
+            db,
+            profile_id,
+            "video_transcribed",
+            {"video_id": str(record.id)},
+            xp=xp_service.XP_AWARDS.get("video_transcribed", 5),
+        )
+        db.commit()
+        db.refresh(record)
+        return record
+
+    quota_service.consume(db, profile_id, FEATURE)
+
+    try:
+        result = build_video_summary_chain().invoke({"transcript": transcript})
+    except Exception as exc:
+        log.exception("video_summary_chain_failed", profile_id=str(profile_id))
+        raise AnalysisFailed(
+            "Could not summarize that video. Try again shortly."
+        ) from exc
+
+    record = VideoSummary(
+        profile_id=profile_id,
+        url=url,
+        title=result.title,
+        source_type=source_type,
+        mode=mode,
+        transcript=transcript,
+        summary=result.summary,
+        key_takeaways=list(result.key_takeaways),
+    )
+    db.add(record)
+    db.flush()
+
+    try:
+        rag_service.ingest(
+            db,
+            profile_id,
+            "video_summary",
+            f"Video: {result.title}\n\n{result.summary}\n\n"
+            + "\n".join(f"- {p}" for p in result.summary_points),
+            source_id=record.id,
+        )
+    except Exception:
+        log.exception("rag_ingest_failed", kind="video", profile_id=str(profile_id))
+
+    xp_service.record_event(
+        db,
+        profile_id,
+        "video_summarized",
+        {"video_id": str(record.id), "title": result.title},
+        xp=xp_service.XP_AWARDS.get("video_summarized", 15),
+    )
+
+    db.commit()
+    db.refresh(record)
+    return record
+
+
+def history(
+    db: Session, profile_id: uuid.UUID, limit: int = PAGE_SIZE
+) -> list[VideoSummary]:
+    return list(
+        db.execute(
+            select(VideoSummary)
+            .where(VideoSummary.profile_id == profile_id)
+            .order_by(VideoSummary.created_at.desc())
+            .limit(limit)
+        ).scalars()
+    )
+
+
+def get(
+    db: Session, profile_id: uuid.UUID, video_id: uuid.UUID
+) -> VideoSummary | None:
+    return db.execute(
+        select(VideoSummary).where(
+            VideoSummary.id == video_id,
+            VideoSummary.profile_id == profile_id,
+        )
+    ).scalar_one_or_none()

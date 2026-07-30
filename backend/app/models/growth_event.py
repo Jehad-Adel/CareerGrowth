@@ -25,6 +25,8 @@ class GrowthEvent(Base):
     )
     # skill_discovered | skill_leveled | goal_completed | cv_analyzed
     # | job_matched | gap_analyzed | roadmap_created | interview_completed
+    # | quiz_completed | video_summarized | video_transcribed
+    # | applied_job | cv_optimized | offer_evaluated
     type: Mapped[str] = mapped_column(String(40), nullable=False)
     payload: Mapped[dict] = mapped_column(
         JSONType, nullable=False, default=dict, server_default="{}"

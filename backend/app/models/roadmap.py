@@ -72,6 +72,12 @@ class RoadmapStep(UUIDPrimaryKey, Timestamps, Base):
     prerequisite_skills: Mapped[list] = mapped_column(
         JSONType, nullable=False, default=list, server_default="[]"
     )
+    micro_points: Mapped[list] = mapped_column(
+        JSONType, nullable=False, default=list, server_default="[]"
+    )
+    learning_resources: Mapped[list] = mapped_column(
+        JSONType, nullable=False, default=list, server_default="[]"
+    )
     # Resource and platform *names*, never URLs — a hallucinated link is worse
     # than no link, and there is no way to validate one at generation time.
     recommended_resources: Mapped[list] = mapped_column(

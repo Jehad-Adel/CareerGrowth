@@ -7,11 +7,12 @@ from sqlalchemy.orm import Session
 from app.ai.chains.cv_analysis_chain import build_cv_analysis_chain
 from app.ai.loaders.pdf_loader import load_pdf_bytes
 from app.ai.schemas.cv_profile import CVProfile
+from app.ai import embeddings
 from app.errors import AppError
 from app.logging import get_logger
 from app.models import CvAnalysis
 from app.schemas.profile import SkillIn
-from app.services import profile_service, quota_service, rag_service, xp_service
+from app.services import knowledge_service, profile_service, quota_service, rag_service, xp_service
 
 log = get_logger(__name__)
 
@@ -82,8 +83,18 @@ def analyze(
     # Charge the quota before the call: a failed generation still costs tokens.
     quota_service.consume(db, profile_id, FEATURE)
 
+    # Retrieve RAG context for CV-writing best practices
     try:
-        result: CVProfile = build_cv_analysis_chain().invoke({"cv_text": cv_text})
+        from app.services.hybrid_rag import retrieve_context
+        rag_context = retrieve_context(db, profile_id, "CV writing best practices", max_chars=2000)
+    except Exception:
+        rag_context = ""
+        log.exception("hybrid_rag_failed", feature="cv_analysis")
+
+    try:
+        result: CVProfile = build_cv_analysis_chain().invoke(
+            {"cv_text": cv_text}
+        )
     except Exception as exc:
         # Never leak provider internals or the prompt to the client.
         log.exception("cv_analysis_chain_failed", profile_id=str(profile_id))

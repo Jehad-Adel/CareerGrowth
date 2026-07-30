@@ -3,7 +3,10 @@ from typing import NamedTuple
 
 from sqlalchemy.orm import Session
 
+from app.logging import get_logger
 from app.models import CareerProfile, GrowthEvent
+
+log = get_logger(__name__)
 
 LEVEL_TITLES = [
     "Seedling",
@@ -31,6 +34,13 @@ XP_AWARDS = {
     "roadmap_created": 40,
     "goal_completed": 60,
     "interview_completed": 75,
+    "quiz_completed": 30,
+    "video_summarized": 15,
+    "video_transcribed": 5,
+    "applied_job": 25,
+    "cv_optimized": 20,
+    "offer_evaluated": 35,
+    "daily_login": 5,
 }
 
 
@@ -80,6 +90,13 @@ def record_event(
 
     profile.xp += xp
     profile.level = level_for_xp(profile.xp).level
+
+    # Update streak on any XP-earning engagement
+    try:
+        from app.services.streak_service import record_activity
+        record_activity(db, profile_id)
+    except Exception:
+        log.exception("streak_update_failed", profile_id=str(profile_id))
 
     db.commit()
     db.refresh(event)

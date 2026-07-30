@@ -1,4 +1,5 @@
 import {
+  Brain,
   FileText,
   Home,
   Map,
@@ -7,6 +8,8 @@ import {
   Sprout,
   Target,
   ClipboardList,
+  Video,
+  Bell,
   type LucideIcon,
 } from "lucide-react";
 
@@ -25,5 +28,9 @@ export const navItems: NavItem[] = [
   { href: "/applications", label: "Applications", icon: ClipboardList },
   { href: "/interview", label: "Interview Coach", icon: Mic },
   { href: "/roadmap", label: "Roadmap", icon: Map },
+  { href: "/quiz", label: "Quiz", icon: Brain },
+  { href: "/video", label: "Video", icon: Video },
+  { href: "/offers", label: "Offer Evaluator", icon: Target },
+  { href: "/notifications", label: "Alerts", icon: Bell },
   { href: "/chat", label: "Career Chat", icon: MessageCircle },
 ];

@@ -2,7 +2,7 @@ import uuid
 from datetime import date
 
 import sqlalchemy as sa
-from sqlalchemy import Date, ForeignKey, Index, String, Text, Uuid
+from sqlalchemy import Boolean, Date, ForeignKey, Index, String, Text, Uuid
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
@@ -51,6 +51,14 @@ class JobApplication(UUIDPrimaryKey, Timestamps, Base):
         Uuid, ForeignKey("job_matches.id", ondelete="SET NULL"), index=True
     )
     applied_at: Mapped[date | None] = mapped_column(Date)
+    deadline_at: Mapped[date | None] = mapped_column(Date, nullable=True)
+    next_step: Mapped[str] = mapped_column(
+        String(300), nullable=False, default="", server_default=""
+    )
+    next_step_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    notified_deadline: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default="false"
+    )
     notes: Mapped[str] = mapped_column(
         Text, nullable=False, default="", server_default=""
     )

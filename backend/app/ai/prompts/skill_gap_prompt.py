@@ -3,7 +3,7 @@
 from langchain_core.prompts import PromptTemplate
 
 SKILL_GAP_PROMPT = PromptTemplate(
-    input_variables=["cv_text", "job_description"],
+    input_variables=["cv_text", "job_description", "rag_context"],
     template="""You are a senior technical career advisor. Unlike a
 simple job-match comparison, your job is to answer one specific
 question for the candidate: "What exactly should I learn first?"
@@ -58,6 +58,11 @@ Project to practice:
 - Generate exactly one realistic, scoped project idea per skill (e.g.
   "Task Manager API", "Chat Application Backend", "House Price
   Predictor").
+
+Reference context (industry skill frameworks, market trends, guidance):
+---
+{rag_context}
+---
 
 Gap summary:
 - Write a concise paragraph summarizing the candidate's strongest and

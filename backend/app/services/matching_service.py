@@ -104,11 +104,24 @@ def match_job(
     job_title: str | None = None,
 ) -> JobMatch:
     _, cv_text = _require_cv(db, profile_id)
+
+    # Hybrid RAG context for market-aware matching
+    try:
+        from app.services.hybrid_rag import retrieve_context
+        rag_context = retrieve_context(db, profile_id, f"{job_title or ''} {job_description}")
+    except Exception:
+        rag_context = ""
+        log.exception("hybrid_rag_failed", feature="job_match")
+
     quota_service.consume(db, profile_id, "job_match")
 
     result = _invoke(
         build_job_match_chain,
-        {"cv_text": cv_text, "job_description": job_description},
+        {
+            "cv_text": cv_text,
+            "job_description": job_description,
+            "rag_context": rag_context or "No additional context available.",
+        },
         "job_match",
     )
 
@@ -157,11 +170,23 @@ def analyze_gap(
     job_title: str | None = None,
 ) -> SkillGapAnalysis:
     _, cv_text = _require_cv(db, profile_id)
+
+    try:
+        from app.services.hybrid_rag import retrieve_context
+        rag_context = retrieve_context(db, profile_id, f"Skill gap {job_title or ''} {job_description}")
+    except Exception:
+        rag_context = ""
+        log.exception("hybrid_rag_failed", feature="skill_gap")
+
     quota_service.consume(db, profile_id, "skill_gap")
 
     result = _invoke(
         build_skill_gap_chain,
-        {"cv_text": cv_text, "job_description": job_description},
+        {
+            "cv_text": cv_text,
+            "job_description": job_description,
+            "rag_context": rag_context or "No additional context available.",
+        },
         "skill_gap",
     )
 

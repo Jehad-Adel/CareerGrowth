@@ -430,3 +430,131 @@ export type ApplicationBoard = {
 /** The whole board in one call — every column renders at once. */
 export const getApplications = (): Promise<ApplicationBoard> =>
   serverFetch<ApplicationBoard>("/applications");
+
+// --- Quiz ---
+
+export type QuizQuestionRecord = {
+  id: string;
+  position: number;
+  question: string;
+  options: string[];
+};
+
+export type QuizAttemptRecord = {
+  id: string;
+  source_type: string;
+  source_title: string;
+  mastery_level: number;
+  score: number | null;
+  total_questions: number;
+  correct_count: number;
+  completed_at: string | null;
+  created_at: string;
+  questions: QuizQuestionRecord[];
+};
+
+export const generateQuiz = (body: {
+  source_text: string;
+  source_type?: string;
+  source_id?: string;
+  source_title?: string;
+  mastery_level?: number;
+  num_questions?: number;
+}): Promise<QuizAttemptRecord> =>
+  serverFetch<QuizAttemptRecord>("/quiz/generate", { method: "POST", body });
+
+export const submitQuiz = (
+  attemptId: string,
+  answers: number[],
+): Promise<QuizAttemptRecord> =>
+  serverFetch<QuizAttemptRecord>(`/quiz/attempts/${attemptId}/submit`, {
+    method: "POST",
+    body: { answers },
+  });
+
+export const getQuizHistory = (): Promise<QuizAttemptRecord[]> =>
+  serverFetch<QuizAttemptRecord[]>("/quiz/history");
+
+export const getQuizAttempt = (id: string): Promise<QuizAttemptRecord> =>
+  serverFetch<QuizAttemptRecord>(`/quiz/attempts/${id}`);
+
+// --- Video ---
+
+export type VideoSummaryRecord = {
+  id: string;
+  url: string;
+  title: string;
+  source_type: string;
+  mode: string;
+  summary: string;
+  key_takeaways: string[];
+  transcript: string;
+  created_at: string;
+};
+
+export const processVideo = (body: {
+  url: string;
+  mode: "summary" | "transcript";
+}): Promise<VideoSummaryRecord> =>
+  serverFetch<VideoSummaryRecord>("/video/process", { method: "POST", body });
+
+export const getVideoHistory = (): Promise<VideoSummaryRecord[]> =>
+  serverFetch<VideoSummaryRecord[]>("/video/history");
+
+export const getVideoSummary = (id: string): Promise<VideoSummaryRecord> =>
+  serverFetch<VideoSummaryRecord>(`/video/${id}`);
+
+// --- Notifications ---
+
+export type NotificationRecord = {
+  id: string;
+  type: string;
+  title: string;
+  body: string;
+  data: Record<string, unknown>;
+  read: boolean;
+  created_at: string;
+};
+
+export const getNotifications = (): Promise<NotificationRecord[]> =>
+  serverFetch<NotificationRecord[]>("/notifications");
+
+export const getAllNotifications = (): Promise<NotificationRecord[]> =>
+  serverFetch<NotificationRecord[]>("/notifications/all");
+
+export const markNotificationRead = (id: string): Promise<{ read: boolean }> =>
+  serverFetch<{ read: boolean }>(`/notifications/${id}/read`, { method: "POST" });
+
+export const markAllNotificationsRead = (): Promise<{ read: number }> =>
+  serverFetch<{ read: number }>("/notifications/read-all", { method: "POST" });
+
+export const getNotificationCount = (): Promise<{ count: number }> =>
+  serverFetch<{ count: number }>("/notifications/count");
+
+// --- Offers ---
+
+export type OfferEvaluationRecord = {
+  id: string;
+  company: string;
+  role_title: string;
+  overall_score: number | null;
+  recommendation: string;
+  result: Record<string, unknown>;
+  created_at: string;
+};
+
+export const evaluateOffer = (body: {
+  company: string;
+  role_title: string;
+  offer_details: string;
+}): Promise<OfferEvaluationRecord> =>
+  serverFetch<OfferEvaluationRecord>("/offers/evaluate", { method: "POST", body });
+
+export const getLatestOfferEval = (): Promise<OfferEvaluationRecord | null> =>
+  serverFetch<OfferEvaluationRecord | null>("/offers/latest");
+
+export const getOfferEvalHistory = (): Promise<OfferEvaluationRecord[]> =>
+  serverFetch<OfferEvaluationRecord[]>("/offers/history");
+
+export const getOfferEval = (id: string): Promise<OfferEvaluationRecord> =>
+  serverFetch<OfferEvaluationRecord>(`/offers/${id}`);

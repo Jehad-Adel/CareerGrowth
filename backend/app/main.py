@@ -12,8 +12,12 @@ from app.api import (
     interview,
     jobs,
     me,
+    notifications,
+    offers,
     profile,
+    quiz,
     roadmap,
+    video,
 )
 from app.config import get_settings
 from app.errors import install_error_handlers
@@ -122,6 +126,10 @@ def create_app() -> FastAPI:
     app.include_router(interview.router)
     app.include_router(chat.router)
     app.include_router(applications.router)
+    app.include_router(quiz.router)
+    app.include_router(video.router)
+    app.include_router(notifications.router)
+    app.include_router(offers.router)
 
     install_error_handlers(app)
     return app

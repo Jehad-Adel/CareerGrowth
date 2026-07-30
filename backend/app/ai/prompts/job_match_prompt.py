@@ -3,7 +3,7 @@
 from langchain_core.prompts import PromptTemplate
 
 JOB_MATCH_PROMPT = PromptTemplate(
-    input_variables=["cv_text", "job_description"],
+    input_variables=["cv_text", "job_description", "rag_context"],
     template="""You are a senior technical recruiter comparing a
 candidate's CV against a job description.
 
@@ -47,6 +47,11 @@ Matching, including transferable matches:
   the CV; Significant for a Required skill with only partial or
   transferable overlap, or a heavily emphasized Preferred skill; Minor
   for a lightly emphasized Preferred skill.
+
+Reference context (market data, industry standards, guidance):
+---
+{rag_context}
+---
 
 Scoring:
 - match_score (0-100) reflects skill coverage weighted by

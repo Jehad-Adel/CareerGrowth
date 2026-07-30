@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { normalizeApiError } from "@/lib/api/error";
-import { serverFetch } from "@/lib/api/server";
+import { serverFetch, serverFetchForm } from "@/lib/api/server";
 
 export type InterviewActionState = {
   error?: string;
@@ -58,22 +58,22 @@ export async function submitAnswer(
 ): Promise<InterviewActionState> {
   const sessionId = String(formData.get("session_id") ?? "");
   const answer = String(formData.get("answer") ?? "").trim();
+  const audioFile = formData.get("audio") as File | null;
 
   if (!sessionId) return { error: "Missing session." };
-  if (!answer) return { error: "Write an answer first." };
-  if (answer.length > MAX_ANSWER) {
+  if (!answer && !audioFile) return { error: "Write an answer or record audio first." };
+  if (answer && answer.length > MAX_ANSWER) {
     return { error: "That answer is too long." };
   }
 
-  try {
-    // Only the answer text is sent. History, persona, and the interviewer's
-    // name are rebuilt server-side from the database — a client that could
-    // supply those could rewrite what the model thinks already happened.
-    await serverFetch(`/interview/sessions/${sessionId}/answer`, {
-      method: "POST",
-      body: JSON.stringify({ answer }),
-    });
-  } catch (error) {
+    try {
+      // Use FormData to support optional audio file upload alongside text.
+      const body = new FormData();
+      if (answer) body.set("answer", answer);
+      if (audioFile && audioFile.size > 0) body.set("audio", audioFile);
+
+      await serverFetchForm(`/interview/sessions/${sessionId}/answer`, body);
+    } catch (error) {
     return {
       error: normalizeApiError(
         error,
