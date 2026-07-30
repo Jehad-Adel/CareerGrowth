@@ -107,9 +107,9 @@ cd frontend && npm run build     # Frontend type check + build
 
 ---
 
-# 📸 Demo
+# website
 
-Add screenshots, GIFs, or a demo video.
+(https://careergrowth-production.vercel.app)
 
 ---
 
