@@ -24,6 +24,7 @@ export function GenerateRoadmap({ targetRole }: { targetRole: string | null }) {
         <div className="flex-1 space-y-1.5">
           <Label htmlFor="target_role" className="text-sm font-medium">Target role</Label>
           <Input
+            key={targetRole ?? ""}
             id="target_role"
             name="target_role"
             defaultValue={targetRole ?? ""}
