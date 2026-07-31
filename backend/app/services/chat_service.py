@@ -93,7 +93,7 @@ def _sources(
     entirely from the ATS rules showed no source at all.
 
     `origin` separates them because they mean different things to a reader —
-    "your CV" is evidence about them, "CareerFarm guidance" is not.
+    "your CV" is evidence about them, "CareerGrowth guidance" is not.
     """
     return [
         {

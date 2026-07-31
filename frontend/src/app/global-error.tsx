@@ -28,7 +28,7 @@ export default function GlobalError({
       >
         <div>
           <h1 style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>
-            CareerFarm is having a problem
+            CareerGrowth is having a problem
           </h1>
           <p style={{ color: "#666", marginBottom: "1rem" }}>
             Reload in a moment. If it keeps happening, let us know

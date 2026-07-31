@@ -1,4 +1,4 @@
-# CareerFarm — v2.0 Feature Update Specification
+# CareerGrowth — v2.0 Feature Update Specification
 
 > **Date:** 2026-07-31  
 > **This document covers only the 8 features added in v2.0.**  
@@ -445,7 +445,7 @@ def retrieve_context(
 - Embeds the query once
 - Retrieves top-3 from personal corpus (profile_id-filtered)
 - Retrieves top-3 from curated corpus (no filter)
-- Builds a formatted context string: `[Your Documents]\n...\n\n[CareerFarm Guidance]\n...`
+- Builds a formatted context string: `[Your Documents]\n...\n\n[CareerGrowth Guidance]\n...`
 - Returns empty string if nothing found
 - Graceful degradation: per-corpus failures are logged but don't crash the feature
 

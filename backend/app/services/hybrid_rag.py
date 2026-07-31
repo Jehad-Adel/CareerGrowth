@@ -77,7 +77,7 @@ def retrieve_context(
         curated_ctx = knowledge_service.build_context(curated_chunks)
         if curated_ctx:
             if len(curated_ctx) <= budget:
-                parts.append(f"[CareerFarm Guidance]\n{curated_ctx}")
+                parts.append(f"[CareerGrowth Guidance]\n{curated_ctx}")
     except Exception:
         log.exception("knowledge_rag_failed")
 

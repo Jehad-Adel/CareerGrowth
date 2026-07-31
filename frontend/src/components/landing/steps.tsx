@@ -32,7 +32,7 @@ export function Steps() {
         </p>
         <h2 className="text-3xl sm:text-4xl">From lost to growing in three steps</h2>
         <p className="mt-3 text-muted-foreground">
-          Most tools solve one piece. CareerFarm connects them, so every bit of
+          Most tools solve one piece. CareerGrowth connects them, so every bit of
           progress feeds the next.
         </p>
       </Reveal>

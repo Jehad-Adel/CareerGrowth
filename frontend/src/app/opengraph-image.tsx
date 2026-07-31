@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "CareerFarm — grow your career like a farm";
+export const alt = "CareerGrowth — grow your career like a farm";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -28,7 +28,7 @@ export default function OpengraphImage() {
         {/* Satori requires an explicit `display` on any element with more
             than one child, so each line is its own single-child div. */}
         <div style={{ fontSize: 28, letterSpacing: 4, color: "#8fbf7f" }}>
-          CAREERFARM
+          CAREERGROWTH
         </div>
         <div
           style={{

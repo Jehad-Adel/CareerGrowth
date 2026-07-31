@@ -12,7 +12,7 @@ export default function AuthLayout({
       <div className="w-full max-w-sm">
         <Link href="/" className="mb-8 flex items-center justify-center gap-2">
           <Logo />
-          <span className="font-heading text-lg font-semibold">CareerFarm</span>
+          <span className="font-heading text-lg font-semibold">CareerGrowth</span>
         </Link>
         {children}
       </div>

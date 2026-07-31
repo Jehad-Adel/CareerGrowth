@@ -1,4 +1,4 @@
-# CareerFarm — working notes
+# CareerGrowth — working notes
 
 AI career-growth platform. One canonical `CareerProfile` per user; every feature reads and writes it and emits append-only `growth_events`. The Farm is a **projection** over skills + goals + events, never its own source of truth.
 

@@ -349,7 +349,7 @@ export const getInterviewSession = (
  * `{kind, chunk}`, and still have to render.
  */
 export type ChatSource = {
-  /** "document" is the person's own material; "guide" is CareerFarm's. */
+  /** "document" is the person's own material; "guide" is CareerGrowth's. */
   origin?: "document" | "guide";
   kind: string;
   /** Display name. Falls back to `kind` on older rows. */

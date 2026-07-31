@@ -1,6 +1,6 @@
 # How-To Guide
 
-Task recipes for working on CareerFarm. Mostly frontend, since that's where most day-to-day work is right now. New here? Start with [GET-STARTED.md](GET-STARTED.md).
+Task recipes for working on CareerGrowth. Mostly frontend, since that's where most day-to-day work is right now. New here? Start with [GET-STARTED.md](GET-STARTED.md).
 
 ## Contents
 

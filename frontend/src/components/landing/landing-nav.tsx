@@ -37,7 +37,7 @@ export function LandingNav({ signedIn = false }: { signedIn?: boolean }) {
         <Link href="/" className="flex min-w-0 items-center gap-2">
           <Logo />
           <span className="truncate font-heading text-base font-semibold sm:text-lg">
-            CareerFarm
+            CareerGrowth
           </span>
         </Link>
 

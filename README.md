@@ -1,4 +1,4 @@
-# CareerFarm
+# CareerGrowth
 
 AI career-growth platform. Your professional profile is the single source of truth; every feature (CV analysis, job matching, interview prep, roadmap, chat) reads from and writes back to it, and progress is visualized as a living "farm."
 

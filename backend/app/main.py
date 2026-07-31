@@ -91,7 +91,7 @@ def create_app() -> FastAPI:
         )
 
     app = FastAPI(
-        title="CareerFarm API",
+        title="CareerGrowth API",
         docs_url=None if settings.is_production else "/docs",
         redoc_url=None,
         openapi_url=None if settings.is_production else "/openapi.json",

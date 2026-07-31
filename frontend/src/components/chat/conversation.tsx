@@ -54,7 +54,7 @@ function names(sources: ChatSource[]): string[] {
  * Where an answer came from.
  *
  * The two corpora are listed separately because they mean different things:
- * the person's own documents are evidence about them, CareerFarm's guidance
+ * the person's own documents are evidence about them, CareerGrowth's guidance
  * is not. Collapsing both into one "from:" list would let general advice read
  * as something their CV said.
  */

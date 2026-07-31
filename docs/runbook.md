@@ -1,6 +1,6 @@
 # Runbook
 
-Deploy, roll back, and diagnose CareerFarm. Written to be followed at 3am by
+Deploy, roll back, and diagnose CareerGrowth. Written to be followed at 3am by
 someone who did not build it.
 
 - **Frontend** — Vercel, root directory `frontend/`

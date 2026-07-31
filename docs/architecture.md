@@ -1,6 +1,6 @@
 # Architecture
 
-Authoritative, current view of how CareerFarm is structured. For the original design rationale see [specs/2026-07-23-careerfarm-architecture.md](superpowers/specs/2026-07-23-careerfarm-architecture.md).
+Authoritative, current view of how CareerGrowth is structured. For the original design rationale see [specs/2026-07-23-careergrowth-architecture.md](superpowers/specs/2026-07-23-careergrowth-architecture.md).
 
 ## Product in one line
 

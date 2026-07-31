@@ -36,7 +36,7 @@ export function SiteFooter() {
         <div>
           <span className="flex items-center gap-2">
             <Logo />
-            <span className="font-heading text-lg font-semibold">CareerFarm</span>
+            <span className="font-heading text-lg font-semibold">CareerGrowth</span>
           </span>
           <p className="mt-3 max-w-xs text-sm text-muted-foreground">
             Grow your career like a farm.
@@ -64,7 +64,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-6 py-6 text-sm text-muted-foreground">
-          <span>© {new Date().getFullYear()} CareerFarm</span>
+          <span>© {new Date().getFullYear()} CareerGrowth</span>
           <span className="font-mono text-xs">Grow your career like a farm.</span>
         </div>
       </div>

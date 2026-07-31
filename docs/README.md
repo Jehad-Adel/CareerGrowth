@@ -7,7 +7,7 @@
 | Field            | Value                                |
 | ---------------- | ------------------------------------ |
 | Full Name        |    Jehad Adel Al-Basyouni                                  |
-| Project Name     |         CareerFarm                             |
+| Project Name     |         CareerGrowth                             |
 | GitHub Username  |                Jehad-Adel                      |
 | Challenge Batch  | June–July 2026                       |
 | Training Program | Large Language Models (LLMs) Program |
@@ -17,7 +17,7 @@
 
 # 📖 Project Overview
 
-CareerFarm is an advanced AI-powered career assistant platform that combines Hybrid RAG (Retrieval-Augmented Generation), LLM-driven analysis, and gamification to help professionals accelerate their career growth. Users upload their CV for deep analysis, match against job descriptions, generate personalized roadmaps, practice mock interviews with speech-to-text, test knowledge with dynamic quizzes, summarize videos, evaluate job offers, and track applications — all grounded in a curated knowledge base and personal document corpus via vector search.
+CareerGrowth is an advanced AI-powered career assistant platform that combines Hybrid RAG (Retrieval-Augmented Generation), LLM-driven analysis, and gamification to help professionals accelerate their career growth. Users upload their CV for deep analysis, match against job descriptions, generate personalized roadmaps, practice mock interviews with speech-to-text, test knowledge with dynamic quizzes, summarize videos, evaluate job offers, and track applications — all grounded in a curated knowledge base and personal document corpus via vector search.
 
 ---
 
