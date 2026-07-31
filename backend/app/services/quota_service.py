@@ -12,6 +12,12 @@ from app.models import AiUsage
 
 # Calls per user per UTC day. Tuned so a genuine user never notices and an
 # abuser burns out fast. Raise deliberately, with the Gemini bill in view.
+#
+# Every key a service charges against must appear here: `consume` raises
+# ValueError on an unknown feature, and ValueError is not an AppError, so the
+# miss surfaces as a blanket 500 rather than anything that names the cause.
+# `tests/test_quota_service.py::test_every_service_feature_has_a_limit` fails
+# the build if a new service ships a FEATURE that was never added here.
 DAILY_LIMITS: dict[str, int] = {
     "cv_analysis": 10,
     "job_match": 20,
@@ -21,6 +27,11 @@ DAILY_LIMITS: dict[str, int] = {
     "roadmap": 10,
     "interview_turn": 60,
     "chat_message": 100,
+    # One chain call each, over a whole pasted article / transcript / offer,
+    # so they cost about what a CV analysis does.
+    "quiz_generation": 10,
+    "video_summary": 10,
+    "offer_evaluation": 10,
 }
 
 

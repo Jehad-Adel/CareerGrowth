@@ -12,6 +12,8 @@ from app.services import knowledge_service, quota_service, rag_service, xp_servi
 
 log = get_logger(__name__)
 
+PAGE_SIZE = 50
+
 
 class AnalysisFailed(AppError):
     status_code = 502
@@ -175,12 +177,17 @@ def latest(db: Session, profile_id: uuid.UUID) -> Roadmap | None:
     ).scalar_one_or_none()
 
 
-def list_history(db: Session, profile_id: uuid.UUID) -> list[Roadmap]:
+def list_history(
+    db: Session, profile_id: uuid.UUID, limit: int = PAGE_SIZE
+) -> list[Roadmap]:
+    """Newest first, capped. Steps are eager-loaded, so an unbounded result
+    set drags every step of every roadmap the user has ever generated."""
     return list(
         db.execute(
             select(Roadmap)
             .where(Roadmap.profile_id == profile_id)
             .order_by(Roadmap.created_at.desc())
+            .limit(limit)
         ).scalars()
     )
 

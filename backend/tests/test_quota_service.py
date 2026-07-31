@@ -107,3 +107,66 @@ def test_yesterdays_usage_does_not_count_against_today(monkeypatch):
 
     monkeypatch.setattr(quota_service, "_today", lambda: real_today)
     assert quota_service.consume(db, profile.id, "cv_analysis") == 1
+
+
+def test_every_service_feature_has_a_limit():
+    """Every feature key any service charges against must exist in DAILY_LIMITS.
+
+    `consume` raises a bare ValueError on an unknown feature, which is not an
+    AppError and so leaves the client with a blanket 500 that names nothing.
+    Quiz, video, and offer evaluation all shipped that way: their FEATURE
+    constants were never added here, so all three features 500'd on every
+    single request while the suite stayed green.
+
+    Two shapes are collected, because services use both:
+      - a module-level `FEATURE = "..."` constant (most services)
+      - a string literal passed straight to `consume` /
+        `consume_and_refund_on_error` (roadmap_service passes "roadmap")
+
+    A feature resolved from a variable (matching_service passes its callers'
+    literals through an `_invoke(feature=...)` parameter) cannot be read
+    statically; those literals are caught as arguments at the call sites.
+    """
+    import ast
+    import pathlib
+
+    services = pathlib.Path(quota_service.__file__).parent
+    charged: dict[str, str] = {}
+
+    for path in sorted(services.glob("*.py")):
+        if path.name == "quota_service.py":
+            continue
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+
+        for node in ast.walk(tree):
+            # FEATURE = "..."
+            if isinstance(node, ast.Assign) and isinstance(
+                node.value, ast.Constant
+            ):
+                for target in node.targets:
+                    if isinstance(target, ast.Name) and target.id == "FEATURE":
+                        charged[node.value.value] = path.name
+
+            # consume(db, profile_id, "literal")
+            if isinstance(node, ast.Call):
+                name = getattr(node.func, "attr", None) or getattr(
+                    node.func, "id", None
+                )
+                if name in {"consume", "consume_and_refund_on_error"}:
+                    for arg in node.args:
+                        if isinstance(arg, ast.Constant) and isinstance(
+                            arg.value, str
+                        ):
+                            charged[arg.value] = path.name
+
+    assert charged, "found no AI features to check — the scan itself is broken"
+
+    missing = {
+        feature: module
+        for feature, module in sorted(charged.items())
+        if feature not in quota_service.DAILY_LIMITS
+    }
+    assert not missing, (
+        "these services charge quota against features with no entry in "
+        f"DAILY_LIMITS, so every call 500s: {missing}"
+    )

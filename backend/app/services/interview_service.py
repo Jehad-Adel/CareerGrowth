@@ -25,6 +25,7 @@ log = get_logger(__name__)
 # a session is additionally capped so one interview cannot run forever.
 MAX_TURNS = 20
 FEATURE = "interview_turn"
+PAGE_SIZE = 50
 
 
 class AnalysisFailed(AppError):
@@ -181,6 +182,7 @@ def answer(
     session_id: uuid.UUID,
     text: str | None = None,
     audio_data: bytes | None = None,
+    audio_mime_type: str = "audio/webm",
 ) -> InterviewSession:
     """Record an answer to the open question and generate the next turn."""
     session = _get_session(db, profile_id, session_id)
@@ -213,7 +215,7 @@ def answer(
         if audio_data and not text:
             try:
                 from app.services.audio_service import transcribe_audio
-                transcribed = transcribe_audio(audio_data)
+                transcribed = transcribe_audio(audio_data, audio_mime_type)
                 if transcribed:
                     pending.answer = transcribed
                 else:
@@ -282,11 +284,17 @@ def latest(db: Session, profile_id: uuid.UUID) -> InterviewSession | None:
     ).scalar_one_or_none()
 
 
-def list_sessions(db: Session, profile_id: uuid.UUID) -> list[InterviewSession]:
+def list_sessions(
+    db: Session, profile_id: uuid.UUID, limit: int = PAGE_SIZE
+) -> list[InterviewSession]:
+    """Newest first, capped. Each session eager-loads its turns, so an
+    unbounded result set pulls every question and answer the user has ever
+    given into one response."""
     return list(
         db.execute(
             select(InterviewSession)
             .where(InterviewSession.profile_id == profile_id)
             .order_by(InterviewSession.created_at.desc())
+            .limit(limit)
         ).scalars()
     )
