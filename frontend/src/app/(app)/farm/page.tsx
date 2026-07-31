@@ -10,6 +10,7 @@ import { FarmSkeleton } from "@/components/skeletons";
 import { buttonVariants } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { getFarmData, type FarmFeedItem } from "@/lib/services";
+import { formatDate } from "@/lib/utils";
 
 /** Every event type the log can emit, rendered as something a person reads. */
 function describe(event: FarmFeedItem): string {
@@ -100,7 +101,7 @@ async function FarmBody() {
                   <div className="min-w-0">
                     <p className="text-sm leading-tight">{describe(event)}</p>
                     <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">
-                      {new Date(event.at).toLocaleDateString()}
+                      {formatDate(event.at)}
                     </p>
                   </div>
                   {event.xp > 0 ? (

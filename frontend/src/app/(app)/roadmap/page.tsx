@@ -15,7 +15,7 @@ import {
   getRoadmapHistory,
   type RoadmapRecord,
 } from "@/lib/services";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 
 function RoadmapHistoryBar({
   history,
@@ -40,7 +40,7 @@ function RoadmapHistoryBar({
           const isActive = activeId ? r.id === activeId : isLatest;
           const done = r.steps.filter((s) => s.status === "done").length;
           const total = r.steps.length;
-          const createdDate = r.created_at ? new Date(r.created_at).toLocaleDateString() : "";
+          const createdDate = formatDate(r.created_at);
           return (
             <Link
               key={r.id}

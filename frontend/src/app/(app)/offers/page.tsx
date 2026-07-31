@@ -4,7 +4,9 @@ import { CardSkeleton } from "@/components/skeletons";
 
 import { OffersBody } from "./offers-body";
 
-export const metadata = { title: "Offer Evaluator — CareerFarm" };
+// The root layout applies `title.template: "%s · CareerFarm"`, so repeating
+// the suffix here renders it twice.
+export const metadata = { title: "Offer Evaluator" };
 
 export default function OffersPage() {
   return (

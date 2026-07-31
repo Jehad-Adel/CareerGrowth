@@ -1,5 +1,6 @@
 "use client";
 
+import { AlertCircle, Loader2 } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -28,16 +29,18 @@ export function OffersBody() {
     setError(null);
 
     const form = new FormData(e.currentTarget);
-    const res = await evaluateOffer({}, form);
-    if (res.error) {
-      setError(res.error);
+    try {
+      const res = await evaluateOffer({}, form);
+      if (res.error) {
+        setError(res.error);
+        return;
+      }
+      if (res.offer) {
+        setResult(res.offer);
+      }
+    } finally {
       setLoading(false);
-      return;
     }
-    if (res.offer) {
-      setResult(res.offer);
-    }
-    setLoading(false);
   }
 
   if (result) {
@@ -48,13 +51,13 @@ export function OffersBody() {
     const rationale = result.result?.recommendation_rationale as string | undefined;
 
     return (
-      <div className="rounded-2xl border bg-card p-6 space-y-6">
+      <div className="rounded-2xl border bg-card p-4 sm:p-6 space-y-6">
         <div>
           <h2 className="text-lg font-semibold">{result.roleTitle} @ {result.company}</h2>
           <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
             Score: <span className={`text-xl font-bold ${
-              result.overallScore >= 7 ? "text-green-600" :
-              result.overallScore >= 5 ? "text-amber-600" : "text-red-600"
+              result.overallScore >= 7 ? "text-sprout" :
+              result.overallScore >= 5 ? "text-harvest" : "text-destructive"
             }`}>{result.overallScore}/10</span>
             <span className="text-xs capitalize bg-muted px-2 py-0.5 rounded-full">
               {result.recommendation.replace(/_/g, " ")}
@@ -84,7 +87,7 @@ export function OffersBody() {
 
         {pros && pros.length > 0 && (
           <div>
-            <h3 className="text-sm font-medium mb-2 text-green-700">Pros</h3>
+            <h3 className="text-sm font-medium mb-2 text-sprout">Pros</h3>
             <ul className="list-disc pl-5 space-y-1">
               {pros.map((p, i) => <li key={i} className="text-sm">{p}</li>)}
             </ul>
@@ -93,7 +96,7 @@ export function OffersBody() {
 
         {cons && cons.length > 0 && (
           <div>
-            <h3 className="text-sm font-medium mb-2 text-red-700">Cons</h3>
+            <h3 className="text-sm font-medium mb-2 text-destructive">Cons</h3>
             <ul className="list-disc pl-5 space-y-1">
               {cons.map((c, i) => <li key={i} className="text-sm">{c}</li>)}
             </ul>
@@ -117,7 +120,7 @@ export function OffersBody() {
   }
 
   return (
-    <div className="rounded-2xl border bg-card p-6">
+    <div className="rounded-2xl border bg-card p-4 sm:p-6">
       <div className="mb-6">
         <h2 className="text-lg font-semibold">Evaluate a Job Offer</h2>
         <p className="text-sm text-muted-foreground mt-1">
@@ -125,14 +128,16 @@ export function OffersBody() {
         </p>
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+        {/* Stacked on a phone — two half-width text inputs are unusable
+            below ~380px. */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="company">Company</Label>
-            <Input id="company" name="company" placeholder="Company name" required />
+            <Input id="company" name="company" placeholder="Company name" required aria-required="true" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="role_title">Role Title</Label>
-            <Input id="role_title" name="role_title" placeholder="e.g. Senior Engineer" required />
+            <Input id="role_title" name="role_title" placeholder="e.g. Senior Engineer" required aria-required="true" />
           </div>
         </div>
         <div className="space-y-2">
@@ -146,9 +151,24 @@ export function OffersBody() {
             minLength={20}
           />
         </div>
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <Button type="submit" disabled={loading} className="w-full">
-          {loading ? "Evaluating..." : "Evaluate Offer"}
+        {error ? (
+          <div
+            role="alert"
+            className="flex items-start gap-2.5 rounded-lg bg-destructive/10 px-3.5 py-2.5 text-xs text-destructive"
+          >
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>{error}</span>
+          </div>
+        ) : null}
+        <Button type="submit" disabled={loading} aria-busy={loading} className="w-full">
+          {loading ? (
+            <>
+              <Loader2 className="animate-spin" />
+              Weighing the offer…
+            </>
+          ) : (
+            "Evaluate Offer"
+          )}
         </Button>
       </form>
     </div>

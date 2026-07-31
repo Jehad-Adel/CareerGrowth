@@ -1,9 +1,12 @@
 "use client";
 
+import { AlertCircle, Check, Loader2, X } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectItem } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
 import { generateQuiz, submitQuizAnswers } from "./actions";
@@ -17,6 +20,19 @@ type QuestionDisplay = {
   isCorrect?: boolean;
 };
 
+/** Shared error presentation, matching `jobs/job-input.tsx`. */
+function ErrorNote({ message }: { message: string }) {
+  return (
+    <div
+      role="alert"
+      className="flex items-start gap-2.5 rounded-lg bg-destructive/10 px-3.5 py-2.5 text-xs text-destructive"
+    >
+      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+      <span>{message}</span>
+    </div>
+  );
+}
+
 export function QuizBody() {
   const [phase, setPhase] = useState<"form" | "quiz" | "result">("form");
   const [questions, setQuestions] = useState<QuestionDisplay[]>([]);
@@ -27,67 +43,93 @@ export function QuizBody() {
 
   async function handleGenerate(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const form = new FormData(e.currentTarget);
+
     setLoading(true);
     setError(null);
-
-    const form = new FormData(e.currentTarget);
-    const res = await generateQuiz({}, form);
-    if (res.error) {
-      setError(res.error);
+    try {
+      const res = await generateQuiz({}, form);
+      if (res.error) {
+        setError(res.error);
+        return;
+      }
+      if (res.attemptId && res.questions) {
+        setAttemptId(res.attemptId);
+        setQuestions(res.questions);
+        setAnswers({});
+        setPhase("quiz");
+      }
+    } finally {
+      // `finally`, not a call on each branch: an early return used to leave
+      // `loading` stuck true and the button disabled for good.
       setLoading(false);
-      return;
     }
-    if (res.attemptId && res.questions) {
-      setAttemptId(res.attemptId);
-      setQuestions(res.questions);
-      setPhase("quiz");
-    }
-    setLoading(false);
   }
 
   async function handleSubmitQuiz() {
-    setLoading(true);
-    setError(null);
-    if (!attemptId) return;
-
-    const answerList = questions.map((_, i) => answers[i] ?? -1);
-    const form = new FormData();
-    form.set("attempt_id", attemptId);
-    form.set("answers", JSON.stringify(answerList));
-    const res = await submitQuizAnswers({}, form);
-    if (res.error) {
-      setError(res.error);
-      setLoading(false);
+    // Guard before the spinner goes up, not after.
+    if (!attemptId) {
+      setError("That quiz expired. Generate a new one.");
       return;
     }
 
-    if (res.questions) {
-      setQuestions(res.questions);
-      setPhase("result");
+    setLoading(true);
+    setError(null);
+    try {
+      const form = new FormData();
+      form.set("attempt_id", attemptId);
+      form.set(
+        "answers",
+        JSON.stringify(questions.map((_, i) => answers[i] ?? -1)),
+      );
+
+      const res = await submitQuizAnswers({}, form);
+      if (res.error) {
+        setError(res.error);
+        return;
+      }
+      if (res.questions) {
+        setQuestions(res.questions);
+        setPhase("result");
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+  }
+
+  function reset() {
+    setPhase("form");
+    setQuestions([]);
+    setAnswers({});
+    setAttemptId(null);
+    setError(null);
   }
 
   if (phase === "quiz") {
-    const allAnswered = questions.length > 0 && Object.keys(answers).length === questions.length;
+    const allAnswered =
+      questions.length > 0 && Object.keys(answers).length === questions.length;
+    const answeredCount = Object.keys(answers).length;
+
     return (
-      <div className="rounded-2xl border bg-card p-6 space-y-6">
+      <div className="space-y-6 rounded-2xl border bg-card p-4 sm:p-6">
         <div>
-          <h2 className="text-lg font-semibold">Answer the Questions</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            Select the best answer for each question.
+          <h2 className="text-lg font-semibold">Answer the questions</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {answeredCount} of {questions.length} answered.
           </p>
         </div>
+
         {questions.map((q, i) => (
-          <div key={i} className="rounded-xl border p-4 space-y-3">
-            <p className="font-medium">
-              {i + 1}. {q.question}
-            </p>
+          <fieldset key={i} className="space-y-3 rounded-xl border p-3 sm:p-4">
+            <legend className="px-1 text-sm font-medium">
+              Question {i + 1} of {questions.length}
+            </legend>
+            <p className="font-medium">{q.question}</p>
             <div className="space-y-2">
               {q.options.map((opt, j) => (
                 <label
                   key={j}
-                  className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-colors ${
+                  className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors ${
                     answers[i] === j
                       ? "border-primary bg-primary/5"
                       : "hover:bg-muted/50"
@@ -98,18 +140,33 @@ export function QuizBody() {
                     name={`q-${i}`}
                     value={j}
                     checked={answers[i] === j}
+                    disabled={loading}
                     onChange={() => setAnswers((p) => ({ ...p, [i]: j }))}
-                    className="h-4 w-4"
+                    className="h-4 w-4 shrink-0 accent-primary"
                   />
                   <span className="text-sm">{opt}</span>
                 </label>
               ))}
             </div>
-          </div>
+          </fieldset>
         ))}
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <Button onClick={handleSubmitQuiz} disabled={!allAnswered || loading} className="w-full">
-          {loading ? "Submitting..." : "Submit Answers"}
+
+        {error ? <ErrorNote message={error} /> : null}
+
+        <Button
+          onClick={handleSubmitQuiz}
+          disabled={!allAnswered || loading}
+          aria-busy={loading}
+          className="w-full"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="animate-spin" />
+              Scoring your answers…
+            </>
+          ) : (
+            "Submit answers"
+          )}
         </Button>
       </div>
     );
@@ -117,95 +174,162 @@ export function QuizBody() {
 
   if (phase === "result") {
     const correct = questions.filter((q) => q.isCorrect).length;
+    // Guard the divide: a zero-question attempt rendered "NaN%".
+    const pct = questions.length
+      ? Math.round((correct / questions.length) * 100)
+      : 0;
+
     return (
-      <div className="rounded-2xl border bg-card p-6 space-y-6">
+      <div className="space-y-6 rounded-2xl border bg-card p-4 sm:p-6">
         <div>
           <h2 className="text-lg font-semibold">Results</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            You got {correct} of {questions.length} correct ({Math.round((correct / questions.length) * 100)}%)
+          <p className="mt-1 text-sm text-muted-foreground">
+            You got {correct} of {questions.length} correct ({pct}%).
           </p>
         </div>
+
         {questions.map((q, i) => (
           <div
             key={i}
-            className={`rounded-xl border p-4 ${
-              q.isCorrect ? "border-green-200 bg-green-50/50" : "border-red-200 bg-red-50/50"
+            className={`rounded-xl border p-3 sm:p-4 ${
+              q.isCorrect
+                ? "border-sprout/40 bg-sprout/5"
+                : "border-destructive/40 bg-destructive/5"
             }`}
           >
-            <p className="font-medium">
-              {i + 1}. {q.question}
-            </p>
+            <div className="flex items-start gap-2">
+              {q.isCorrect ? (
+                <Check
+                  className="mt-0.5 h-4 w-4 shrink-0 text-sprout"
+                  aria-hidden
+                />
+              ) : (
+                <X
+                  className="mt-0.5 h-4 w-4 shrink-0 text-destructive"
+                  aria-hidden
+                />
+              )}
+              <p className="font-medium">
+                <span className="sr-only">
+                  {q.isCorrect ? "Correct." : "Incorrect."}{" "}
+                </span>
+                {i + 1}. {q.question}
+              </p>
+            </div>
             <p className="mt-1 text-sm">
               Your answer:{" "}
-              <span className={q.isCorrect ? "text-green-700 font-medium" : "text-red-700 font-medium"}>
-                {q.userAnswer !== undefined ? q.options[q.userAnswer] : "Not answered"}
+              <span
+                className={
+                  q.isCorrect
+                    ? "font-medium text-sprout"
+                    : "font-medium text-destructive"
+                }
+              >
+                {q.userAnswer !== undefined
+                  ? q.options[q.userAnswer]
+                  : "Not answered"}
               </span>
             </p>
-            {q.correctAnswer !== undefined && (
-              <p className="text-sm text-green-700">Correct answer: {q.options[q.correctAnswer]}</p>
-            )}
-            {q.explanation && <p className="mt-2 text-sm text-muted-foreground">{q.explanation}</p>}
+            {!q.isCorrect && q.correctAnswer !== undefined ? (
+              <p className="text-sm text-sprout">
+                Correct answer: {q.options[q.correctAnswer]}
+              </p>
+            ) : null}
+            {q.explanation ? (
+              <p className="mt-2 text-sm text-muted-foreground">
+                {q.explanation}
+              </p>
+            ) : null}
           </div>
         ))}
-        <Button variant="outline" onClick={() => { setPhase("form"); setQuestions([]); setAnswers({}); setAttemptId(null); setError(null); }} className="w-full">
-          Try Another Quiz
+
+        <Button variant="outline" onClick={reset} className="w-full">
+          Try another quiz
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl border bg-card p-6">
+    <div className="rounded-2xl border bg-card p-4 sm:p-6">
       <div className="mb-6">
-        <h2 className="text-lg font-semibold">Generate a Quiz</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Paste learning material and we&apos;ll create questions tailored to your level.
+        <h2 className="text-lg font-semibold">Generate a quiz</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Paste learning material and we&apos;ll create questions tailored to
+          your level.
         </p>
       </div>
+
       <form onSubmit={handleGenerate} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="source_text">Source Material</Label>
-          <Textarea
-            id="source_text"
-            name="source_text"
-            placeholder="Paste article, documentation, or notes here..."
-            rows={8}
-            required
-            minLength={10}
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="mastery_level">Your Level</Label>
-            <select
-              id="mastery_level"
-              name="mastery_level"
-              defaultValue="1"
-              className="flex h-11 w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-            >
-              <option value="1">Beginner</option>
-              <option value="2">Elementary</option>
-              <option value="3">Intermediate</option>
-              <option value="4">Advanced</option>
-              <option value="5">Expert</option>
-            </select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="num_questions">Number of Questions</Label>
-            <input
-              id="num_questions"
-              name="num_questions"
-              type="number"
-              defaultValue={5}
-              min={1}
-              max={20}
-              className="flex h-11 w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+        <fieldset disabled={loading} className="contents">
+          <div className="space-y-1.5">
+            <Label htmlFor="source_text" className="text-sm font-medium">
+              Source material
+            </Label>
+            <Textarea
+              id="source_text"
+              name="source_text"
+              placeholder="Paste an article, documentation, or your notes…"
+              rows={8}
+              required
+              aria-required="true"
+              minLength={10}
+              aria-describedby="source-hint"
             />
+            <p id="source-hint" className="text-xs text-muted-foreground">
+              At least 10 characters. The questions come only from what you
+              paste here.
+            </p>
           </div>
-        </div>
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <Button type="submit" disabled={loading} className="w-full">
-          {loading ? "Generating..." : "Generate Quiz"}
+
+          {/* One column on a phone: two 50%-width controls side by side are
+              unusable below ~380px. */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="mastery_level" className="text-sm font-medium">
+                Your level
+              </Label>
+              <Select id="mastery_level" name="mastery_level" defaultValue="1">
+                <SelectItem value="1">Beginner</SelectItem>
+                <SelectItem value="2">Elementary</SelectItem>
+                <SelectItem value="3">Intermediate</SelectItem>
+                <SelectItem value="4">Advanced</SelectItem>
+                <SelectItem value="5">Expert</SelectItem>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="num_questions" className="text-sm font-medium">
+                Number of questions
+              </Label>
+              <Input
+                id="num_questions"
+                name="num_questions"
+                type="number"
+                inputMode="numeric"
+                defaultValue={5}
+                min={1}
+                max={20}
+              />
+            </div>
+          </div>
+        </fieldset>
+
+        {error ? <ErrorNote message={error} /> : null}
+
+        <Button
+          type="submit"
+          disabled={loading}
+          aria-busy={loading}
+          className="w-full"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="animate-spin" />
+              Writing your questions…
+            </>
+          ) : (
+            "Generate quiz"
+          )}
         </Button>
       </form>
     </div>

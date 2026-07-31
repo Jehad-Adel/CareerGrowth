@@ -5,7 +5,9 @@ import { getAllNotifications } from "@/lib/services";
 
 import { NotificationsBody } from "./notifications-body";
 
-export const metadata = { title: "Notifications — CareerFarm" };
+// The root layout applies `title.template: "%s · CareerFarm"`, so repeating
+// the suffix here renders it twice.
+export const metadata = { title: "Notifications" };
 
 export default async function NotificationsPage() {
   const notifications = await getAllNotifications().catch(() => []);

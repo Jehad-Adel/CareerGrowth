@@ -4,7 +4,9 @@ import { CardSkeleton } from "@/components/skeletons";
 
 import { QuizBody } from "./quiz-body";
 
-export const metadata = { title: "Quiz — CareerFarm" };
+// The root layout applies `title.template: "%s · CareerFarm"`, so repeating
+// the suffix here renders it twice.
+export const metadata = { title: "Quiz" };
 
 export default function QuizPage() {
   return (

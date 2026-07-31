@@ -1,10 +1,12 @@
 "use client";
 
+import { AlertCircle, Loader2 } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectItem } from "@/components/ui/select";
 
 import { processVideo } from "./actions";
 
@@ -27,21 +29,23 @@ export function VideoBody() {
     setError(null);
 
     const form = new FormData(e.currentTarget);
-    const res = await processVideo({}, form);
-    if (res.error) {
-      setError(res.error);
+    try {
+      const res = await processVideo({}, form);
+      if (res.error) {
+        setError(res.error);
+        return;
+      }
+      if (res.video) {
+        setResult(res.video);
+      }
+    } finally {
       setLoading(false);
-      return;
     }
-    if (res.video) {
-      setResult(res.video);
-    }
-    setLoading(false);
   }
 
   if (result) {
     return (
-      <div className="rounded-2xl border bg-card p-6 space-y-6">
+      <div className="rounded-2xl border bg-card p-4 sm:p-6 space-y-6">
         <div>
           <h2 className="text-lg font-semibold">{result.title || "Video Result"}</h2>
           <p className="text-sm text-muted-foreground mt-1">
@@ -82,7 +86,7 @@ export function VideoBody() {
   }
 
   return (
-    <div className="rounded-2xl border bg-card p-6">
+    <div className="rounded-2xl border bg-card p-4 sm:p-6">
       <div className="mb-6">
         <h2 className="text-lg font-semibold">Process a Video</h2>
         <p className="text-sm text-muted-foreground mt-1">
@@ -90,25 +94,49 @@ export function VideoBody() {
         </p>
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="url">Video URL</Label>
-          <Input id="url" name="url" type="url" placeholder="https://youtube.com/watch?v=..." required />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="mode">Mode</Label>
-          <select
-            id="mode"
-            name="mode"
-            defaultValue="summary"
-            className="flex h-11 w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+        <fieldset disabled={loading} className="contents">
+          <div className="space-y-2">
+            <Label htmlFor="url">Video URL</Label>
+            <Input
+              id="url"
+              name="url"
+              type="url"
+              inputMode="url"
+              placeholder="https://youtube.com/watch?v=..."
+              required
+              aria-required="true"
+              aria-describedby="url-hint"
+            />
+            <p id="url-hint" className="text-xs text-muted-foreground">
+              YouTube links only, and the video needs captions available.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="mode">Mode</Label>
+            <Select id="mode" name="mode" defaultValue="summary">
+              <SelectItem value="summary">AI Summary</SelectItem>
+              <SelectItem value="transcript">Full Transcript</SelectItem>
+            </Select>
+          </div>
+        </fieldset>
+        {error ? (
+          <div
+            role="alert"
+            className="flex items-start gap-2.5 rounded-lg bg-destructive/10 px-3.5 py-2.5 text-xs text-destructive"
           >
-            <option value="summary">AI Summary</option>
-            <option value="transcript">Full Transcript</option>
-          </select>
-        </div>
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <Button type="submit" disabled={loading} className="w-full">
-          {loading ? "Processing..." : "Process Video"}
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>{error}</span>
+          </div>
+        ) : null}
+        <Button type="submit" disabled={loading} aria-busy={loading} className="w-full">
+          {loading ? (
+            <>
+              <Loader2 className="animate-spin" />
+              Watching the video…
+            </>
+          ) : (
+            "Process Video"
+          )}
         </Button>
       </form>
     </div>

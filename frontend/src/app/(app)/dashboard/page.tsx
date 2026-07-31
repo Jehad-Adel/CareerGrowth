@@ -9,6 +9,7 @@ import { DashboardSkeleton } from "@/components/skeletons";
 import { buttonVariants } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { getDashboardData, getProfile, type Dashboard } from "@/lib/services";
+import { formatDate } from "@/lib/utils";
 
 /** The single most useful thing to do next, given what exists so far. */
 function nextAction(d: Dashboard) {
@@ -113,7 +114,7 @@ async function DashboardBody() {
                       {e.type.replaceAll("_", " ")}
                     </span>
                     <span className="shrink-0 font-mono text-xs text-muted-foreground">
-                      {new Date(e.at).toLocaleDateString()}
+                      {formatDate(e.at)}
                       {e.xp > 0 ? ` · +${e.xp}` : ""}
                     </span>
                   </li>

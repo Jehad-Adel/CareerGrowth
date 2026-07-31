@@ -19,7 +19,7 @@ import {
   getProfile,
   type InterviewSessionRecord,
 } from "@/lib/services";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 
 const LEVEL_LABEL: Record<string, string> = {
   friendly_hr: "Friendly HR",
@@ -78,7 +78,7 @@ function InterviewHistoryList({
                   {s.interviewer_name ?? "Interviewer"} ({label})
                 </span>
                 <span className="font-mono text-[10px] text-muted-foreground shrink-0">
-                  {new Date(s.created_at).toLocaleDateString()}
+                  {formatDate(s.created_at)}
                 </span>
               </div>
               <div className="mt-1.5 flex items-center justify-between gap-2 text-[11px] text-muted-foreground">

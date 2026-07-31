@@ -4,7 +4,9 @@ import { CardSkeleton } from "@/components/skeletons";
 
 import { VideoBody } from "./video-body";
 
-export const metadata = { title: "Video Summarizer — CareerFarm" };
+// The root layout applies `title.template: "%s · CareerFarm"`, so repeating
+// the suffix here renders it twice.
+export const metadata = { title: "Video Summarizer" };
 
 export default function VideoPage() {
   return (

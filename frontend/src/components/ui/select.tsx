@@ -1,85 +1,62 @@
 import * as React from "react"
+import { ChevronDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-function Select({ className, children, defaultValue, value, onValueChange, name, ...props }: {
-  className?: string;
-  children: React.ReactNode;
-  defaultValue?: string;
-  value?: string;
-  onValueChange?: (value: string) => void;
-  name?: string;
+/**
+ * A native `<select>` in the project's field styling.
+ *
+ * Props land on the `<select>` itself, not the positioning wrapper. They used
+ * to spread onto the wrapper `<div>`, so `id` never reached the control and a
+ * `<Label htmlFor>` pointed at a div — no label association, and clicking the
+ * label did nothing.
+ *
+ * The `SelectTrigger` / `SelectValue` / `SelectContent` scaffolding that used
+ * to sit here mirrored Radix's compound API over a native select that cannot
+ * use it. Nothing imported those, so they are gone rather than left as a trap.
+ */
+function Select({
+  className,
+  children,
+  onValueChange,
+  onChange,
+  ...props
+}: Omit<React.ComponentProps<"select">, "onChange"> & {
+  onValueChange?: (value: string) => void
+  onChange?: React.ChangeEventHandler<HTMLSelectElement>
 }) {
   return (
-    <div data-slot="select" className={cn("relative", className)} {...props}>
+    <div data-slot="select" className={cn("relative", className)}>
       <select
-        name={name}
-        defaultValue={defaultValue}
-        value={value}
-        onChange={onValueChange ? (e) => onValueChange(e.target.value) : undefined}
-        className="flex h-11 w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive dark:bg-input/30"
+        data-slot="select-control"
+        onChange={(event) => {
+          onChange?.(event)
+          onValueChange?.(event.target.value)
+        }}
+        className="flex h-11 w-full appearance-none rounded-lg border border-input bg-transparent py-2 pl-3 pr-9 text-base transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive md:h-8 md:text-sm dark:bg-input/30"
+        {...props}
       >
         {children}
       </select>
+      {/* Replaces the native arrow that `appearance-none` removes. */}
+      <ChevronDown
+        aria-hidden
+        className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+      />
     </div>
   )
 }
 
-function SelectTrigger({ className, children, ...props }: React.ComponentProps<"div">) {
+function SelectItem({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<"option">) {
   return (
-    <div
-      data-slot="select-trigger"
-      className={cn(
-        "flex h-11 w-full items-center justify-between rounded-lg border border-input bg-transparent px-3 py-2 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50",
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </div>
-  )
-}
-
-function SelectValue({ className, placeholder, ...props }: { className?: string; placeholder?: string }) {
-  return (
-    <span
-      data-slot="select-value"
-      className={cn("text-muted-foreground", className)}
-      {...props}
-    >
-      {placeholder || "Select..."}
-    </span>
-  )
-}
-
-function SelectContent({ className, children, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="select-content"
-      className={cn(
-        "absolute z-50 mt-1 w-full rounded-lg border bg-popover p-1 shadow-md",
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </div>
-  )
-}
-
-function SelectItem({ className, children, value, ...props }: { className?: string; children: React.ReactNode; value: string } & React.ComponentProps<"option">) {
-  return (
-    <option
-      value={value}
-      className={cn(
-        "relative flex w-full cursor-default items-center rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted focus:bg-muted",
-        className
-      )}
-      {...props}
-    >
+    <option className={cn("bg-popover text-popover-foreground", className)} {...props}>
       {children}
     </option>
   )
 }
 
-export { Select, SelectTrigger, SelectValue, SelectContent, SelectItem }
+export { Select, SelectItem }
