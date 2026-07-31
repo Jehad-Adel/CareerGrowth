@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { buildCsp, generateNonce } from "@/lib/csp";
+import { AUTH_ROUTES, isProtectedRoute } from "@/lib/routes";
 import { updateSession } from "@/lib/supabase/proxy";
 
 /**
@@ -18,20 +19,6 @@ import { updateSession } from "@/lib/supabase/proxy";
  * It also mints the CSP nonce — see `lib/csp.ts` for why the policy cannot be
  * a static header.
  */
-
-/** Routes that require a session. Everything else is public. */
-const PROTECTED = [
-  "/dashboard",
-  "/cv",
-  "/farm",
-  "/jobs",
-  "/interview",
-  "/roadmap",
-  "/chat",
-];
-
-/** Signed-in users have no business on these. */
-const AUTH_ROUTES = ["/login", "/signup"];
 
 function copyCookies(from: NextResponse, to: NextResponse) {
   for (const cookie of from.cookies.getAll()) {
@@ -60,9 +47,7 @@ export async function proxy(request: NextRequest) {
   });
   const { pathname } = request.nextUrl;
 
-  const needsAuth = PROTECTED.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`),
-  );
+  const needsAuth = isProtectedRoute(pathname);
   const isAuthRoute = AUTH_ROUTES.some((route) => pathname === route);
 
   if (needsAuth && !claims) {

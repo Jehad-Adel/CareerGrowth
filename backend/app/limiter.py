@@ -11,6 +11,9 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 
 from app.config import get_settings
+from app.logging import get_logger
+
+log = get_logger(__name__)
 
 
 def client_key(request: Request) -> str:
@@ -97,6 +100,27 @@ class GlobalRateLimitMiddleware(BaseHTTPMiddleware):
 
 
 def install_rate_limiting(app: FastAPI) -> None:
+    settings = get_settings()
+
+    # In production the app sits behind a platform edge (Railway's), so every
+    # request arrives from the same socket peer. With trusted_proxy_count at
+    # its default of 0 the header is ignored and that one address becomes the
+    # rate-limit key for the entire user base: all traffic shares a single
+    # 120/minute bucket, and one busy user locks everyone else out. Nothing
+    # fails loudly when this is wrong -- the limiter keeps working, just on
+    # the wrong key -- so say so at startup. Railway terminates TLS at one
+    # hop, which makes TRUSTED_PROXY_COUNT=1 the correct value there.
+    if settings.is_production and settings.trusted_proxy_count == 0:
+        log.warning(
+            "rate_limit_key_is_shared",
+            reason=(
+                "TRUSTED_PROXY_COUNT is 0 in production, so X-Forwarded-For is "
+                "ignored and every request keys to the proxy's address. Set it "
+                "to the number of trusted proxies in front of this app (1 on "
+                "Railway) or rate limiting applies to all users collectively."
+            ),
+        )
+
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     app.add_middleware(GlobalRateLimitMiddleware)

@@ -77,3 +77,45 @@ def test_401_body_never_explains_why(client, bad):
         headers={"Authorization": f"Bearer {make_token(key=WRONG_SIGNING_KEY)}"},
     ).json()["detail"]
     assert expired == forged
+
+
+def test_token_from_another_supabase_project_is_rejected(client):
+    """A valid signature is not enough -- `iss` must name this project.
+
+    Redundant with the JWKS pin in practice, since a foreign project's key is
+    never served by this project's JWKS. It matters if SUPABASE_URL is ever
+    pointed somewhere else by mistake.
+    """
+    tok = make_token(iss="https://someone-elses-project.supabase.co/auth/v1")
+    r = client.get("/me", headers={"Authorization": f"Bearer {tok}"})
+    assert r.status_code == 401
+
+
+@pytest.mark.parametrize("claim", ["exp", "sub", "aud", "iss"])
+def test_token_missing_a_required_claim_is_rejected(client, claim):
+    """PyJWT validates these when present but does not require them.
+
+    A token minted without `exp` would otherwise verify forever, and one
+    without `sub` has nothing tying it to a profile.
+    """
+    import time
+    import uuid as _uuid
+
+    import jwt
+
+    from tests.conftest import TEST_KID, TEST_SIGNING_KEY
+
+    payload = {
+        "sub": str(_uuid.uuid4()),
+        "email": "a@b.com",
+        "aud": "authenticated",
+        "iss": "http://localhost/auth/v1",
+        "exp": int(time.time()) + 3600,
+    }
+    del payload[claim]
+
+    tok = jwt.encode(
+        payload, TEST_SIGNING_KEY, algorithm="ES256", headers={"kid": TEST_KID}
+    )
+    r = client.get("/me", headers={"Authorization": f"Bearer {tok}"})
+    assert r.status_code == 401

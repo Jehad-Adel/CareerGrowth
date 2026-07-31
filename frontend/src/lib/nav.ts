@@ -13,8 +13,15 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import type { ProtectedRoute } from "@/lib/routes";
+
 export type NavItem = {
-  href: string;
+  /**
+   * Constrained to `lib/routes.ts`, so a new sidebar entry that was never
+   * added to the guard list fails the type check instead of quietly serving
+   * its app shell to logged-out visitors.
+   */
+  href: ProtectedRoute;
   label: string;
   icon: LucideIcon;
 };

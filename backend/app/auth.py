@@ -16,6 +16,8 @@ bearer = HTTPBearer(auto_error=False)
 # asymmetric signing keys never issues anything else.
 _ALGORITHMS = ["ES256"]
 _JWKS_PATH = "/auth/v1/.well-known/jwks.json"
+# Supabase sets `iss` to <SUPABASE_URL>/auth/v1 on every access token.
+_ISSUER_PATH = "/auth/v1"
 
 
 class AuthUser(BaseModel):
@@ -41,6 +43,17 @@ def _jwk_client() -> PyJWKClient:
     )
 
 
+def _issuer() -> str:
+    """The `iss` value tokens from this project carry.
+
+    Redundant with the JWKS pin -- a token from another Supabase project is
+    signed by a key this project's JWKS never serves, so it fails on the
+    signature first. Checked anyway because it is free, and because the pin
+    is one config mistake away from pointing somewhere else.
+    """
+    return get_settings().supabase_url.rstrip("/") + _ISSUER_PATH
+
+
 def get_current_user(
     cred: HTTPAuthorizationCredentials | None = Depends(bearer),
 ) -> AuthUser:
@@ -54,6 +67,12 @@ def get_current_user(
             signing_key.key,
             algorithms=_ALGORITHMS,
             audience="authenticated",
+            issuer=_issuer(),
+            # PyJWT validates `exp` when it is present but does not insist it
+            # is: a token minted without one would otherwise verify forever.
+            # `sub` is required for the same reason -- it is the only thing
+            # tying the token to a profile.
+            options={"require": ["exp", "sub", "aud", "iss"]},
         )
     except (jwt.PyJWTError, PyJWKClientError):
         # Never echo the underlying reason: it tells an attacker whether the

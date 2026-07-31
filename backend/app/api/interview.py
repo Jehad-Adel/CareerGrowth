@@ -114,23 +114,37 @@ async def answer_question(
     audio: UploadFile | None = File(default=None),
 ) -> SessionOut:
     audio_bytes = None
+    audio_mime_type = "audio/webm"
     if audio and (audio.filename or getattr(audio, "size", 0)):
-        content_type = (audio.content_type or "").lower()
-        if (
-            not content_type.startswith("audio/")
-            and content_type not in ALLOWED_AUDIO_TYPES
-        ):
+        # MediaRecorder sends parameters on the type ("audio/webm;codecs=opus"),
+        # so compare the bare type against the allowlist rather than the whole
+        # header. Matching on the "audio/" prefix alone would make the
+        # allowlist decorative -- any audio/* subtype would pass.
+        content_type = (audio.content_type or "").split(";")[0].strip().lower()
+        if content_type not in ALLOWED_AUDIO_TYPES:
             raise InvalidAudioUpload(
                 "Unsupported audio format. Please upload an audio file."
             )
-        audio_bytes = await audio.read()
+        # Read with a hard cap rather than trusting Content-Length, which lies
+        # -- same as the CV upload path. Reading first and measuring after
+        # buffers the whole body in memory before the limit can reject it, so
+        # one oversized request is enough to exhaust the process.
+        audio_bytes = await audio.read(MAX_AUDIO_BYTES + 1)
         if not audio_bytes:
             raise InvalidAudioUpload("Audio file is empty.")
         if len(audio_bytes) > MAX_AUDIO_BYTES:
             raise InvalidAudioUpload("Audio file exceeds the 5 MB limit.")
+        # Gemini decodes the container from this, so pass what the client
+        # actually sent rather than letting the default stand in.
+        audio_mime_type = content_type
     text = answer if answer else None
     session = interview_service.answer(
-        db, profile.id, session_id, text=text, audio_data=audio_bytes
+        db,
+        profile.id,
+        session_id,
+        text=text,
+        audio_data=audio_bytes,
+        audio_mime_type=audio_mime_type,
     )
     return _to_out(session)
 

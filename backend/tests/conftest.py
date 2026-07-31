@@ -98,16 +98,21 @@ def client():
 
 
 def make_token(key=None, sub=None, email="a@b.com", exp_offset=3600,
-               aud="authenticated"):
+               aud="authenticated", iss=None):
     """Mint an ES256 token shaped like a Supabase access token.
 
     sub defaults to a fresh UUID because Supabase issues UUID subjects and
     profile_service.get_or_create parses it as one.
+
+    `iss` must match what `app.auth` derives from SUPABASE_URL (set to
+    http://localhost at the top of this file), because the decode now
+    verifies the issuer and requires the claim to be present.
     """
     payload = {
         "sub": sub or str(uuid.uuid4()),
         "email": email,
         "aud": aud,
+        "iss": iss or "http://localhost/auth/v1",
         "exp": int(time.time()) + exp_offset,
     }
     return jwt.encode(
