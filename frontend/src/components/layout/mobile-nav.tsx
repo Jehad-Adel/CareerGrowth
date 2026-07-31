@@ -115,13 +115,13 @@ export function MobileNav() {
               >
                 <div className="flex items-center justify-between gap-2 px-4 py-4">
                   <Link
-                    href="/dashboard"
+                    href="/"
                     onClick={close}
                     className="flex items-center gap-2.5"
                   >
                     <Logo />
                     <span className="font-heading text-lg font-semibold text-sidebar-foreground">
-                      CareerFarm
+                      CareerGrowth
                     </span>
                   </Link>
                   <button

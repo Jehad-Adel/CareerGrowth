@@ -59,8 +59,10 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
         isCollapsed ? "w-16" : "w-60",
       )}
     >
+      {/* The wordmark goes to the marketing home, not the dashboard. The
+          dashboard already has its own nav entry directly below. */}
       <Link
-        href="/dashboard"
+        href="/"
         className={cn(
           "flex items-center py-5",
           isCollapsed ? "justify-center px-0" : "gap-2.5 px-5",
@@ -70,7 +72,7 @@ export function Sidebar({ defaultCollapsed }: { defaultCollapsed: boolean }) {
         {!isCollapsed ? (
           <span className="leading-none">
             <span className="block font-heading text-lg font-semibold text-sidebar-foreground">
-              CareerFarm
+              CareerGrowth
             </span>
             <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
               Grow your career

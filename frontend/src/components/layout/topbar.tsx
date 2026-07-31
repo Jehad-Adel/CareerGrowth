@@ -29,9 +29,9 @@ export function Topbar({ profile }: { profile: Profile }) {
           are the only things anchoring the page. Both disappear at `lg`, where
           the rail carries them. */}
       <MobileNav />
-      <Link href="/dashboard" className="flex items-center gap-2 lg:hidden">
+      <Link href="/" className="flex items-center gap-2 lg:hidden">
         <Logo />
-        <span className="font-heading text-base font-semibold">CareerFarm</span>
+        <span className="font-heading text-base font-semibold">CareerGrowth</span>
       </Link>
 
       <div className="ms-auto flex min-w-0 items-center gap-2 sm:gap-5">
