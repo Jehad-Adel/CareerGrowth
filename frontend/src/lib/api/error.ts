@@ -1,3 +1,5 @@
+import { unstable_rethrow } from "next/navigation";
+
 /**
  * The one error type every API path throws.
  *
@@ -33,11 +35,23 @@ export class ApiError extends Error {
 /**
  * Normalizes any caught error (network offline/DNS, API 4xx/429/5xx, timeouts)
  * into a safe, user-friendly message without leaking stack traces or internals.
+ *
+ * Server-only: `unstable_rethrow` reaches into Next's control flow, and every
+ * caller is a `"use server"` action.
  */
 export function normalizeApiError(
   error: unknown,
   fallbackMessage = "Something went wrong. Please try again shortly.",
 ): string {
+  // `serverFetch` answers a 401 with `redirect("/login")`, and `redirect`
+  // signals by *throwing*. Every action wraps its fetch in try/catch, so
+  // without this the bounce to login was caught here and rendered as an
+  // inline "something went wrong" while the user stayed on a dead page with
+  // an expired session. `unstable_rethrow` re-throws Next's internal control
+  // flow (redirect, notFound, forbidden, unauthorized) and returns normally
+  // for everything else.
+  unstable_rethrow(error);
+
   if (error instanceof ApiError) {
     if (error.isRateLimit) {
       return (
