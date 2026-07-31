@@ -1,22 +1,41 @@
 # --- Python & Backend ---
+#
+# The setuptools build-artifact names below are ANCHORED with a leading slash,
+# which restricts each to the repo root and to backend/. Unanchored, git
+# matches a directory of that name at *any* depth — and `lib/` therefore
+# matched `frontend/src/lib/`, silently ignoring the frontend's entire data
+# layer. The files already committed there stayed tracked (an ignore rule does
+# not affect tracked files), so nothing looked wrong; only *new* ones vanished.
+# `src/lib/routes.ts` was added and never staged, and since `proxy.ts` — the
+# auth guard — imports it, a fresh clone would have failed to build on an
+# unresolved module. Add new paths here anchored, never bare.
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
+/build/
+/backend/build/
+/develop-eggs/
+/backend/develop-eggs/
+/dist/
+/backend/dist/
+/downloads/
+/eggs/
+/backend/eggs/
+/.eggs/
+/backend/.eggs/
+/lib/
+/backend/lib/
+/lib64/
+/backend/lib64/
+/parts/
+/sdist/
+/backend/sdist/
+/var/
+/wheels/
+/backend/wheels/
+/share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
