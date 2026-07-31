@@ -123,7 +123,14 @@ export function VideoBody() {
           Enter a YouTube URL to get an AI summary or full transcript.
         </p>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      {/* `flex flex-col gap-4`, not `space-y-4`. The fieldset below is
+          `display: contents` so it can carry `disabled` down without adding a
+          box — but that also means `space-y`'s `margin-block-end` lands on an
+          element that generates no box and is discarded, while the fields
+          inside are grandchildren the selector never matches. Everything
+          collapsed flush. A flex container hoists the fieldset's children into
+          its own layout, so `gap` spaces the fields and the button alike. */}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <fieldset disabled={loading} className="contents">
           <div className="space-y-2">
             <Label htmlFor="url">Video URL</Label>

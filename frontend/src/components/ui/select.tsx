@@ -33,7 +33,13 @@ function Select({
           onChange?.(event)
           onValueChange?.(event.target.value)
         }}
-        className="flex h-11 w-full appearance-none rounded-lg border border-input bg-transparent py-2 pl-3 pr-9 text-base transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive md:h-8 md:text-sm dark:bg-input/30"
+        // Padding matches `ui/input.tsx` deliberately. `py-2` against the
+        // `md:h-8` height leaves a 16px content box for a 20px line-height,
+        // which clips the selected option's descenders — the control looks
+        // like it is cut in half. `pr-9` leaves room for the chevron below.
+        // No `flex`: a native <select> is a replaced element and does not lay
+        // its own text out as flex children.
+        className="h-11 w-full appearance-none rounded-lg border border-input bg-transparent py-1 pl-2.5 pr-9 text-base transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive md:h-8 md:text-sm dark:bg-input/30"
         {...props}
       >
         {children}

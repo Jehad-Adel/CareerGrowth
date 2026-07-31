@@ -277,7 +277,10 @@ export function QuizBody() {
         </p>
       </div>
 
-      <form onSubmit={handleGenerate} className="space-y-4">
+      {/* `flex flex-col gap-4`, not `space-y-4` — see the note in
+          `video/video-body.tsx`. `space-y` cannot reach past the
+          `display: contents` fieldset, so every gap in this form collapsed. */}
+      <form onSubmit={handleGenerate} className="flex flex-col gap-4">
         <fieldset disabled={loading} className="contents">
           <div className="space-y-1.5">
             <Label htmlFor="source_text" className="text-sm font-medium">
