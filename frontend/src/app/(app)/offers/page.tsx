@@ -1,22 +1,22 @@
 import { Suspense } from "react";
 
+import { PageHeader } from "@/components/layout/page-header";
 import { CardSkeleton } from "@/components/skeletons";
 
 import { OffersBody } from "./offers-body";
 
-// The root layout applies `title.template: "%s · CareerFarm"`, so repeating
+// The root layout applies `title.template: "%s · CareerGrowth"`, so repeating
 // the suffix here renders it twice.
 export const metadata = { title: "Offer Evaluator" };
 
 export default function OffersPage() {
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Job Offer Evaluator</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Paste a job offer you received and get an objective evaluation.
-        </p>
-      </div>
+    <div className="mx-auto max-w-3xl">
+      <PageHeader
+        eyebrow="Offers"
+        title="Read the offer, not just the number"
+        subtitle="Paste everything you were sent — salary, equity, benefits, the working arrangement. You get a scored breakdown and the points worth negotiating."
+      />
       <Suspense fallback={<CardSkeleton />}>
         <OffersBody />
       </Suspense>

@@ -3,9 +3,11 @@
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useState } from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ScoreRing } from "@/components/ui/score-ring";
 import { Textarea } from "@/components/ui/textarea";
 
 import { evaluateOffer } from "./actions";
@@ -52,17 +54,24 @@ export function OffersBody() {
 
     return (
       <div className="rounded-2xl border bg-card p-4 sm:p-6 space-y-6">
-        <div>
-          <h2 className="text-lg font-semibold">{result.roleTitle} @ {result.company}</h2>
-          <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
-            Score: <span className={`text-xl font-bold ${
-              result.overallScore >= 7 ? "text-sprout" :
-              result.overallScore >= 5 ? "text-harvest" : "text-destructive"
-            }`}>{result.overallScore}/10</span>
-            <span className="text-xs capitalize bg-muted px-2 py-0.5 rounded-full">
-              {result.recommendation.replace(/_/g, " ")}
-            </span>
-          </p>
+        {/* Ring for the headline number, matching Job Match and Quiz. The
+            score is out of 10; the ring reads a percentage. */}
+        <div className="flex flex-wrap items-center gap-5 border-b pb-5">
+          <ScoreRing value={result.overallScore * 10} label="Offer" />
+          <div className="min-w-0">
+            <h2 className="text-lg font-semibold text-balance">
+              {result.roleTitle} <span className="text-muted-foreground">at</span>{" "}
+              {result.company}
+            </h2>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <Badge variant="secondary" className="capitalize">
+                {result.recommendation.replace(/_/g, " ")}
+              </Badge>
+              <span className="text-sm text-muted-foreground">
+                {result.overallScore}/10 overall
+              </span>
+            </div>
+          </div>
         </div>
 
         {rationale && (
@@ -112,9 +121,13 @@ export function OffersBody() {
           </div>
         )}
 
-        <Button variant="outline" onClick={() => setResult(null)} className="w-full">
-          Evaluate Another Offer
-        </Button>
+        {/* Secondary action, sized to its label — a full-width outline bar
+            read as the page's primary control. */}
+        <div className="flex justify-end border-t pt-4">
+          <Button variant="outline" size="sm" onClick={() => setResult(null)}>
+            Evaluate another offer
+          </Button>
+        </div>
       </div>
     );
   }

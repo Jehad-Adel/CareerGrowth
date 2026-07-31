@@ -1,22 +1,22 @@
 import { Suspense } from "react";
 
+import { PageHeader } from "@/components/layout/page-header";
 import { CardSkeleton } from "@/components/skeletons";
 
 import { QuizBody } from "./quiz-body";
 
-// The root layout applies `title.template: "%s · CareerFarm"`, so repeating
+// The root layout applies `title.template: "%s · CareerGrowth"`, so repeating
 // the suffix here renders it twice.
 export const metadata = { title: "Quiz" };
 
 export default function QuizPage() {
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Quiz Engine</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Test your knowledge with AI-generated quizzes from any learning material.
-        </p>
-      </div>
+    <div className="mx-auto max-w-3xl">
+      <PageHeader
+        eyebrow="Quiz"
+        title="Check what actually stuck"
+        subtitle="Paste anything you've been studying. We'll write questions at your level and mark them, so you find the gaps before an interviewer does."
+      />
       <Suspense fallback={<CardSkeleton />}>
         <QuizBody />
       </Suspense>

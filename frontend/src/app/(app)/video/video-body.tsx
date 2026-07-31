@@ -1,8 +1,9 @@
 "use client";
 
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle, Loader2, Sprout } from "lucide-react";
 import { useState } from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -45,42 +46,71 @@ export function VideoBody() {
 
   if (result) {
     return (
-      <div className="rounded-2xl border bg-card p-4 sm:p-6 space-y-6">
-        <div>
-          <h2 className="text-lg font-semibold">{result.title || "Video Result"}</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            {result.mode === "summary" ? "AI-Generated Summary" : "Full Transcript"}
-          </p>
+      <div className="space-y-6 rounded-2xl border bg-card p-4 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-3 border-b pb-4">
+          <div className="min-w-0">
+            <h2 className="text-lg font-semibold text-balance">
+              {result.title || "Your video"}
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {result.mode === "summary"
+                ? "Summary and key takeaways"
+                : "Full transcript"}
+            </p>
+          </div>
+          <Badge variant="secondary" className="shrink-0 capitalize">
+            {result.mode}
+          </Badge>
         </div>
+
         {result.mode === "summary" && (
           <>
             <div>
-              <h3 className="font-medium mb-2">Summary</h3>
-              <p className="text-sm text-muted-foreground whitespace-pre-wrap">{result.summary}</p>
+              <h3 className="mb-2 font-medium">Summary</h3>
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                {result.summary}
+              </p>
             </div>
             {result.keyTakeaways.length > 0 && (
               <div>
-                <h3 className="font-medium mb-2">Key Takeaways</h3>
-                <ul className="list-disc pl-5 space-y-1">
+                <h3 className="mb-2 font-medium">Key takeaways</h3>
+                <ul className="space-y-2">
                   {result.keyTakeaways.map((t, i) => (
-                    <li key={i} className="text-sm text-muted-foreground">{t}</li>
+                    <li key={i} className="flex gap-2.5 text-sm">
+                      <Sprout
+                        className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                        aria-hidden
+                      />
+                      <span className="text-muted-foreground">{t}</span>
+                    </li>
                   ))}
                 </ul>
               </div>
             )}
           </>
         )}
+
         {result.mode === "transcript" && (
           <div>
-            <h3 className="font-medium mb-2">Transcript</h3>
-            <p className="text-sm text-muted-foreground whitespace-pre-wrap max-h-96 overflow-y-auto">
-              {result.transcript}
-            </p>
+            <h3 className="mb-2 font-medium">Transcript</h3>
+            {/* Boxed and tinted so the clipped edge reads as a scroll pane
+                rather than text that just stops. `scroll-area` is the
+                project's thin scrollbar, same as the chat. */}
+            <div className="scroll-area max-h-96 overflow-y-auto rounded-xl border bg-muted/30 p-4">
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                {result.transcript}
+              </p>
+            </div>
           </div>
         )}
-        <Button variant="outline" onClick={() => setResult(null)} className="w-full">
-          Process Another Video
-        </Button>
+
+        {/* Secondary action, sized to its label and aligned right — a
+            full-width outline bar read as the page's primary control. */}
+        <div className="flex justify-end border-t pt-4">
+          <Button variant="outline" size="sm" onClick={() => setResult(null)}>
+            Process another video
+          </Button>
+        </div>
       </div>
     );
   }

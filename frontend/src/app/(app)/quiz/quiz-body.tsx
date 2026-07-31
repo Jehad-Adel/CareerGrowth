@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ScoreRing } from "@/components/ui/score-ring";
 import { Select, SelectItem } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -181,11 +182,23 @@ export function QuizBody() {
 
     return (
       <div className="space-y-6 rounded-2xl border bg-card p-4 sm:p-6">
-        <div>
-          <h2 className="text-lg font-semibold">Results</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            You got {correct} of {questions.length} correct ({pct}%).
-          </p>
+        {/* The score is the answer to the only question the user has here,
+            so it gets the ring the rest of the app uses for a headline
+            number rather than a sentence they have to parse. */}
+        <div className="flex flex-wrap items-center gap-5 border-b pb-5">
+          <ScoreRing value={pct} label="Score" />
+          <div className="min-w-0">
+            <h2 className="text-lg font-semibold">
+              {correct} of {questions.length} correct
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {pct === 100
+                ? "Full marks. Try harder material next."
+                : pct >= 70
+                  ? "Solid. The misses below are worth a second look."
+                  : "Worth another pass — the explanations below say why."}
+            </p>
+          </div>
         </div>
 
         {questions.map((q, i) => (
@@ -243,9 +256,13 @@ export function QuizBody() {
           </div>
         ))}
 
-        <Button variant="outline" onClick={reset} className="w-full">
-          Try another quiz
-        </Button>
+        {/* Secondary action, sized to its label — a full-width outline bar
+            read as the page's primary control. */}
+        <div className="flex justify-end border-t pt-4">
+          <Button variant="outline" size="sm" onClick={reset}>
+            Try another quiz
+          </Button>
+        </div>
       </div>
     );
   }
