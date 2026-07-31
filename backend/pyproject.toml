@@ -21,6 +21,7 @@ dependencies = [
     "sqlalchemy>=2.0",
     "structlog>=24.4",
     "uvicorn[standard]>=0.30",
+    "youtube-transcript-api>=1.2.4",
 ]
 
 [dependency-groups]

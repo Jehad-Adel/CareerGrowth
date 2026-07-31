@@ -3,6 +3,15 @@ import uuid
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from youtube_transcript_api import (
+    InvalidVideoId,
+    IpBlocked,
+    NoTranscriptFound,
+    RequestBlocked,
+    TranscriptsDisabled,
+    VideoUnavailable,
+    YouTubeTranscriptApi,
+)
 
 from app.ai.chains.video_summary_chain import build_video_summary_chain
 from app.ai.sanitizer import sanitize_untrusted_text
@@ -15,6 +24,7 @@ log = get_logger(__name__)
 
 FEATURE = "video_summary"
 PAGE_SIZE = 50
+PREFERRED_LANGUAGES = ("en", "en-US", "en-GB", "ar")
 
 
 class AnalysisFailed(AppError):
@@ -55,19 +65,42 @@ def _fetch_transcript(url: str) -> str:
             "Could not extract a video ID from that URL. "
             "Supported formats: YouTube (watch, short, embed, youtu.be)."
         )
+
     try:
-        from youtube_transcript_api import YouTubeTranscriptApi
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
-        return " ".join(entry["text"] for entry in transcript_list)
-    except ImportError:
+        available = YouTubeTranscriptApi().list(video_id)
+        try:
+            transcript = available.find_transcript(PREFERRED_LANGUAGES)
+        except NoTranscriptFound:
+            # Any language beats no summary -- the model reads it either way.
+            transcript = next(iter(available))
+        fetched = transcript.fetch()
+    except TranscriptsDisabled as exc:
         raise UnsupportedUrl(
-            "YouTube transcript API is not installed. "
-            "Run: uv add youtube-transcript-api"
-        )
-    except Exception as exc:
-        raise UnsupportedUrl(
-            f"Could not fetch transcript: {exc}"
+            "That video has captions turned off, so there is no transcript "
+            "to summarize. Try another video."
         ) from exc
+    except (NoTranscriptFound, StopIteration) as exc:
+        raise UnsupportedUrl(
+            "That video has no transcript available. Try another video."
+        ) from exc
+    except (VideoUnavailable, InvalidVideoId) as exc:
+        raise UnsupportedUrl(
+            "That video is unavailable. Check the link and try again."
+        ) from exc
+    except (IpBlocked, RequestBlocked) as exc:
+        log.warning("youtube_blocked_our_ip", video_id=video_id)
+        raise AnalysisFailed(
+            "Could not reach YouTube for that video right now. "
+            "Try again shortly."
+        ) from exc
+    except Exception as exc:
+        log.exception("youtube_transcript_fetch_failed", video_id=video_id)
+        raise AnalysisFailed(
+            "Could not fetch the transcript for that video. "
+            "Try again shortly."
+        ) from exc
+
+    return " ".join(snippet.text for snippet in fetched)
 
 
 def process(
