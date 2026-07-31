@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { markAllRead, markRead } from "./actions";
@@ -15,22 +15,12 @@ type NotificationItem = {
   created_at: string;
 };
 
-export function NotificationsBody() {
-  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchNotifications = useCallback(async () => {
-    try {
-      const { getAllNotifications } = await import("@/lib/services");
-      setNotifications(await getAllNotifications());
-    } catch {
-      // empty
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => { fetchNotifications(); }, [fetchNotifications]);
+export function NotificationsBody({
+  initialNotifications = [],
+}: {
+  initialNotifications?: NotificationItem[];
+}) {
+  const [notifications, setNotifications] = useState<NotificationItem[]>(initialNotifications);
 
   async function handleMarkRead(id: string) {
     await markRead(id);
@@ -40,14 +30,6 @@ export function NotificationsBody() {
   async function handleMarkAllRead() {
     await markAllRead();
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-  }
-
-  if (loading) {
-    return (
-      <div className="rounded-2xl border bg-card p-6">
-        <p className="text-sm text-muted-foreground">Loading notifications...</p>
-      </div>
-    );
   }
 
   const unreadCount = notifications.filter((n) => !n.read).length;

@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from app.ai.schemas.interview_schema import InterviewLevel
 from app.deps import CurrentProfile, DbSession
+from app.errors import InvalidAudioUpload
 from app.limiter import limiter
 from app.services import interview_service
 
@@ -14,6 +15,22 @@ router = APIRouter(prefix="/interview", tags=["interview"])
 MIN_JD = 50
 MAX_JD = 20_000
 MAX_ANSWER = 8_000
+MAX_AUDIO_BYTES = 5 * 1024 * 1024  # 5 MB
+ALLOWED_AUDIO_TYPES = frozenset(
+    {
+        "audio/wav",
+        "audio/x-wav",
+        "audio/wave",
+        "audio/mpeg",
+        "audio/mp3",
+        "audio/mp4",
+        "audio/x-m4a",
+        "audio/aac",
+        "audio/ogg",
+        "audio/webm",
+        "audio/flac",
+    }
+)
 
 
 class StartRequest(BaseModel):
@@ -96,7 +113,21 @@ async def answer_question(
     answer: str = Form(default="", max_length=MAX_ANSWER),
     audio: UploadFile | None = File(default=None),
 ) -> SessionOut:
-    audio_bytes = await audio.read() if audio else None
+    audio_bytes = None
+    if audio and (audio.filename or getattr(audio, "size", 0)):
+        content_type = (audio.content_type or "").lower()
+        if (
+            not content_type.startswith("audio/")
+            and content_type not in ALLOWED_AUDIO_TYPES
+        ):
+            raise InvalidAudioUpload(
+                "Unsupported audio format. Please upload an audio file."
+            )
+        audio_bytes = await audio.read()
+        if not audio_bytes:
+            raise InvalidAudioUpload("Audio file is empty.")
+        if len(audio_bytes) > MAX_AUDIO_BYTES:
+            raise InvalidAudioUpload("Audio file exceeds the 5 MB limit.")
     text = answer if answer else None
     session = interview_service.answer(
         db, profile.id, session_id, text=text, audio_data=audio_bytes

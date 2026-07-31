@@ -1,5 +1,7 @@
 import uuid
+from contextlib import contextmanager
 from datetime import date, datetime, timezone
+from typing import Iterator
 
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -98,3 +100,34 @@ def usage_today(db: Session, profile_id: uuid.UUID) -> dict[str, int]:
         )
     ).all()
     return {feature: calls for feature, calls in rows}
+
+
+def refund(db: Session, profile_id: uuid.UUID, feature: str) -> int:
+    """Refund one AI call against today's budget if a generation fails."""
+    limit = DAILY_LIMITS.get(feature)
+    if limit is None:
+        raise ValueError(f"Unknown AI feature: {feature!r}")
+
+    day = _today()
+    row = _slot(db, profile_id, feature, day)
+    if row.calls > 0:
+        row.calls -= 1
+        db.commit()
+    return row.calls
+
+
+@contextmanager
+def consume_and_refund_on_error(
+    db: Session, profile_id: uuid.UUID, feature: str
+) -> Iterator[None]:
+    """Context manager that consumes quota and refunds it if an exception occurs."""
+    consume(db, profile_id, feature)
+    try:
+        yield
+    except Exception:
+        try:
+            refund(db, profile_id, feature)
+        except Exception:
+            pass
+        raise
+

@@ -161,8 +161,8 @@ def test_match_uses_the_profile_cv_text(monkeypatch):
     monkeypatch.setattr(matching_service, "build_job_match_chain", lambda: _Chain())
     matching_service.match_job(db, profile.id, JD)
 
-    assert seen["cv_text"] == "UNIQUE-CV-MARKER"
-    assert seen["job_description"] == JD
+    assert "UNIQUE-CV-MARKER" in seen["cv_text"]
+    assert JD.strip() in seen["job_description"]
 
 
 # --- Job match ---

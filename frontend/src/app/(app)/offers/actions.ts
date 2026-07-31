@@ -5,10 +5,19 @@ import { revalidatePath } from "next/cache";
 import { normalizeApiError } from "@/lib/api/error";
 import { serverFetch } from "@/lib/api/server";
 
+export type OfferResultState = {
+  company: string;
+  roleTitle: string;
+  overallScore: number;
+  recommendation: string;
+  result: Record<string, unknown>;
+};
+
 export type OfferActionState = {
   error?: string;
   ok?: boolean;
   offerId?: string;
+  offer?: OfferResultState;
   submittedAt?: number;
 };
 
@@ -27,14 +36,28 @@ export async function evaluateOffer(
   }
 
   try {
-    const result = await serverFetch<{ id: string }>("/offers/evaluate", {
+    const result = await serverFetch<{
+      id: string;
+      company: string;
+      role_title: string;
+      overall_score?: number | null;
+      recommendation: string;
+      result: Record<string, unknown>;
+    }>("/offers/evaluate", {
       method: "POST",
       body: JSON.stringify({ company, role_title: roleTitle, offer_details: offerDetails }),
     });
     revalidatePath("/offers");
     revalidatePath("/dashboard");
     revalidatePath("/farm");
-    return { ok: true, offerId: result.id, submittedAt: Date.now() };
+    const offer = {
+      company: result.company,
+      roleTitle: result.role_title,
+      overallScore: result.overall_score ?? 0,
+      recommendation: result.recommendation,
+      result: result.result,
+    };
+    return { ok: true, offerId: result.id, offer, submittedAt: Date.now() };
   } catch (error) {
     return {
       error: normalizeApiError(error, "Could not evaluate that offer. Try again shortly."),

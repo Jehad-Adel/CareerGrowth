@@ -5,11 +5,33 @@ import { revalidatePath } from "next/cache";
 import { normalizeApiError } from "@/lib/api/error";
 import { serverFetch } from "@/lib/api/server";
 
+export type QuizQuestionState = {
+  question: string;
+  options: string[];
+  correctAnswer?: number;
+  explanation?: string;
+  userAnswer?: number;
+  isCorrect?: boolean;
+};
+
 export type QuizActionState = {
   error?: string;
   ok?: boolean;
   attemptId?: string;
+  questions?: QuizQuestionState[];
   submittedAt?: number;
+};
+
+type QuizAttemptResponse = {
+  id: string;
+  questions: Array<{
+    question: string;
+    options: string[];
+    correct_answer?: number | null;
+    explanation?: string | null;
+    user_answer?: number | null;
+    is_correct?: boolean | null;
+  }>;
 };
 
 export async function generateQuiz(
@@ -26,7 +48,7 @@ export async function generateQuiz(
   }
 
   try {
-    const result = await serverFetch<{ id: string }>("/quiz/generate", {
+    const result = await serverFetch<QuizAttemptResponse>("/quiz/generate", {
       method: "POST",
       body: JSON.stringify({
         source_text: sourceText,
@@ -36,7 +58,11 @@ export async function generateQuiz(
       }),
     });
     revalidatePath("/quiz");
-    return { ok: true, attemptId: result.id, submittedAt: Date.now() };
+    const questions = result.questions.map((q) => ({
+      question: q.question,
+      options: q.options,
+    }));
+    return { ok: true, attemptId: result.id, questions, submittedAt: Date.now() };
   } catch (error) {
     return {
       error: normalizeApiError(error, "Could not generate quiz. Try again shortly."),
@@ -55,14 +81,22 @@ export async function submitQuizAnswers(
 
   try {
     const answers: number[] = JSON.parse(answersRaw);
-    await serverFetch(`/quiz/attempts/${attemptId}/submit`, {
+    const result = await serverFetch<QuizAttemptResponse>(`/quiz/attempts/${attemptId}/submit`, {
       method: "POST",
       body: JSON.stringify({ answers }),
     });
     revalidatePath("/quiz");
     revalidatePath("/dashboard");
     revalidatePath("/farm");
-    return { ok: true, submittedAt: Date.now() };
+    const questions = result.questions.map((q) => ({
+      question: q.question,
+      options: q.options,
+      correctAnswer: q.correct_answer ?? undefined,
+      explanation: q.explanation ?? undefined,
+      userAnswer: q.user_answer ?? undefined,
+      isCorrect: q.is_correct ?? undefined,
+    }));
+    return { ok: true, questions, submittedAt: Date.now() };
   } catch (error) {
     return {
       error: normalizeApiError(error, "Could not submit answers. Try again shortly."),

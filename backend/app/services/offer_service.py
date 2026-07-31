@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.ai.chains.offer_eval_chain import build_offer_eval_chain
+from app.ai.sanitizer import sanitize_untrusted_text
 from app.ai import embeddings
 from app.errors import AppError, NoCvOnProfile
 from app.logging import get_logger
@@ -68,16 +69,19 @@ def evaluate(
         log.exception("knowledge_retrieve_failed", profile_id=str(profile_id))
         market_context = "No specific market data available."
 
-    quota_service.consume(db, profile_id, FEATURE)
-
     try:
-        result = build_offer_eval_chain().invoke(
-            {
-                "offer_details": offer_details,
-                "profile_summary": profile_summary,
-                "market_context": market_context,
-            }
-        )
+        with quota_service.consume_and_refund_on_error(db, profile_id, FEATURE):
+            result = build_offer_eval_chain().invoke(
+                {
+                    "offer_details": sanitize_untrusted_text(
+                        offer_details, tag="offer_details"
+                    ),
+                    "profile_summary": profile_summary,
+                    "market_context": market_context,
+                }
+            )
+    except AppError:
+        raise
     except Exception as exc:
         log.exception("offer_eval_chain_failed", profile_id=str(profile_id))
         raise AnalysisFailed(

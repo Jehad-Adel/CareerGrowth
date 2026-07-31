@@ -32,6 +32,11 @@ RLS_TABLES: frozenset[str] = frozenset(
         "documents",
         "document_chunks",
         "knowledge_chunks",
+        "notifications",
+        "offer_evaluations",
+        "quiz_attempts",
+        "quiz_questions",
+        "video_summaries",
     }
 )
 

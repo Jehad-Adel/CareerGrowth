@@ -123,8 +123,6 @@ def _history_block(messages: list[ChatMessage]) -> str:
 
 def send(db: Session, profile: CareerProfile, question: str) -> ChatMessage:
     """Answer a question, grounded in this person's own documents."""
-    quota_service.consume(db, profile.id, FEATURE)
-
     prior = history(db, profile.id)
 
     # Two corpora, one question, one embedding. Letting each retrieval embed
@@ -148,15 +146,18 @@ def send(db: Session, profile: CareerProfile, question: str) -> ChatMessage:
     guidance = knowledge_service.build_context(guides)
 
     try:
-        answer = build_chat_chain().invoke(
-            {
-                "profile": _profile_block(db, profile),
-                "context": rag_service.build_context(chunks),
-                "guidance": guidance or "No curated guidance matched this question.",
-                "history": _history_block(prior),
-                "question": question,
-            }
-        )
+        with quota_service.consume_and_refund_on_error(db, profile.id, FEATURE):
+            answer = build_chat_chain().invoke(
+                {
+                    "profile": _profile_block(db, profile),
+                    "context": rag_service.build_context(chunks),
+                    "guidance": guidance or "No curated guidance matched this question.",
+                    "history": _history_block(prior),
+                    "question": question,
+                }
+            )
+    except AppError:
+        raise
     except Exception as exc:
         log.exception("chat_chain_failed", profile_id=str(profile.id))
         raise AnalysisFailed(

@@ -34,20 +34,8 @@ export function OffersBody() {
       setLoading(false);
       return;
     }
-    if (res.offerId) {
-      try {
-        const { getOfferEval } = await import("@/lib/services");
-        const offer = await getOfferEval(res.offerId);
-        setResult({
-          company: offer.company,
-          roleTitle: offer.role_title,
-          overallScore: offer.overall_score ?? 0,
-          recommendation: offer.recommendation,
-          result: offer.result,
-        });
-      } catch {
-        window.location.reload();
-      }
+    if (res.offer) {
+      setResult(res.offer);
     }
     setLoading(false);
   }

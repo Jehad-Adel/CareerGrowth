@@ -461,7 +461,10 @@ export const generateQuiz = (body: {
   mastery_level?: number;
   num_questions?: number;
 }): Promise<QuizAttemptRecord> =>
-  serverFetch<QuizAttemptRecord>("/quiz/generate", { method: "POST", body });
+  serverFetch<QuizAttemptRecord>("/quiz/generate", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
 
 export const submitQuiz = (
   attemptId: string,
@@ -469,7 +472,7 @@ export const submitQuiz = (
 ): Promise<QuizAttemptRecord> =>
   serverFetch<QuizAttemptRecord>(`/quiz/attempts/${attemptId}/submit`, {
     method: "POST",
-    body: { answers },
+    body: JSON.stringify({ answers }),
   });
 
 export const getQuizHistory = (): Promise<QuizAttemptRecord[]> =>
@@ -496,7 +499,10 @@ export const processVideo = (body: {
   url: string;
   mode: "summary" | "transcript";
 }): Promise<VideoSummaryRecord> =>
-  serverFetch<VideoSummaryRecord>("/video/process", { method: "POST", body });
+  serverFetch<VideoSummaryRecord>("/video/process", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
 
 export const getVideoHistory = (): Promise<VideoSummaryRecord[]> =>
   serverFetch<VideoSummaryRecord[]>("/video/history");
@@ -548,7 +554,10 @@ export const evaluateOffer = (body: {
   role_title: string;
   offer_details: string;
 }): Promise<OfferEvaluationRecord> =>
-  serverFetch<OfferEvaluationRecord>("/offers/evaluate", { method: "POST", body });
+  serverFetch<OfferEvaluationRecord>("/offers/evaluate", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
 
 export const getLatestOfferEval = (): Promise<OfferEvaluationRecord | null> =>
   serverFetch<OfferEvaluationRecord | null>("/offers/latest");

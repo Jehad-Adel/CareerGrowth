@@ -37,21 +37,10 @@ export function QuizBody() {
       setLoading(false);
       return;
     }
-    if (res.attemptId) {
-      try {
-        const { getQuizAttempt } = await import("@/lib/services");
-        const attempt = await getQuizAttempt(res.attemptId);
-        setAttemptId(attempt.id);
-        setQuestions(
-          attempt.questions.map((q) => ({
-            question: q.question,
-            options: q.options,
-          })),
-        );
-        setPhase("quiz");
-      } catch {
-        window.location.reload();
-      }
+    if (res.attemptId && res.questions) {
+      setAttemptId(res.attemptId);
+      setQuestions(res.questions);
+      setPhase("quiz");
     }
     setLoading(false);
   }
@@ -72,22 +61,9 @@ export function QuizBody() {
       return;
     }
 
-    try {
-      const { getQuizAttempt } = await import("@/lib/services");
-      const attempt = await getQuizAttempt(attemptId);
-      setQuestions(
-        attempt.questions.map((q) => ({
-          question: q.question,
-          options: q.options,
-          correctAnswer: q.correct_answer ?? undefined,
-          explanation: q.explanation ?? undefined,
-          userAnswer: q.user_answer ?? undefined,
-          isCorrect: q.is_correct ?? undefined,
-        })),
-      );
+    if (res.questions) {
+      setQuestions(res.questions);
       setPhase("result");
-    } catch {
-      window.location.reload();
     }
     setLoading(false);
   }

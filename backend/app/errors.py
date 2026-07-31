@@ -32,6 +32,11 @@ class NoCvOnProfile(AppError):
     code = "no_cv_on_profile"
 
 
+class InvalidAudioUpload(AppError):
+    status_code = 400
+    code = "invalid_audio_upload"
+
+
 def install_error_handlers(app: FastAPI) -> None:
     @app.exception_handler(AppError)
     async def _app_error(request: Request, exc: AppError):

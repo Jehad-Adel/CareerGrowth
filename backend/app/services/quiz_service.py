@@ -6,6 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.ai.chains.quiz_chain import build_quiz_chain
+from app.ai.sanitizer import sanitize_untrusted_text
 from app.errors import AppError
 from app.logging import get_logger
 from app.models import QuizAttempt, QuizQuestion
@@ -33,18 +34,21 @@ def generate(
     mastery_level: int = 1,
     num_questions: int = 5,
 ) -> QuizAttempt:
-    quota_service.consume(db, profile_id, FEATURE)
-
     num_questions = max(1, min(num_questions, 20))
 
     try:
-        result = build_quiz_chain().invoke(
-            {
-                "source_text": source_text,
-                "mastery_level": mastery_level,
-                "num_questions": num_questions,
-            }
-        )
+        with quota_service.consume_and_refund_on_error(db, profile_id, FEATURE):
+            result = build_quiz_chain().invoke(
+                {
+                    "source_text": sanitize_untrusted_text(
+                        source_text, tag="source_text"
+                    ),
+                    "mastery_level": mastery_level,
+                    "num_questions": num_questions,
+                }
+            )
+    except AppError:
+        raise
     except Exception as exc:
         log.exception("quiz_chain_failed", profile_id=str(profile_id))
         raise AnalysisFailed(

@@ -144,21 +144,20 @@ def start(
             "Analyze your CV first — the interviewer asks about your real experience."
         )
 
-    quota_service.consume(db, profile_id, FEATURE)
-
     level_value = InterviewLevel(level).value
     # Snapshot the CV: a later re-analysis must not change this interview.
     cv_text = profile.cv_text
 
     # Generate first, persist second. Nothing is written unless the model
     # actually produced a question.
-    result = _invoke(
-        cv_text=cv_text,
-        job_description=job_description,
-        level=level_value,
-        history=[],
-        interviewer_name=None,
-    )
+    with quota_service.consume_and_refund_on_error(db, profile_id, FEATURE):
+        result = _invoke(
+            cv_text=cv_text,
+            job_description=job_description,
+            level=level_value,
+            history=[],
+            interviewer_name=None,
+        )
 
     session = InterviewSession(
         profile_id=profile_id,
@@ -210,35 +209,34 @@ def answer(
             f"This interview has reached its {MAX_TURNS}-question limit."
         )
 
-    quota_service.consume(db, profile_id, FEATURE)
+    with quota_service.consume_and_refund_on_error(db, profile_id, FEATURE):
+        if audio_data and not text:
+            try:
+                from app.services.audio_service import transcribe_audio
+                transcribed = transcribe_audio(audio_data)
+                if transcribed:
+                    pending.answer = transcribed
+                else:
+                    raise ValueError("Audio transcription returned empty.")
+            except Exception as exc:
+                log.exception("stt_failed", session_id=str(session.id))
+                raise AnalysisFailed(
+                    "Could not transcribe your audio. Try typing your answer instead."
+                ) from exc
+        elif text:
+            pending.answer = text
+        else:
+            raise ValueError("Either text or audio_data must be provided.")
+        db.flush()
 
-    if audio_data and not text:
-        try:
-            from app.services.audio_service import transcribe_audio
-            transcribed = transcribe_audio(audio_data)
-            if transcribed:
-                pending.answer = transcribed
-            else:
-                raise ValueError("Audio transcription returned empty.")
-        except Exception as exc:
-            log.exception("stt_failed", session_id=str(session.id))
-            raise AnalysisFailed(
-                "Could not transcribe your audio. Try typing your answer instead."
-            ) from exc
-    elif text:
-        pending.answer = text
-    else:
-        raise ValueError("Either text or audio_data must be provided.")
-    db.flush()
-
-    result = _invoke(
-        cv_text=session.cv_text,
-        job_description=session.job_description,
-        level=session.level,
-        history=_history(db, session.id),
-        interviewer_name=session.interviewer_name,
-        session_id=session.id,
-    )
+        result = _invoke(
+            cv_text=session.cv_text,
+            job_description=session.job_description,
+            level=session.level,
+            history=_history(db, session.id),
+            interviewer_name=session.interviewer_name,
+            session_id=session.id,
+        )
 
     # The chain evaluates the answer just given; attach it to that turn.
     if result.feedback_previous_answer is not None:

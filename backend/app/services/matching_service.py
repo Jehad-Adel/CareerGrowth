@@ -19,6 +19,7 @@ from app.ai.chains.cover_letter_chain import build_cover_letter_chain
 from app.ai.chains.job_match_chain import build_job_match_chain
 from app.ai.chains.resume_optimizer_chain import build_resume_optimizer_chain
 from app.ai.chains.skill_gap_chain import build_skill_gap_chain
+from app.ai.sanitizer import sanitize_untrusted_text
 from app.errors import AppError, NoCvOnProfile
 from app.logging import get_logger
 from app.models import (
@@ -58,10 +59,32 @@ def _require_cv(db: Session, profile_id: uuid.UUID) -> tuple[CareerProfile, str]
     return profile, profile.cv_text
 
 
-def _invoke(build: Callable[[], object], payload: dict, feature: str) -> BaseModel:
+def _invoke(
+    db: Session,
+    profile_id: uuid.UUID,
+    build: Callable[[], object],
+    payload: dict,
+    feature: str,
+) -> BaseModel:
     """Run a chain, converting any provider failure into a clean 502."""
+    sanitized_payload = dict(payload)
+    if "job_description" in sanitized_payload and isinstance(
+        sanitized_payload["job_description"], str
+    ):
+        sanitized_payload["job_description"] = sanitize_untrusted_text(
+            sanitized_payload["job_description"], tag="job_description"
+        )
+    if "cv_text" in sanitized_payload and isinstance(
+        sanitized_payload["cv_text"], str
+    ):
+        sanitized_payload["cv_text"] = sanitize_untrusted_text(
+            sanitized_payload["cv_text"], tag="cv_text"
+        )
     try:
-        return build().invoke(payload)  # type: ignore[attr-defined]
+        with quota_service.consume_and_refund_on_error(db, profile_id, feature):
+            return build().invoke(sanitized_payload)  # type: ignore[attr-defined]
+    except AppError:
+        raise
     except Exception as exc:
         log.exception("chain_failed", feature=feature)
         raise AnalysisFailed(
@@ -113,9 +136,9 @@ def match_job(
         rag_context = ""
         log.exception("hybrid_rag_failed", feature="job_match")
 
-    quota_service.consume(db, profile_id, "job_match")
-
     result = _invoke(
+        db,
+        profile_id,
         build_job_match_chain,
         {
             "cv_text": cv_text,
@@ -178,9 +201,9 @@ def analyze_gap(
         rag_context = ""
         log.exception("hybrid_rag_failed", feature="skill_gap")
 
-    quota_service.consume(db, profile_id, "skill_gap")
-
     result = _invoke(
+        db,
+        profile_id,
         build_skill_gap_chain,
         {
             "cv_text": cv_text,
@@ -234,9 +257,9 @@ def optimize_resume(
 ) -> ResumeOptimization:
     """Rewrite the CV for ATS. The job description is optional here."""
     _, cv_text = _require_cv(db, profile_id)
-    quota_service.consume(db, profile_id, "resume_optimizer")
-
     result = _invoke(
+        db,
+        profile_id,
         build_resume_optimizer_chain,
         {"cv_text": cv_text, "job_description": job_description},
         "resume_optimizer",
@@ -266,9 +289,9 @@ def write_cover_letter(
 ) -> CoverLetter:
     """Write a letter for one job from the CV the profile already holds."""
     _, cv_text = _require_cv(db, profile_id)
-    quota_service.consume(db, profile_id, "cover_letter")
-
     result = _invoke(
+        db,
+        profile_id,
         build_cover_letter_chain,
         {
             "cv_text": cv_text,

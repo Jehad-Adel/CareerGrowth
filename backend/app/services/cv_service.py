@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.ai.chains.cv_analysis_chain import build_cv_analysis_chain
 from app.ai.loaders.pdf_loader import load_pdf_bytes
+from app.ai.sanitizer import sanitize_untrusted_text
 from app.ai.schemas.cv_profile import CVProfile
 from app.ai import embeddings
 from app.errors import AppError
@@ -80,9 +81,6 @@ def analyze(
     except ValueError as exc:
         raise UnreadableCv(str(exc)) from exc
 
-    # Charge the quota before the call: a failed generation still costs tokens.
-    quota_service.consume(db, profile_id, FEATURE)
-
     # Retrieve RAG context for CV-writing best practices
     try:
         from app.services.hybrid_rag import retrieve_context
@@ -92,9 +90,12 @@ def analyze(
         log.exception("hybrid_rag_failed", feature="cv_analysis")
 
     try:
-        result: CVProfile = build_cv_analysis_chain().invoke(
-            {"cv_text": cv_text}
-        )
+        with quota_service.consume_and_refund_on_error(db, profile_id, FEATURE):
+            result: CVProfile = build_cv_analysis_chain().invoke(
+                {"cv_text": sanitize_untrusted_text(cv_text, tag="cv_text")}
+            )
+    except AppError:
+        raise
     except Exception as exc:
         # Never leak provider internals or the prompt to the client.
         log.exception("cv_analysis_chain_failed", profile_id=str(profile_id))

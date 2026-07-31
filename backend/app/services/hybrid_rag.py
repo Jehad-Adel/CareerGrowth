@@ -5,6 +5,7 @@ This is called by feature services BEFORE they invoke their LLM chain.
 """
 
 import uuid
+from functools import lru_cache
 
 from sqlalchemy.orm import Session
 
@@ -15,6 +16,14 @@ from app.services import knowledge_service, rag_service
 log = get_logger(__name__)
 
 MAX_HYBRID_CONTEXT_CHARS = 6_000
+
+
+@lru_cache(maxsize=128)
+def cached_embed_query(query: str) -> list[float]:
+    """LRU-cached wrapper around embeddings.embed_query to prevent redundant
+    network calls for identical queries.
+    """
+    return embeddings.embed_query(query)
 
 
 def retrieve_context(
@@ -39,7 +48,7 @@ def retrieve_context(
         return ""
 
     try:
-        query_vector = embeddings.embed_query(query)
+        query_vector = cached_embed_query(query)
     except Exception:
         log.exception("embedding_failed", query_preview=query[:100])
         return ""

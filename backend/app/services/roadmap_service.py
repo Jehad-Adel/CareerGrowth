@@ -74,8 +74,6 @@ def generate(
     if not role:
         raise NoTargetRole("Set a target role first, so there is somewhere to aim.")
 
-    quota_service.consume(db, profile_id, "roadmap")
-
     # Retrieve RAG context for grounded roadmap generation
     rag_context = ""
     try:
@@ -88,9 +86,12 @@ def generate(
         log.exception("knowledge_retrieve_failed", feature="roadmap")
 
     try:
-        result = build_roadmap_chain().invoke(
-            {"cv_profile": _profile_snapshot(db, profile), "target_role": role}
-        )
+        with quota_service.consume_and_refund_on_error(db, profile_id, "roadmap"):
+            result = build_roadmap_chain().invoke(
+                {"cv_profile": _profile_snapshot(db, profile), "target_role": role}
+            )
+    except AppError:
+        raise
     except Exception as exc:
         log.exception("roadmap_chain_failed", profile_id=str(profile_id))
         raise AnalysisFailed(

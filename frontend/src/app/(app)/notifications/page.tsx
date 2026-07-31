@@ -1,12 +1,14 @@
 import { Suspense } from "react";
 
 import { CardSkeleton } from "@/components/skeletons";
+import { getAllNotifications } from "@/lib/services";
 
 import { NotificationsBody } from "./notifications-body";
 
 export const metadata = { title: "Notifications — CareerFarm" };
 
-export default function NotificationsPage() {
+export default async function NotificationsPage() {
+  const notifications = await getAllNotifications().catch(() => []);
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
@@ -18,7 +20,7 @@ export default function NotificationsPage() {
         </div>
       </div>
       <Suspense fallback={<CardSkeleton />}>
-        <NotificationsBody />
+        <NotificationsBody initialNotifications={notifications} />
       </Suspense>
     </div>
   );

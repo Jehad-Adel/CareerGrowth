@@ -5,6 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.ai.chains.video_summary_chain import build_video_summary_chain
+from app.ai.sanitizer import sanitize_untrusted_text
 from app.errors import AppError
 from app.logging import get_logger
 from app.models import VideoSummary
@@ -99,10 +100,17 @@ def process(
         db.refresh(record)
         return record
 
-    quota_service.consume(db, profile_id, FEATURE)
-
     try:
-        result = build_video_summary_chain().invoke({"transcript": transcript})
+        with quota_service.consume_and_refund_on_error(db, profile_id, FEATURE):
+            result = build_video_summary_chain().invoke(
+                {
+                    "transcript": sanitize_untrusted_text(
+                        transcript, tag="transcript"
+                    )
+                }
+            )
+    except AppError:
+        raise
     except Exception as exc:
         log.exception("video_summary_chain_failed", profile_id=str(profile_id))
         raise AnalysisFailed(

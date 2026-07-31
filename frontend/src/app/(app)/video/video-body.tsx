@@ -33,20 +33,8 @@ export function VideoBody() {
       setLoading(false);
       return;
     }
-    if (res.videoId) {
-      try {
-        const { getVideoSummary } = await import("@/lib/services");
-        const video = await getVideoSummary(res.videoId);
-        setResult({
-          title: video.title,
-          summary: video.summary,
-          keyTakeaways: video.key_takeaways,
-          transcript: video.transcript,
-          mode: video.mode,
-        });
-      } catch {
-        window.location.reload();
-      }
+    if (res.video) {
+      setResult(res.video);
     }
     setLoading(false);
   }
