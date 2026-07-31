@@ -43,6 +43,14 @@ async function fetchWithTimeout(
       ...init,
       signal: init.signal ?? controller.signal,
     });
+  } catch (err: unknown) {
+    if (err instanceof TypeError && err.message.includes("fetch failed")) {
+      throw new Error(
+        `Cannot reach the backend API at ${url}. Please make sure the FastAPI server is running ('cd backend && uv run uvicorn app.main:app --reload --port 8000') or check NEXT_PUBLIC_API_URL in .env.`,
+        { cause: err },
+      );
+    }
+    throw err;
   } finally {
     clearTimeout(id);
   }
