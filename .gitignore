@@ -83,3 +83,8 @@ Thumbs.db
 logs/
 *.sqlite3
 *.db
+# Isolated local-only portfolio capture copy
+/.portfolio-harness/
+
+.vercel
+.env*

@@ -1,0 +1,1 @@
+{"name":"careergrowth-railway-config","private":true,"type":"module","scripts":{"typecheck":"tsc --noEmit"},"dependencies":{"railway":"^3.12.0"},"devDependencies":{"typescript":"^5.9.3","@types/node":"^24.0.0"}}

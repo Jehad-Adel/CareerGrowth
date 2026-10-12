@@ -1,10 +1,7 @@
 // Gate for `npm audit --omit=dev` in CI.
 //
-// npm audit exits non-zero on any finding at all, and a few of ours are
-// transitive under a pinned next with no upgrade path — `npm audit fix --force`
-// "fixes" them by installing next@9. Muting the whole job would hide the next
-// real advisory just as effectively, so instead each accepted finding is
-// listed here by GHSA id and anything else fails the build.
+// Every new advisory fails the gate. Next 16.4.0 and compatible lockfile
+// refreshes resolved the historical Next/PostCSS/sharp accepted findings.
 //
 // Usage: node scripts/check-audit.mjs <path to `npm audit --json` output>
 
@@ -12,17 +9,7 @@ import { readFileSync } from "node:fs";
 
 // Every entry needs a reason and a way out. Delete one the moment it stops
 // appearing — a stale allow is how a real advisory sneaks through later.
-const ACCEPTED = {
-  // postcss, transitive under next@16.2.11. Fixed in a next release that
-  // does not exist yet: the advisory range covers through 16.3.0-preview.7
-  // and 16.2.12 is the current latest.
-  "GHSA-qx2v-qp2m-jg93": "postcss XSS via unescaped </style>",
-  "GHSA-6g55-p6wh-862q": "postcss sourceMappingURL arbitrary file read",
-  "GHSA-r28c-9q8g-f849": "postcss sourceMappingURL path traversal",
-  // sharp/libvips, same story: next pins it and only ships images through it
-  // at build time.
-  "GHSA-f88m-g3jw-g9cj": "sharp inherited libvips CVEs",
-};
+const ACCEPTED = {};
 
 const reportPath = process.argv[2];
 if (!reportPath) {

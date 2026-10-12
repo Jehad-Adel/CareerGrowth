@@ -1,0 +1,498 @@
+{
+  "project": "CareerGrowth",
+  "capturedAt": "2026-10-12T15:41:31.989Z",
+  "command": "cd frontend && npm run portfolio:capture",
+  "harness": "Ignored .portfolio-harness/frontend copy; mock HTTP bound only to 127.0.0.1:4102; no production auth changes",
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "deviceScaleFactor": 1,
+  "fullPage": false,
+  "screenshotCount": 37,
+  "externalBrowserRequests": [],
+  "pageErrors": [],
+  "captures": [
+    {
+      "file": "01-landing-hero.png",
+      "route": "/",
+      "section": "Hero and first career farm preview",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "02-landing-features.png",
+      "route": "/",
+      "section": "features",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 1471,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "03-landing-how-it-works.png",
+      "route": "/",
+      "section": "how",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 877,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "04-landing-connected-workflow.png",
+      "route": "/",
+      "section": "connected",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 2469,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "04-landing-platform-stats.png",
+      "route": "/",
+      "section": "Platform feature, growth-stage, category and profile counters",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 3365,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "05-landing-closing-and-footer.png",
+      "route": "/",
+      "section": "Closing call to action and footer",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 3391,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "06-login.png",
+      "route": "/login",
+      "section": "Authentication form (submission disabled in copied harness)",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "07-signup.png",
+      "route": "/signup",
+      "section": "Authentication form (submission disabled in copied harness)",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "08-dashboard-overview.png",
+      "route": "/dashboard",
+      "section": "Populated overview",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "10-farm-skill-plants.png",
+      "route": "/farm",
+      "section": "Populated overview",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "11-farm-plants-and-recent-growth.png",
+      "route": "/farm",
+      "section": "Lower page section",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 454,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "12-cv-studio-analysis.png",
+      "route": "/cv",
+      "section": "Populated overview",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "14-roadmap-overview.png",
+      "route": "/roadmap",
+      "section": "Populated overview",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "15-roadmap-learning-steps.png",
+      "route": "/roadmap",
+      "section": "Lower page section",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 850,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "15-roadmap-learning-steps-02.png",
+      "route": "/roadmap",
+      "section": "Lower page section",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 1091,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "16-interview-coach-active.png",
+      "route": "/interview",
+      "section": "Populated overview",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "20-applications-pipeline.png",
+      "route": "/applications",
+      "section": "Populated overview",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "22-career-chat-grounded-conversation.png",
+      "route": "/chat",
+      "section": "Populated overview",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "23-notifications-populated.png",
+      "route": "/notifications",
+      "section": "Populated overview",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "18-interview-completed-evaluation.png",
+      "route": "/interview?session=interview-complete",
+      "section": "Completed interview with overall score and feedback",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "19-interview-completed-details.png",
+      "route": "/interview?session=interview-complete",
+      "section": "Completed answer and evaluation details",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 338,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "24-job-match-results.png",
+      "route": "/jobs",
+      "section": "Match",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "26-skill-gap-results.png",
+      "route": "/jobs",
+      "section": "Skill gap",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "27-skill-gap-learning-resources.png",
+      "route": "/jobs",
+      "section": "Skill gap lower details",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 101,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "28-cover-letter-generated.png",
+      "route": "/jobs",
+      "section": "Cover letter",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "30-resume-optimizer-ats-scores.png",
+      "route": "/jobs",
+      "section": "Resume Optimizer",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "31-resume-optimizer-sections.png",
+      "route": "/jobs",
+      "section": "Resume Optimizer lower details",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 448,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "32-quiz-source-material.png",
+      "route": "/quiz",
+      "section": "Quiz setup with realistic learning notes",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "33-quiz-generated-questions.png",
+      "route": "/quiz",
+      "section": "Generated multiple choice questions",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "33-quiz-generated-question-details.png",
+      "route": "/quiz",
+      "section": "Remaining questions and submission control",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 204,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "34-quiz-scored-feedback.png",
+      "route": "/quiz",
+      "section": "Scored answers and explanations",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "36-video-summary-input.png",
+      "route": "/video",
+      "section": "Video processing form with a fictional URL",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "37-video-summary-results.png",
+      "route": "/video",
+      "section": "Summary and practical takeaways",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "38-video-transcript-results.png",
+      "route": "/video",
+      "section": "Timestamped transcript",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "39-offer-evaluation-input.png",
+      "route": "/offers",
+      "section": "Offer details form with fictional compensation",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "40-offer-evaluation-results.png",
+      "route": "/offers",
+      "section": "Offer score, rationale, pros, and cons",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    },
+    {
+      "file": "42-not-found.png",
+      "route": "/portfolio-page-does-not-exist",
+      "section": "Designed 404 page",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "fullPage": false,
+      "scrollY": 0,
+      "mockData": "Fictional Maya Chen career profile; local fixtures"
+    }
+  ]
+}
